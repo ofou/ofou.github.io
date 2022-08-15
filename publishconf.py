@@ -17,7 +17,7 @@ DELETE_OUTPUT_DIRECTORY = True
 # Following items are often useful when publishing
 
 #DISQUS_SITENAME = ""
-#GOOGLE_ANALYTICS = ""
+GOOGLE_ANALYTICS = "UA-147368021-1"
 
 LOAD_CONTENT_CACHE = False
 STATIC_PATHS = ['images', 'extra/CNAME']
