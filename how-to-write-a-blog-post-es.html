@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="generator" content="Pelican" />
-        <title>A Pelican Blog</title>
+        <title>Mi súper titulo</title>
         <link rel="stylesheet" href="./theme/css/main.css" />
         <link href="https://olivares.cl/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="A Pelican Blog Atom Feed" />
+      <link rel="alternate" hreflang="en" href="./how-to-write-a-blog-post.html">
+
+        <meta name="description" content="Short version for index and feeds" />
 </head>
 
 <body id="index" class="home">
@@ -14,13 +17,18 @@
                 <h1><a href="./">A Pelican Blog</a></h1>
                 <nav><ul>
                     <li><a href="./pages/my-super-post.html">About</a></li>
-                    <li><a href="./category/blog.html">blog</a></li>
+                    <li class="active"><a href="./category/blog.html">blog</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="./how-to-write-a-blog-post-es.html" rel="bookmark"
+           title="Permalink to Mi súper titulo">Mi súper titulo</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="./how-to-write-a-blog-post.html">My super title</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2010-12-03T10:20:00+00:00">
                 Published: Fri 03 December 2010
@@ -31,43 +39,22 @@
         </address>
 <p>In <a href="./category/blog.html">blog</a>.</p>
 <p>tags: <a href="./tag/pelican.html">pelican</a> <a href="./tag/publishing.html">publishing</a> </p>Translations:
-        <a href="./how-to-write-a-blog-post-es.html" hreflang="es">es</a>
+        <a href="./how-to-write-a-blog-post.html" hreflang="en">en</a>
 
-</footer><!-- /.post-info --><p>This is the content of my super blog post.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->      <p>Contenido en Español</p>
+<div class="highlight"><pre><span></span><code><span class="n">PLUGINS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;i18n_subsites&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="./my-super-post.html" rel="bookmark"
-                           title="Permalink to About">About</a></h1>
-                </header>
+<span class="c1"># mapping: language_code -&gt; settings_overrides_dict</span>
+<span class="n">I18N_SUBSITES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;cz&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;SITENAME&#39;</span><span class="p">:</span> <span class="s1">&#39;Hezkej blog&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div>
+    </div><!-- /.entry-content -->
 
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2010-12-03T10:20:00+00:00">
-                Published: Fri 03 December 2010
-        </abbr>
-		<br />
-        <abbr class="modified" title="2010-12-05T19:30:00+00:00">
-                Updated: Sun 05 December 2010
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="./author/alexis-metaireau.html">Alexis Metaireau</a>
-                        <a class="url fn" href="./author/conan-doyle.html">Conan Doyle</a>
-        </address>
-<p>In <a href="./category/blog.html">Blog</a>.</p>
-<p>tags: <a href="./tag/pelican.html">pelican</a> <a href="./tag/publishing.html">publishing</a> </p>
-</footer><!-- /.post-info -->                <p>Short version for index and feeds</p>
-                <a class="readmore" href="./my-super-post.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="social">
                         <h2>social</h2>
