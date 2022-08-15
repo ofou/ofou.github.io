@@ -1,0 +1,150 @@
+h2 {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  color: #77141c; }
+
+a {
+  color: #27709b;
+  text-decoration: none; }
+
+a:hover {
+  color: #77141c; }
+
+ol {
+  margin: 0px;
+  padding: 0px; }
+  ol ul.posts, ol li.posts {
+    list-style-type: none; }
+  ol ul, ol li {
+    list-style-type: disc; }
+
+body {
+  background-color: #f4f4f4; }
+  body header.banner {
+    position: relative;
+    margin: 0px auto; }
+    body header.banner pre.banner {
+      font-family: "Courier New", Monospace;
+      white-space: pre;
+      color: #939393; }
+    body header.banner pre.mobile-banner {
+      display: block;
+      width: 470px;
+      margin: 0px auto; }
+    @media all and (min-device-width: 900px) {
+      body header.banner {
+        width: 750px; }
+        body header.banner pre.mobile-banner {
+          display: none; } }
+    @media all and (max-device-width: 900px) {
+      body header.banner {
+        width: 100%; }
+        body header.banner pre.reg-banner {
+          display: none; } }
+    body header.banner div.social-navigation {
+      padding-top: 0;
+      text-align: center; }
+      @media all and (min-device-width: 900px) {
+        body header.banner div.social-navigation {
+          display: inline;
+          position: absolute;
+          right: 25px;
+          top: 0px; }
+          body header.banner div.social-navigation ol {
+            display: inline-block; }
+          body header.banner div.social-navigation a {
+            font-size: 4em; } }
+      @media all and (max-device-width: 900px) {
+        body header.banner div.social-navigation {
+          background-color: #e7e7e7;
+          display: block; }
+          body header.banner div.social-navigation ol {
+            display: block; }
+          body header.banner div.social-navigation a {
+            font-size: 6em; } }
+      body header.banner div.social-navigation a {
+        padding: 0px; }
+      body header.banner div.social-navigation li {
+        display: inline;
+        padding: 0; }
+    @media all and (min-device-width: 900px) {
+      body header.banner div.navigation {
+        position: absolute;
+        display: inline-block;
+        text-align: right;
+        right: 120px;
+        top: 320px; }
+        body header.banner div.navigation ol {
+          display: inline; }
+        body header.banner div.navigation a {
+          font-size: 2em; } }
+    @media all and (max-device-width: 900px) {
+      body header.banner div.navigation {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        text-align: center; }
+        body header.banner div.navigation ol {
+          display: block; }
+        body header.banner div.navigation a {
+          font-size: 3em; } }
+    body header.banner div.navigation a {
+      font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+      color: #27709b; }
+    body header.banner div.navigation a:hover {
+      color: #77141c; }
+  body div.content {
+    margin: 20px; }
+  body div.highlight {
+    padding: 15px;
+    background-color: #f4f4f4;
+    font-size: 0.8em; }
+  body article.archive {
+    padding: 20px;
+    box-shadow: 0 0 0 1px #d1d1d1, 0 0 4px 1px #cccccc;
+    background-color: white;
+    margin-bottom: 10px; }
+    body article.archive h2 {
+      font-size: 2.5em; }
+    body article.archive div.entry-summary {
+      font-size: 1.5em; }
+    body article.archive footer.post-info abbr {
+      padding-bottom: 10px;
+      font-size: 1.5em;
+      color: #555555;
+      font-style: italic; }
+  body section#content {
+    padding: 30px;
+    box-shadow: 0 0 0 1px #d1d1d1, 0 0 4px 1px #cccccc;
+    font-size: 2em;
+    background-color: white; }
+    body section#content div.entry-content {
+      font-size: 0.8em; }
+    body section#content footer.post-info abbr {
+      padding-bottom: 10px;
+      font-size: 0.8em;
+      color: #555555;
+      font-style: italic; }
+  body div.page-wrapper, body div.archives-wrapper {
+    padding: 30px;
+    box-shadow: 0 0 0 1px #d1d1d1, 0 0 4px 1px #cccccc;
+    font-size: 1.5em;
+    background-color: white; }
+  body div.archives-wrapper table.archives {
+    font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-size: 1em;
+    width: 100%; }
+    body div.archives-wrapper table.archives td {
+      padding: 5px; }
+    body div.archives-wrapper table.archives td.even {
+      background-color: #f4f4f4; }
+    body div.archives-wrapper table.archives td.date {
+      font-family: Fixed, monospace;
+      width: 100px; }
+    body div.archives-wrapper table.archives td.odd {
+      background-color: #e7e7e7; }
+  body footer#page-footer {
+    font-size: 1.5em;
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px; }

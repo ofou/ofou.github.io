@@ -1,0 +1,186 @@
+@import url("https://fonts.googleapis.com/css2?family=Rambla:ital,wght@0,400;0,700;1,400;1,700&family=Zen+Maru+Gothic:wght@300;400;500;700;900&display=swap");
+@import url("https://use.typekit.net/vgx3bhx.css");
+
+html {
+	height: auto;
+	padding-bottom: 512px;
+	-webkit-transform: none !important;
+	-ms-transform: none !important;
+	transform: none !important;
+	pointer-events: auto;
+	background-image: url(https://y-n10.com/assets/images/pc/common/bg.png);
+	background-repeat: repeat;
+	background-size: 8px 8px;
+}
+
+i {
+	font-weight: 400;
+	font-family: "Baskerville", serif;
+	font-size: 28px;
+	letter-spacing: 0.013em;
+}
+
+b,
+strong {
+	font-weight: 640;
+}
+
+p + p {
+	margin-top: 16px;
+}
+
+abbr,
+address,
+article,
+aside,
+audio,
+b,
+blockquote,
+body,
+canvas,
+caption,
+cite,
+code,
+dd,
+del,
+details,
+dfn,
+div,
+dl,
+dt,
+em,
+fieldset,
+figcaption,
+figure,
+footer,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+header,
+hgroup,
+html,
+i,
+iframe,
+img,
+ins,
+kbd,
+label,
+legend,
+li,
+mark,
+menu,
+nav,
+object,
+ol,
+p,
+pre,
+q,
+samp,
+section,
+small,
+span,
+strong,
+sub,
+summary,
+sup,
+table,
+tbody,
+td,
+tfoot,
+th,
+thead,
+time,
+tr,
+ul,
+var,
+video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	/* font-size: 100%; */
+	vertical-align: baseline;
+	background: 0 0;
+}
+
+/* # horizontal nav bar */
+nav {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 5%;
+	background-color: #fff;
+	z-index: 1;
+	box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+	text-align: center;
+}
+
+section {
+	padding-top: 50px;
+}
+
+a:link {
+	color: blue;
+	text-decoration: none;
+}
+a:hover {
+	color: blue;
+	text-decoration: underline;
+}
+a:visited {
+	color: blue;
+}
+
+h1 a {
+	color: inherit !important;
+}
+h2 a {
+	color: inherit !important;
+}
+h3 a {
+	color: inherit !important;
+}
+h4 a {
+	color: inherit !important;
+}
+h5 a {
+	color: inherit !important;
+}
+h6 a {
+	color: inherit !important;
+}
+
+#menu li {
+	display: inline;
+}
+
+#post-list {
+	margin-bottom: 1em;
+	margin-top: 1em;
+}
+
+pre {
+	margin: 2em 1em 2em 4em;
+}
+/* align footer at the bottom */
+footer {
+	position: fixed;
+	text-align: center;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 25px;
+	background-color: #fff;
+	z-index: 1;
+	box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+header {
+	font-size: 80%;
+	text-align: center;
+	margin-bottom: 1em;
+}
