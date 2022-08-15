@@ -31,7 +31,7 @@ DEFAULT_PAGINATION = False
 # Uncomment following line if you want document-relative URLs when developing
 RELATIVE_URLS = True
 
-THEME = "./pelican-themes/simple-bootstrap"
+THEME = "./theme"
 SUMMARY_MAX_LENGTH = None
 
 AUTHOR = 'Omar Olivares'
