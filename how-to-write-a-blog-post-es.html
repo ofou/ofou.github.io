@@ -1,70 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <title>Omar Olivares - Mi súper titulo</title>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Pelican" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Mi súper titulo</title>
+        <link rel="stylesheet" href="./theme/css/main.css" />
+        <link href="https://olivares.cl/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="A Pelican Blog Atom Feed" />
+      <link rel="alternate" hreflang="en" href="./how-to-write-a-blog-post.html">
 
-   <link rel="stylesheet" type="text/css" href="/theme/css/nomad.css" />
-
-
-        <link rel="alternate" hreflang="en" href="/blog/how-to-write-a-blog-post/">
-
-
-
-    <meta name="tags" content="pelican" />
-    <meta name="tags" content="publishing" />
-
-
+        <meta name="description" content="Short version for index and feeds" />
 </head>
 
-<body>
-
-  <nav>
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/about/">About</a></li>
-      <li><a href="/code/">Code</a></li>
-      <li><a href="/music/">Music</a></li>
-      <li><a href="/category/blog">Blog</a></li>
-      <li><a href="/contact/">Contact</a></li>
-      <!-- 
-      <li><a href="/"><strong>Omar Olivares</strong></a></li>
- -->
-    </ul>
-  </nav>
-
-
-
-  <main class="simple-container">
-  <header>
-    <h1 class="entry-title">
-      <a href="/how-to-write-a-blog-post-es.html" rel="bookmark"
-         title="Permalink to Mi súper titulo">Mi súper titulo</a></h1>
- Translations:
-<a href="/blog/how-to-write-a-blog-post/" hreflang="en">en</a>
-
-  </header>
-  <footer class="post-info">
-    <time class="published" datetime="2010-12-03T10:20:00-03:00">
-      Fri 03 December 2010
-    </time>
-    <address class="vcard author">
-      By           <a class="url fn" href="/author/omar-olivares.html">Omar Olivares</a>
-    </address>
-    <div class="category">
-        Category: <a href="/category/blog.html">blog</a>
-    </div>
-    <div class="tags">
-        Tags:
-            <a href="/tag/pelican/">pelican</a>
-            <a href="/tag/publishing/">publishing</a>
-    </div>
-  </footer><!-- /.post-info -->
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="./">A Pelican Blog</a></h1>
+                <nav><ul>
+                    <li><a href="./pages/about.html">About</a></li>
+                    <li><a href="./pages/code.html">Code</a></li>
+                    <li><a href="./pages/contact.html">Contact</a></li>
+                    <li><a href="./">Hola!</a></li>
+                    <li><a href="./pages/music.html">Music</a></li>
+                    <li class="active"><a href="./category/blog.html">blog</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
   <article>
-    <p>Contenido en Español</p>
+    <header>
+      <h1 class="entry-title">
+        <a href="./how-to-write-a-blog-post-es.html" rel="bookmark"
+           title="Permalink to Mi súper titulo">Mi súper titulo</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2010-12-03T10:20:00+00:00">
+                Published: Fri 03 December 2010
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="./author/omar-olivares.html">Omar Olivares</a>
+        </address>
+<p>In <a href="./category/blog.html">blog</a>.</p>
+<p>tags: <a href="./tag/pelican.html">pelican</a> <a href="./tag/publishing.html">publishing</a> </p>Translations:
+        <a href="./how-to-write-a-blog-post.html" hreflang="en">en</a>
+
+</footer><!-- /.post-info -->      <p>Contenido en Español</p>
 <div class="highlight"><pre><span></span><code><span class="n">PLUGINS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;i18n_subsites&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 
 <span class="c1"># mapping: language_code -&gt; settings_overrides_dict</span>
@@ -74,13 +55,36 @@
         <span class="p">}</span>
     <span class="p">}</span>
 </code></pre></div>
-  </article>
-  </main>
-  <footer class="simple-container">
-    <address id="about" class="vcard body">
-      © Omar Olivares</a>.
-    </address><!-- /#about -->
-  </footer>
-</body>
+    </div><!-- /.entry-content -->
 
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://olivares.cl/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-147368021-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+</body>
 </html>
