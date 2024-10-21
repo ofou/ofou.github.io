@@ -446,17 +446,16 @@ requestAnimationFrame(animate);
                 Nav(
                     Ul(Li("Omar Olivares")),
                     Ul(
-                        Li(A("Articles", href="#articles")),
-                        Li(A("Projects", href="#projects")),
-                        Li(A("About Me", href="#about")),
+                        # Li(A("Articles (soon)", href="#articles")),
+                        Li(A("Projects (soon)", href="#projects")),
+                        # Li(A("About Me (soon)", href="#about")),
                     ),
                     cls="name",
                 ),
                 Section(
-                    H1("I'm sorry, Dave.", cls="hero-title"),
+                    H1("Wake up, Neo...", cls="hero-title"),
                     P(
-                        Strong("I can do that. "),
-                        "I work with clients to create innovative AI solutions that enhance their operations and unlock new opportunities.",
+                        "I work with clients to create innovative AI solutions that enhance their operations and unlock new opportunities",
                         Hr(),
                         cls="hero-subtitle",
                     ),
@@ -469,20 +468,40 @@ requestAnimationFrame(animate);
                 ),
                 Section(
                     P(
-                        "As an AI Engineer originally from Santiago, Chile, I specialize in building custom AI solutions tailored to your business needs. "
-                        "With experience leading AI development at Emergent Mind, I have expertise in developing deep learning models, designing RAG pipelines, and collaborating on product strategy. "
-                        "Take a look at my work at ",
+                        "As a Software Engineer specializing in AI/ML, I currently work as an Artificial Intelligence Engineer at ",
                         A("Emergent Mind", href="https://www.emergentmind.com"),
-                        ".",
+                        ", where I contribute to building an innovative platform that accelerates discovery and understanding of cutting-edge computer science research. ",
+                        "I'm also a ",
+                        A(
+                            "freelance ",
+                            href="https://www.youtube.com/watch?v=_MIEZSgQYHE",
+                        ),
+                        " ",
+                        A(
+                            "content ",
+                            href="https://www.youtube.com/watch?v=kFlLzFuslfQ",
+                        ),
+                        " ",
+                        A(
+                            "creator",
+                            href="https://www.youtube.com/watch?v=ISa10TrJK7w",
+                        ),
+                        " passionate about neurotech and exploring the intersection of AI and brain-machine interfaces. ",
+                        "My thesis focused on enhancing mathematical reasoning in large language models to excel in the Chilean Higher Education Access Test (PAES). "
+                        "I’m a product-driven engineer who thrives on building creative solutions that deliver real value for companies and individuals.",
                     ),
                     P(
-                        "I also create content to make complex technologies accessible. As the creator of ",
+                        "In my free time, I enjoy ",
                         A(
-                            "Neura Pod",
-                            href="https://www.youtube.com/channel/UCNeuraPod",
+                            "making music",
+                            href="https://open.spotify.com/artist/5e6x7QJXOGbkDEPpEOWm1w",
                         ),
-                        ", I have grown the channel to over 80,000 subscribers. "
-                        "My mission is to bridge the gap between advanced AI technologies and practical business applications.",
+                        ", contributing to ",
+                        A(
+                            "open-source projects",
+                            href="https://github.com/ofou",
+                        ),
+                        ", learning Mandarin (你好), and traveling to new places—always curious and always learning.",
                     ),
                     Footer(
                         P(
