@@ -442,18 +442,17 @@ requestAnimationFrame(animate);
 """
             ),
             Script(
-    """
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6MR2H8YX5K"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+                "https://www.googletagmanager.com/gtag/js?id=G-6MR2H8YX5K", async_=True 
+            ),
+            Script(
+                """
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
 
-  gtag('config', 'G-6MR2H8YX5K');
-</script>
-    """
-                ),
+                  gtag('config', 'G-6MR2H8YX5K');
+                """
+            ),
             Main(
                 Nav(
                     Ul(Li("Omar Olivares")),
