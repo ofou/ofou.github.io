@@ -157,7 +157,7 @@ blockquote footer a {
 
 .hero {
     text-align: center;
-    margin-top: 20%;
+    margin-top: 13%;
     font-size: 2em;
     margin-bottom: 18%;
     
