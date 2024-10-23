@@ -12,23 +12,20 @@ def home():
                 rel="stylesheet",
                 href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css",
             ),
+            Script(src="https://www.googletagmanager.com/gtag/js?id=G-6MR2H8YX5K"),
             Link(rel="preconnect", href="https://fonts.googleapis.com"),
             Link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin=True),
+            Script(
+                """
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6MR2H8YX5K');
+"""
+            ),
             Link(
-                href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Baskervville+SC&family=Baskervville:ital@0;1&family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Mate+SC&family=Silkscreen:wght@400;700&family=VT323&family=Rubik+Pixels&display=swap",
+                href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Mate+SC&family=Silkscreen:wght@400;700&family=VT323&family=Rubik+Pixels&display=swap",
                 rel="stylesheet",
-            ),
-            Script(
-                "https://www.googletagmanager.com/gtag/js?id=G-6MR2H8YX5K", async_=True
-            ),
-            Script(
-                """
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-
-                  gtag('config', 'G-6MR2H8YX5K');
-                """
             ),
             Style(
                 """
