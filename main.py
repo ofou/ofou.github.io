@@ -1,4 +1,5 @@
 from fasthtml.common import *
+import datetime
 
 app = FastHTML()
 
@@ -527,7 +528,7 @@ requestAnimationFrame(animate);
                 cls="container",
             ),
             Footer(
-                Small("© 2024 Omar Olivares"),
+                Small(f"© {datetime.datetime.now().year} Omar Olivares Urrutia"),
             ),
         ),
     )
