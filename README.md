@@ -1,5 +1,7 @@
 ## About Me
 
+![](static/images/profile.png)
+
 I'm a Software Engineer specializing in AI/ML, I currently work as an Artificial Intelligence Engineer at [Emergent Mind](https://www.emergentmind.com), where I contribute to building an innovative platform that accelerates discovery and understanding of cutting-edge computer science research. I'm also a [freelance](https://www.youtube.com/watch?v=_MIEZSgQYHE) [content](https://www.youtube.com/watch?v=kFlLzFuslfQ) [creator](https://www.youtube.com/watch?v=ISa10TrJK7w) passionate about neurotech and exploring the intersection of AI and brain-machine interfaces.
 
 I'm a product-driven engineer who thrives on building creative solutions that deliver real value for companies and individuals.
