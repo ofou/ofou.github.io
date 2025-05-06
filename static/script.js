@@ -1,12 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
   const path = window.location.pathname;
+  let activeNav = '';
+
   if (path === '/' || path === '/index.html') {
-    document.body.classList.add('home');
+    activeNav = 'home';
   } else if (path.startsWith('/blog/')) {
-    document.body.classList.add('blog');
+    activeNav = 'blog';
   } else if (path.startsWith('/projects/')) {
-    document.body.classList.add('projects');
+    activeNav = 'projects';
   } else if (path.startsWith('/contact/')) {
-    document.body.classList.add('contact');
+    activeNav = 'contact';
+  }
+
+  if (activeNav) {
+    // Add class to body (optional, keep if needed for other styling)
+    document.body.classList.add(activeNav);
+
+    // Add active class to the corresponding nav link
+    const navLink = document.querySelector(`.menubar a[data-nav="${activeNav}"]`);
+    if (navLink) {
+      navLink.classList.add('active');
+    }
   }
 }); 
