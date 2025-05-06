@@ -6,14 +6,29 @@
   --lapis-lazuli: #3465a4;
   --black: #000000;
   --white: #ffffff;
+
+  --font-jetbrains: "JetBrains Mono", monospace;
+
+  /* Current active font */
+  --font-primary: var(--font-jetbrains);
+
+  /* Base font size - using JetBrains recommended size with responsive scaling */
+  --font-size-base: calc(15px + 0.1vw); /* Increased from 13px */
+}
+
+html {
+  font-size: var(--font-size-base); /* JetBrains Mono recommended: 13px base */
 }
 
 /* Base styles */
 body {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-primary);
   font-variant-ligatures: contextual common-ligatures;
+  font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1; /* Enable coding ligatures and stylistic sets */
   text-rendering: optimizeLegibility;
-  line-height: 1.618;
+  /* -webkit-font-smoothing: antialiased; */
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5; /* Adjusted from 1.6 to 150% */
   margin: 0;
   padding: 0;
   color: var(--timberwolf);
@@ -23,18 +38,22 @@ body {
   min-height: 100vh;
   justify-content: center;
   align-items: center;
+  hyphens: none; /* Disabled auto-hyphenation */
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
 }
 
 .container {
-  max-width: 640px;
+  max-width: 40rem;
+  width: 90vw;
   margin: 0 auto;
   padding: 0 1rem;
 }
 
 /* Terminal styling */
 .terminal {
-  width: 100%;
-  max-width: 640px;
+  width: 90vw;
+  max-width: 40rem;
   min-height: 80vh;
   display: flex;
   flex-direction: column;
@@ -84,7 +103,7 @@ main {
   background-color: var(--onyx);
   color: var(--timberwolf);
   width: 100%;
-  padding: 1rem;
+  padding: 1.5rem; /* Match adjusted line-height */
   overflow: auto;
   box-sizing: border-box;
 }
@@ -112,31 +131,81 @@ main {
 h1,
 h2,
 h3 {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
+  margin-top: 3rem; /* 2 * adjusted line-height */
+  margin-bottom: 1.5rem; /* 1 * adjusted line-height */
   color: var(--timberwolf-2);
+  line-height: 1.2; /* Keep title line height tighter */
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.3rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+}
+
+p {
+  margin: 0 0 1.5rem 0; /* Bottom margin matches adjusted line height */
+  max-width: 40rem; /* Control line length (verify characters per line) */
+  /* No explicit letter-spacing for body text (default/neutral tracking) */
 }
 
 a {
   color: var(--dark-cyan);
   text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
 }
 
 a:hover {
   text-decoration: none;
+  border-bottom-color: var(--dark-cyan);
+}
+
+/* Add persistent underline for links within paragraphs */
+p a {
+  border-bottom: 1px solid var(--dark-cyan); /* Persistent subtle underline */
+  transition: background-color 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Modify hover for paragraph links */
+p a:hover {
+  border-bottom-color: transparent; /* Remove underline on hover */
+  background-color: var(--dark-cyan); /* Add background instead */
+  color: var(--onyx);
+}
+
+/* Letter spacing for uppercase text / Titles */
+.menubar a,
+th,
+.statusbar,
+.page-title,
+.page-content > h1,
+.page-content > h2 {
+  letter-spacing: -0.01em; /* Slightly tighter tracking for larger/title text */
+}
+
+[class*="all-caps"],
+.menubar a.active {
+  letter-spacing: 0.1em; /* Keep 10% extra for deliberately all-caps text */
 }
 
 .references {
-  font-size: 0.5em;
+  font-size: 0.9em;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 /* Citation and Bibliography styles */
 .csl-entry {
-  margin-bottom: 1rem;
   padding-left: 2rem;
   text-indent: -2rem;
-  font-size: 0.8rem;
-  line-height: 1.4;
 }
 
 .csl-left-margin {
@@ -151,26 +220,72 @@ a:hover {
   display: inline;
 }
 
+/* Reference entries line height control */
+#refs.references .csl-entry {
+  /* margin-bottom: 1rem; Consistent 1rem spacing between entries */
+  padding: 0.3rem 0; /* Add padding for highlight effect */
+  border-radius: 0.2rem; /* Rounded corners for highlight */
+  transition: background-color 0.3s ease-in-out; /* Smooth transition for highlight */
+}
+
+/* Target highlight effect when navigating directly to a reference */
+.csl-entry:target {
+  background-color: var(--black); /* Use dark-cyan with transparency */
+  animation: highlight-pulse 2s ease-in-out 1; /* Subtle pulse animation */
+}
+
+/* Fix superscript citation spacing */
 span.citation {
-  vertical-align: super;
   font-size: 0.7em;
+  position: relative;
+  display: inline-block;
+  line-height: 0; /* Critical to prevent line height expansion */
+  vertical-align: baseline; /* Override default super alignment */
+  top: -0.5em; /* Position above baseline without affecting line metrics */
+}
+
+/* Target both the span.citation and the sup element inside it */
+span.citation sup {
+  font-size: 1em; /* 100% of parent (which is already 0.7em) */
+  line-height: 0;
+  vertical-align: baseline;
+  position: static; /* Prevent browser's default sup positioning */
 }
 
 span.citation a {
-  text-decoration: none;
+  text-decoration: none; /* Ensure no underline within citation marker */
+  border-bottom: none; /* Ensure no border within citation marker */
+  display: inline-block;
+  line-height: 0; /* Prevent link from expanding */
+}
+
+span.citation a:hover {
+  background-color: transparent; /* Prevent background change on hover */
+  color: var(--dark-cyan); /* Keep link color on hover */
+}
+
+/* Explicit emphasis styles */
+em {
+  font-style: italic;
+  /* Optional: color: var(--dark-cyan); */
+}
+
+strong {
+  font-weight: 700; /* Match .jetbrains-mono-bold */
+  /* Optional: color: var(--timberwolf-2); */
 }
 
 .page-content > ul,
 .post-list {
-  padding: 1rem;
-  line-height: 1.5;
+  padding: 1.5rem; /* Match adjusted line-height */
+  line-height: 1.5; /* Match body */
   list-style: none;
 }
 
 .page-content > ul {
   border: 1px solid var(--timberwolf-2);
-  max-width: 500px;
-  margin: 1rem auto 2rem auto;
+  max-width: 31.25rem; /* 500px / 16px = 31.25rem */
+  margin: 1.5rem auto 3rem auto; /* Use adjusted line-height multiples */
 }
 
 .page-content > ul li,
@@ -210,28 +325,64 @@ span.citation a {
 /* Code blocks */
 pre,
 code {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-jetbrains);
   font-variant-ligatures: contextual common-ligatures;
+  font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
+  font-size: 0.95em;
+  line-height: 1.2; /* Match JetBrains Mono recommended line spacing */
+  white-space: pre-wrap;
 }
 
 pre {
   background-color: var(--black);
-  padding: 1rem;
+  padding: 1.5rem; /* Adjusted padding */
   overflow: auto;
   border: 1px solid var(--timberwolf-2);
   border-radius: 0.2rem;
-  font-size: 0.8rem;
+  margin: 1.5rem 0 2.25rem 0; /* Adjusted vertical rhythm (1x, 1.5x line-height) */
+}
+
+blockquote {
+  margin: 1.5rem 0; /* Adjusted rhythm */
+  padding: 0.75rem 1.5rem; /* Adjusted rhythm */
+  border-left: 0.25rem solid var(--dark-cyan);
+  font-style: italic;
+}
+
+blockquote cite {
+  display: block;
+  margin-top: 0.75rem; /* Adjusted rhythm */
+  font-style: normal;
+  font-size: 0.9em;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.2rem;
+  border: 1px solid var(--timberwolf-2);
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+  display: block;
+  margin: 2.25rem auto; /* 1.5 * adjusted line-height */
+}
+
+img:hover {
+  filter: grayscale(0%);
 }
 
 /* Tables */
 table {
   border-collapse: collapse;
-  margin: 1.5rem 0;
+  margin: 2.25rem 0; /* 1.5 * adjusted line-height */
   width: 100%;
   font-size: 0.9rem;
   border: 1px solid var(--timberwolf-2);
   background-color: var(--onyx);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
 }
 
 table.double-border,
@@ -363,8 +514,20 @@ hr {
   color: #ffffaa;
 }
 
-/* Responsive styles */
-@media (max-width: 430px) {
+/* Utility class to prevent hyphenation */
+.no-hyphens {
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+}
+
+/* Responsive styles with viewport units for scaling */
+@media (max-width: 26.875em) {
+  html {
+    /* Maintain recommended size even on small screens, but with some scaling */
+    font-size: calc(12px + 0.2vw);
+  }
+
   body {
     align-items: flex-start;
   }
@@ -380,49 +543,144 @@ hr {
     flex-wrap: wrap;
   }
 
-  .menubar li {
-    flex: 1 0 auto;
-    min-width: 70px;
-    text-align: center;
-  }
-
-  .menubar a {
-    padding: 0.5rem 0.3rem;
-    border-right: none;
-    border-bottom: 1px solid var(--timberwolf-2);
-    font-size: 0.9rem;
-  }
-
-  main {
-    padding: 0.5rem;
-  }
-
-  .page-content {
-    padding-top: 0.75rem;
-  }
-
-  .page-content > h1,
-  .page-content > h2 {
-    font-size: 1.1rem;
-  }
-
-  .page-content > ul {
-    border: none;
-    padding: 0.5rem;
-    margin: 0.5rem auto 1rem auto;
-    max-width: 95%;
-  }
-
-  .statusbar {
-    flex-direction: column;
-    align-items: center;
-    font-size: 0.8rem;
-  }
-
+  /* Better handling of truncated text */
+  .menubar a,
   .statusbar-left,
   .statusbar-right {
-    width: 100%;
-    text-align: center;
-    padding: 0.15rem 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
+
+  /* More compact vertical spacing on mobile, but still proportional */
+  main {
+    padding: 0.75rem; /* Adjusted */
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin-top: 1.5rem; /* Adjusted */
+    margin-bottom: 0.75rem; /* Adjusted */
+  }
+
+  p {
+    margin-bottom: 0.75rem; /* Adjusted */
+  }
+
+  pre {
+    padding: 0.75rem; /* Adjusted */
+    margin: 0.75rem 0 1.5rem 0; /* Adjusted */
+  }
+}
+
+/* First paragraph treatment */
+h1 + p,
+h2 + p,
+h3 + p {
+  text-indent: 0; /* Ensure no indent after headings */
+}
+
+/* Improved typography for proper symbols and characters */
+/* Use CSS content property for better quotes in supported environments */
+blockquote:before {
+  content: open-quote;
+}
+
+blockquote:after {
+  content: close-quote;
+}
+
+/* Better dash handling */
+.em-dash {
+  white-space: nowrap;
+}
+
+.em-dash:before,
+.em-dash:after {
+  content: "\2014"; /* em dash */
+  margin: 0 0.2em 0 0.1em;
+}
+
+/* Proper ellipsis spacing */
+.ellipsis:before {
+  content: "\2026"; /* Unicode ellipsis character */
+  letter-spacing: 0.01em;
+}
+
+/* Prevent widows and orphans in important text */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p:last-of-type {
+  orphans: 3;
+  widows: 3;
+}
+
+/* Improved small caps for browsers that support it */
+.small-caps {
+  font-variant: small-caps;
+  letter-spacing: 0.05em; /* 5-12% as recommended */
+}
+
+/* Font alternative classes - can be applied to body or individual elements */
+.font-jetbrains {
+  font-family: var(--font-jetbrains);
+  font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
+}
+
+.font-ibm-plex {
+  font-family: var(--font-ibm-plex);
+  font-feature-settings: "calt" 1;
+}
+
+.font-sf-mono {
+  font-family: var(--font-sf-mono);
+}
+
+/* JetBrains Mono variable styles */
+.jetbrains-mono-regular {
+  font-family: "JetBrains Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.jetbrains-mono-medium {
+  font-family: "JetBrains Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.jetbrains-mono-bold {
+  font-family: "JetBrains Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* EB Garamond variable styles */
+.eb-garamond-regular {
+  font-family: "EB Garamond", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.eb-garamond-medium {
+  font-family: "EB Garamond", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.eb-garamond-bold {
+  font-family: "EB Garamond", serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
 }
