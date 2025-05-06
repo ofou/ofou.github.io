@@ -1,29 +1,11 @@
-# Personal Website
+## About Me
 
-Here's my personal website, built with [FastHTML], and [PicoCSS]. I aim for it to be a simple dynamic site with a blog, a list of projects, and an always up-to-date CV pulling data from my [LinkedIn profile]. I also plan for the site to be multilingual, supporting English, Spanish, and Mandarin.
+I'm a Software Engineer specializing in AI/ML, I currently work as an Artificial Intelligence Engineer at [Emergent Mind](https://www.emergentmind.com), where I contribute to building an innovative platform that accelerates discovery and understanding of cutting-edge computer science research. I'm also a [freelance](https://www.youtube.com/watch?v=_MIEZSgQYHE) [content](https://www.youtube.com/watch?v=kFlLzFuslfQ) [creator](https://www.youtube.com/watch?v=ISa10TrJK7w) passionate about neurotech and exploring the intersection of AI and brain-machine interfaces.
 
-## Features
+I'm a product-driven engineer who thrives on building creative solutions that deliver real value for companies and individuals.
 
-- [x] Built with [FastHTML]
-- [x] Styling with [PicoCSS]
-- [x] Custom Neural Network animation with JS
-- [x] Deployed on [Cloud Run] in Santiago, Chile (`southamerica-east1`)
-- [x] Serverless CI/CD with [Cloud Build] (*This repo*)
-- [x] DNS setup with Cloudflare
-- [x] Online on [olivares.cl]
-- [ ] `/blog` with comment support using [utterances]
-- [ ] `/projects` page
-- [ ] Math rendering with [KaTeX] and syntax highlighting
-- [ ] Multilingual support (EN/ES/CN)
-- [ ] Automatically update CV from [LinkedIn profile]
+In my free time, I enjoy [making music](https://open.spotify.com/artist/5e6x7QJXOGbkDEPpEOWm1w), contributing to [open-source projects](https://github.com/ofou), learning Mandarin (你好), and traveling to new places—always curious and always learning.
 
-## Links
+Get in touch via [X](https://twitter.com/omarnomad), [Linkedin](https://www.linkedin.com/in/ofou) or [omar@olivares.cl](mailto:omar@olivares.cl).
 
-[FastHTML]: https://fastht.ml  
-[PicoCSS]: https://picocss.com  
-[Cloud Run]: https://cloud.google.com/run  
-[Cloud Build]: https://cloud.google.com/build  
-[utterances]: https://utteranc.es  
-[KaTeX]: https://katex.org  
-[LinkedIn profile]: https://www.linkedin.com/in/ofou/
-[olivares.cl]: https://olivares.cl
+[Let's talk](https://calendar.app.google/kcbfemxAYBoNPXbS8)
