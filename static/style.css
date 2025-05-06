@@ -223,6 +223,22 @@ pre {
   font-size: 0.8rem;
 }
 
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.2rem;
+  border: 1px solid var(--timberwolf-2);
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+  display: block;
+  margin: 1.5rem auto;
+}
+
+img:hover {
+  filter: grayscale(0%);
+}
+
 /* Tables */
 table {
   border-collapse: collapse;
