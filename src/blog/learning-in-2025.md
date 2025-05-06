@@ -109,3 +109,5 @@
 25. Sequence-to-sequence models for sets [@vinyals2015pointer]
 26. Attention Is All You Need [@vaswani2017attention]
 27. CS231n Deep Learning for Computer Vision [@fei2024cs231n]
+
+## References
