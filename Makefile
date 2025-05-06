@@ -2,7 +2,7 @@
 PANDOC = pandoc
 PYTHON = python3
 SRC_DIR = src
-OUTPUT_DIR = output
+OUTPUT_DIR = docs
 README = README.md
 TEMPLATE = templates/base.html
 BIBFILE = $(SRC_DIR)/references.bib
