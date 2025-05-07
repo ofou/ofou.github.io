@@ -16,6 +16,25 @@
   --font-size-base: calc(15px + 0.1vw); /* Increased from 13px */
 }
 
+/* New animations - removing previous keyframes */
+@keyframes full-rotate-1 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes full-rotate-2 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
 html {
   font-size: var(--font-size-base); /* JetBrains Mono recommended: 13px base */
 }
@@ -41,23 +60,107 @@ body {
   hyphens: none; /* Disabled auto-hyphenation */
   -webkit-hyphens: none;
   -ms-hyphens: none;
+  position: relative;
+  overflow-x: hidden; /* Prevent horizontal scrolling with moiré effect */
+}
+
+/* Make sure transform-origin is set for proper rotation */
+body::before,
+body::after {
+  transform-origin: center center;
+}
+
+/* First moiré grid pattern */
+body::before {
+  content: "";
+  position: fixed;
+  top: -50%; /* Extended to avoid visible edges during rotation */
+  left: -50%;
+  width: 200%; /* Extended to avoid visible edges during rotation */
+  height: 200%;
+  pointer-events: none;
+  opacity: 0.2;
+  z-index: 1;
+
+  /* 1px grid patterns for moiré */
+  background-image: 
+    /* Horizontal lines */ repeating-linear-gradient(
+      0deg,
+      var(--dark-cyan) 0px,
+      var(--dark-cyan) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    /* Vertical lines */
+      repeating-linear-gradient(
+        90deg,
+        var(--dark-cyan) 0px,
+        var(--dark-cyan) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+
+  /* Full rotation animation - complete cycle every 2 minutes */
+  animation: full-rotate-1 10s linear infinite;
+  will-change: transform;
+}
+
+/* Second overlapping moiré grid pattern */
+body::after {
+  content: "";
+  position: fixed;
+  top: -50%; /* Extended to avoid visible edges during rotation */
+  left: -50%;
+  width: 200%; /* Extended to avoid visible edges during rotation */
+  height: 200%;
+  pointer-events: none;
+  opacity: 0.2;
+  z-index: 1;
+
+  /* Grid with slightly different spacing for more complex patterns */
+  background-image: 
+    /* Horizontal lines with slight offset */ repeating-linear-gradient(
+      0deg,
+      var(--lapis-lazuli) 0px,
+      var(--lapis-lazuli) 1px,
+      transparent 1px,
+      transparent 3px /* Different spacing creates more complex patterns */
+    ),
+    /* Vertical lines with slight offset */
+      repeating-linear-gradient(
+        90deg,
+        var(--lapis-lazuli) 0px,
+        var(--lapis-lazuli) 1px,
+        transparent 1px,
+        transparent 3px /* Different spacing creates more complex patterns */
+      );
+
+  /* Rotating in opposite direction at different speed - complete cycle every 87 seconds */
+  /* Using a prime number (87) vs 120 ensures patterns rarely repeat exactly */
+  animation: full-rotate-2 87s linear infinite;
+  will-change: transform;
+  mix-blend-mode: screen;
 }
 
 .container {
   max-width: 40rem;
   width: 90vw;
-  margin: 0 auto;
   padding: 0 1rem;
+  position: relative;
+  z-index: 2;
 }
 
 /* Terminal styling */
 .terminal {
   width: 90vw;
   max-width: 40rem;
-  min-height: 80vh;
+  min-height: 58rem;
   display: flex;
   flex-direction: column;
   border: 2px solid var(--timberwolf-2);
+  position: relative;
+  z-index: 2;
+  margin: 1rem;
 }
 
 /* Navigation */
@@ -106,6 +209,7 @@ main {
   padding: 1.5rem; /* Match adjusted line-height */
   overflow: auto;
   box-sizing: border-box;
+  min-height: 500px; /* Ensure main content has minimum height */
 }
 
 /* Content styling */
@@ -191,8 +295,7 @@ th,
   letter-spacing: -0.01em; /* Slightly tighter tracking for larger/title text */
 }
 
-[class*="all-caps"],
-.menubar a.active {
+[class*="all-caps"] {
   letter-spacing: 0.1em; /* Keep 10% extra for deliberately all-caps text */
 }
 
@@ -533,7 +636,7 @@ hr {
   }
 
   .terminal {
-    min-height: 100vh;
+    min-height: 600px; /* Maintain same min-height on small screens */
     width: 100%;
     border: none;
     max-width: none;
@@ -555,6 +658,7 @@ hr {
   /* More compact vertical spacing on mobile, but still proportional */
   main {
     padding: 0.75rem; /* Adjusted */
+    min-height: 500px; /* Maintain consistent min-height */
   }
 
   h1,
