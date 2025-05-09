@@ -48,228 +48,210 @@ rich tapestry of theoretical foundations and practical innovations,
 continuously pushing the boundaries of what machines can accomplish. At
 the core of AI and ML lie several fundamental concepts that form the
 bedrock upon which more advanced techniques are built.</p>
-<p>The First Law of Complexodynamics<span class="citation"
-data-cites="aaronson2014quantifying"><sup><a
-href="#ref-aaronson2014quantifying"
-role="doc-biblioref">5</a></sup></span> provides a framework for
-understanding how complexity evolves within closed systems, offering
-insights into the behavior of neural networks and their ability to
-extract patterns from data. This principle is intimately connected to
-the Minimum Description Length Principle<span class="citation"
-data-cites="hinton1993keeping"><sup><a href="#ref-hinton1993keeping"
-role="doc-biblioref">1</a></sup></span>, which offers a theoretical
-foundation for model selection. The MDL principle favors models that
-strike an optimal balance between complexity and accuracy, a crucial
-consideration in preventing overfitting and ensuring that models
+<p>The First Law of Complexodynamics <span class="citation"
+data-cites="aaronson2014quantifying">[@aaronson2014quantifying]</span>
+provides a framework for understanding how complexity evolves within
+closed systems, offering insights into the behavior of neural networks
+and their ability to extract patterns from data. This principle is
+intimately connected to the Minimum Description Length Principle <span
+class="citation"
+data-cites="hinton1993keeping">[@hinton1993keeping]</span>, which offers
+a theoretical foundation for model selection. The MDL principle favors
+models that strike an optimal balance between complexity and accuracy, a
+crucial consideration in preventing overfitting and ensuring that models
 generalize well to unseen data.</p>
 <p>For those seeking a deeper mathematical understanding of these
-concepts, the work on Kolmogorov Complexity<span class="citation"
-data-cites="shen2022kolmogorov"><sup><a href="#ref-shen2022kolmogorov"
-role="doc-biblioref">22</a></sup></span> provides a rigorous exploration
-of the fundamental nature of information and complexity. This concept is
-particularly relevant in understanding the theoretical limits of data
-compression and the intrinsic complexity of patterns that AI systems aim
-to learn. The interplay between Kolmogorov complexity and machine
-learning has profound implications for the theoretical limits of
-learnability and generalization.</p>
+concepts, the work on Kolmogorov Complexity <span class="citation"
+data-cites="shen2022kolmogorov">[@shen2022kolmogorov]</span> provides a
+rigorous exploration of the fundamental nature of information and
+complexity. This concept is particularly relevant in understanding the
+theoretical limits of data compression and the intrinsic complexity of
+patterns that AI systems aim to learn. The interplay between Kolmogorov
+complexity and machine learning has profound implications for the
+theoretical limits of learnability and generalization.</p>
 <p>Moving from these theoretical underpinnings to practical
 architectures, we encounter a diverse array of neural network designs,
 each with its own strengths and applications. Recurrent Neural Networks
 (RNNs) have demonstrated remarkable capabilities in sequence prediction
 tasks, as showcased in Andrej Karpathy’s exploration of The Unreasonable
-Effectiveness of RNNs<span class="citation"
-data-cites="karpathy2015unreasonable"><sup><a
-href="#ref-karpathy2015unreasonable"
-role="doc-biblioref">8</a></sup></span>. RNNs excel at capturing
-temporal dynamics, making them particularly suitable for tasks involving
-time-series data or natural language processing. However, traditional
-RNNs suffer from the vanishing gradient problem, which limits their
-ability to learn long-term dependencies.</p>
+Effectiveness of RNNs <span class="citation"
+data-cites="karpathy2015unreasonable">[@karpathy2015unreasonable]</span>.
+RNNs excel at capturing temporal dynamics, making them particularly
+suitable for tasks involving time-series data or natural language
+processing. However, traditional RNNs suffer from the vanishing gradient
+problem, which limits their ability to learn long-term dependencies.</p>
 <p>This limitation is addressed by Long Short-Term Memory (LSTM)
-networks, as detailed in Chris Olah’s elucidation of LSTM networks<span
-class="citation" data-cites="olah2015understanding"><sup><a
-href="#ref-olah2015understanding"
-role="doc-biblioref">9</a></sup></span>. LSTMs incorporate memory cells
-and gating mechanisms to preserve information over extended sequences,
-enabling more effective learning from temporal data. The ability of
-LSTMs to maintain relevant information over long sequences has made them
-a cornerstone of many sequence modeling tasks, from machine translation
-to speech recognition.</p>
+networks, as detailed in Chris Olah’s elucidation of LSTM networks <span
+class="citation"
+data-cites="olah2015understanding">[@olah2015understanding]</span>.
+LSTMs incorporate memory cells and gating mechanisms to preserve
+information over extended sequences, enabling more effective learning
+from temporal data. The ability of LSTMs to maintain relevant
+information over long sequences has made them a cornerstone of many
+sequence modeling tasks, from machine translation to speech
+recognition.</p>
 <p>In the domain of computer vision, Convolutional Neural Networks
 (CNNs) have been revolutionary. The breakthrough in ImageNet
-classification with deep convolutional neural networks<span
-class="citation" data-cites="krizhevsky2012imagenet"><sup><a
-href="#ref-krizhevsky2012imagenet"
-role="doc-biblioref">3</a></sup></span> marked a significant leap in
-visual recognition tasks. CNNs leverage hierarchical feature learning,
-automatically learning to extract relevant features from raw pixel data.
-This hierarchical approach allows CNNs to capture both low-level
-features like edges and textures, as well as high-level semantic
-concepts, making them extraordinarily effective for a wide range of
-image processing tasks. The CS231n<span class="citation"
-data-cites="fei2024cs231n"><sup><a href="#ref-fei2024cs231n"
-role="doc-biblioref">23</a></sup></span> course provides an excellent
-resource for understanding the principles and applications of CNNs in
-visual recognition, delving into the intricacies of convolutional
-layers, pooling operations, and the backpropagation algorithm as applied
-to these architectures.</p>
+classification with deep convolutional neural networks <span
+class="citation"
+data-cites="krizhevsky2012imagenet">[@krizhevsky2012imagenet]</span>
+marked a significant leap in visual recognition tasks. CNNs leverage
+hierarchical feature learning, automatically learning to extract
+relevant features from raw pixel data. This hierarchical approach allows
+CNNs to capture both low-level features like edges and textures, as well
+as high-level semantic concepts, making them extraordinarily effective
+for a wide range of image processing tasks. The CS231n <span
+class="citation" data-cites="fei2024cs231n">[@fei2024cs231n]</span>
+course provides an excellent resource for understanding the principles
+and applications of CNNs in visual recognition, delving into the
+intricacies of convolutional layers, pooling operations, and the
+backpropagation algorithm as applied to these architectures.</p>
 <p>The introduction of the transformer model in Attention Is All You
-Need<span class="citation" data-cites="vaswani2017attention"><sup><a
-href="#ref-vaswani2017attention"
-role="doc-biblioref">15</a></sup></span> brought about another paradigm
-shift, particularly in natural language processing. Transformers utilize
-self-attention mechanisms to capture dependencies regardless of their
-distance in the input sequence, effectively addressing the limitations
-of RNNs in handling long-range dependencies. The Annotated
-Transformer<span class="citation" data-cites="rush2018annotated"><sup><a
-href="#ref-rush2018annotated" role="doc-biblioref">18</a></sup></span>
-by Harvard NLP offers a comprehensive overview of this pivotal
-advancement, breaking down the architecture into its key components:
-multi-head attention, positional encoding, and feed-forward networks.
-The ability of transformers to parallelize computations has led to the
-development of increasingly large and powerful language models, pushing
-the boundaries of natural language understanding and generation.</p>
+Need <span class="citation"
+data-cites="vaswani2017attention">[@vaswani2017attention]</span> brought
+about another paradigm shift, particularly in natural language
+processing. Transformers utilize self-attention mechanisms to capture
+dependencies regardless of their distance in the input sequence,
+effectively addressing the limitations of RNNs in handling long-range
+dependencies. The Annotated Transformer <span class="citation"
+data-cites="rush2018annotated">[@rush2018annotated]</span> by Harvard
+NLP offers a comprehensive overview of this pivotal advancement,
+breaking down the architecture into its key components: multi-head
+attention, positional encoding, and feed-forward networks. The ability
+of transformers to parallelize computations has led to the development
+of increasingly large and powerful language models, pushing the
+boundaries of natural language understanding and generation.</p>
 <p>As neural networks have grown in depth and complexity, new challenges
 have emerged, particularly in training very deep architectures. Deep
-residual learning<span class="citation"
-data-cites="he2016identity"><sup><a href="#ref-he2016identity"
-role="doc-biblioref">12</a></sup></span> introduced by He et
+residual learning <span class="citation"
+data-cites="he2016identity">[@he2016identity]</span> introduced by He et
 al. addressed these challenges by introducing skip connections that
 allow gradients to flow more easily through the network, mitigating the
 vanishing gradient problem. This concept was further refined in Identity
-mappings in deep residual networks<span class="citation"
-data-cites="he2016identity"><sup><a href="#ref-he2016identity"
-role="doc-biblioref">12</a></sup></span>, ensuring that learning
-identity functions is straightforward for residual blocks. The
+mappings in deep residual networks <span class="citation"
+data-cites="he2016identity">[@he2016identity]</span>, ensuring that
+learning identity functions is straightforward for residual blocks. The
 introduction of residual connections has enabled the training of
 networks with hundreds or even thousands of layers, dramatically
 increasing the representational capacity of neural models.</p>
 <p>The quest for more flexible and powerful neural architectures has led
-to innovations like Neural Turing Machines<span class="citation"
-data-cites="graves2014neural"><sup><a href="#ref-graves2014neural"
-role="doc-biblioref">6</a></sup></span>, which represent a hybrid
-approach combining the flexibility of neural networks with the
-algorithmic capabilities of Turing machines. This architecture enables
-networks to perform a broader range of computational tasks, bridging the
-gap between neural and symbolic AI. Neural Turing Machines incorporate
-external memory that can be read from and written to, allowing the
-network to learn complex algorithms and maintain state over long
-sequences of operations.</p>
+to innovations like Neural Turing Machines <span class="citation"
+data-cites="graves2014neural">[@graves2014neural]</span>, which
+represent a hybrid approach combining the flexibility of neural networks
+with the algorithmic capabilities of Turing machines. This architecture
+enables networks to perform a broader range of computational tasks,
+bridging the gap between neural and symbolic AI. Neural Turing Machines
+incorporate external memory that can be read from and written to,
+allowing the network to learn complex algorithms and maintain state over
+long sequences of operations.</p>
 <p>Another significant advancement in neural architecture design is the
-development of Pointer Networks<span class="citation"
-data-cites="vinyals2015pointer"><sup><a href="#ref-vinyals2015pointer"
-role="doc-biblioref">10</a></sup></span>, which extend the capabilities
-of sequence-to-sequence models to handle variable-sized outputs. This
-innovation is particularly useful in tasks such as sorting and parsing,
-where the output size can vary significantly based on the input. Pointer
-networks achieve this by using attention mechanisms to “point” to
-elements of the input sequence, effectively learning to generate output
-sequences of varying lengths.</p>
+development of Pointer Networks <span class="citation"
+data-cites="vinyals2015pointer">[@vinyals2015pointer]</span>, which
+extend the capabilities of sequence-to-sequence models to handle
+variable-sized outputs. This innovation is particularly useful in tasks
+such as sorting and parsing, where the output size can vary
+significantly based on the input. Pointer networks achieve this by using
+attention mechanisms to “point” to elements of the input sequence,
+effectively learning to generate output sequences of varying
+lengths.</p>
 <p>The importance of order in processing sets of data is highlighted in
-the work on sequence-to-sequence models for sets<span class="citation"
-data-cites="vinyals2015pointer"><sup><a href="#ref-vinyals2015pointer"
-role="doc-biblioref">10</a></sup></span>. This research demonstrates how
-model performance can be significantly enhanced by accounting for the
-order of input elements. Unlike traditional sequence-to-sequence models
-that are inherently sensitive to input order, these models learn to be
-invariant to permutations of the input set while still capturing the
-relationships between elements. This approach has important applications
-in tasks where the input can be naturally represented as a set, such as
-point cloud processing in 3D computer vision or multi-agent systems in
-reinforcement learning.</p>
+the work on sequence-to-sequence models for sets <span class="citation"
+data-cites="vinyals2015pointer">[@vinyals2015pointer]</span>. This
+research demonstrates how model performance can be significantly
+enhanced by accounting for the order of input elements. Unlike
+traditional sequence-to-sequence models that are inherently sensitive to
+input order, these models learn to be invariant to permutations of the
+input set while still capturing the relationships between elements. This
+approach has important applications in tasks where the input can be
+naturally represented as a set, such as point cloud processing in 3D
+computer vision or multi-agent systems in reinforcement learning.</p>
 <p>Advancements in computer vision have led to techniques that allow
 models to capture contextual information at various scales. Multi-scale
-context aggregation<span class="citation"
-data-cites="yu2015multi"><sup><a href="#ref-yu2015multi"
-role="doc-biblioref">11</a></sup></span> through dilated convolutions is
-one such technique that enhances the model’s ability to understand
-spatial relationships in images. By using dilated convolutions, the
-receptive field of the network can be exponentially expanded without
-losing resolution or coverage. This approach has proven particularly
-effective in tasks requiring detailed spatial understanding, such as
-semantic segmentation, where both local and global context are crucial
-for accurate predictions.</p>
+context aggregation <span class="citation"
+data-cites="yu2015multi">[@yu2015multi]</span> through dilated
+convolutions is one such technique that enhances the model’s ability to
+understand spatial relationships in images. By using dilated
+convolutions, the receptive field of the network can be exponentially
+expanded without losing resolution or coverage. This approach has proven
+particularly effective in tasks requiring detailed spatial
+understanding, such as semantic segmentation, where both local and
+global context are crucial for accurate predictions.</p>
 <p>In the realm of natural language processing, significant strides have
 been made in improving translation quality through integrated alignment
-mechanisms. The approach of neural machine translation<span
-class="citation" data-cites="bahdanau2014neural"><sup><a
-href="#ref-bahdanau2014neural" role="doc-biblioref">4</a></sup></span>
-by jointly learning to align and translate represents a departure from
-traditional methods that treated alignment and translation as separate
-steps. By integrating the alignment mechanism directly into the
-translation process, these models can dynamically focus on relevant
-parts of the source sentence while generating the translation. This
-end-to-end approach has led to more fluent and accurate translations,
-capturing subtle nuances and long-range dependencies in language that
-were often lost in previous methods.</p>
+mechanisms. The approach of neural machine translation <span
+class="citation"
+data-cites="bahdanau2014neural">[@bahdanau2014neural]</span> by jointly
+learning to align and translate represents a departure from traditional
+methods that treated alignment and translation as separate steps. By
+integrating the alignment mechanism directly into the translation
+process, these models can dynamically focus on relevant parts of the
+source sentence while generating the translation. This end-to-end
+approach has led to more fluent and accurate translations, capturing
+subtle nuances and long-range dependencies in language that were often
+lost in previous methods.</p>
 <p>The balance between compression and the quality of reconstructed data
 is a crucial consideration in many machine learning tasks, particularly
 in unsupervised learning and representation learning. The variational
-lossy autoencoder<span class="citation"
-data-cites="chen2016variational"><sup><a href="#ref-chen2016variational"
-role="doc-biblioref">13</a></sup></span> introduces a method for
-encoding data representations in a lossy but efficient manner. This
-approach extends the variational autoencoder framework by explicitly
-modeling the trade-off between the rate (the amount of information
-stored in the latent code) and the distortion (the reconstruction
-quality). By allowing for controlled information loss, these models can
-learn more compact and meaningful representations, which can be
-particularly useful in tasks such as image and audio compression, or in
-generating diverse outputs from a single latent representation.</p>
+lossy autoencoder <span class="citation"
+data-cites="chen2016variational">[@chen2016variational]</span>
+introduces a method for encoding data representations in a lossy but
+efficient manner. This approach extends the variational autoencoder
+framework by explicitly modeling the trade-off between the rate (the
+amount of information stored in the latent code) and the distortion (the
+reconstruction quality). By allowing for controlled information loss,
+these models can learn more compact and meaningful representations,
+which can be particularly useful in tasks such as image and audio
+compression, or in generating diverse outputs from a single latent
+representation.</p>
 <p>As neural networks have grown in size and complexity, the importance
 of regularization techniques has become increasingly apparent. Methods
-discussed in Recurrent Neural Network Regularization<span
-class="citation" data-cites="zaremba2014recurrent"><sup><a
-href="#ref-zaremba2014recurrent" role="doc-biblioref">7</a></sup></span>
-are vital for preventing overfitting in neural networks, ensuring that
+discussed in Recurrent Neural Network Regularization <span
+class="citation"
+data-cites="zaremba2014recurrent">[@zaremba2014recurrent]</span> are
+vital for preventing overfitting in neural networks, ensuring that
 models generalize well to unseen data and maintain their predictive
 power. These techniques include dropout, weight decay, and various forms
 of noise injection, all of which serve to constrain the model’s capacity
 and prevent it from memorizing the training data.</p>
 <p>Geoffrey Hinton’s work on minimizing the description length of neural
-network weights<span class="citation"
-data-cites="hinton1993keeping"><sup><a href="#ref-hinton1993keeping"
-role="doc-biblioref">1</a></sup></span> underscores the importance of
-simplicity in model design. By reducing complexity, models become more
-interpretable and less prone to overfitting. This principle is closely
-related to the concept of Occam’s razor in scientific reasoning,
-favoring simpler explanations (or in this case, models) when they
-adequately account for the observed data.</p>
+network weights <span class="citation"
+data-cites="hinton1993keeping">[@hinton1993keeping]</span> underscores
+the importance of simplicity in model design. By reducing complexity,
+models become more interpretable and less prone to overfitting. This
+principle is closely related to the concept of Occam’s razor in
+scientific reasoning, favoring simpler explanations (or in this case,
+models) when they adequately account for the observed data.</p>
 <p>The challenge of training increasingly large neural networks has led
-to innovations in distributed and efficient training methods. GPipe<span
-class="citation" data-cites="huang2019gpipe"><sup><a
-href="#ref-huang2019gpipe" role="doc-biblioref">20</a></sup></span>
-addresses these challenges by leveraging pipeline parallelism, enabling
-the development of giant neural models that push the boundaries of what
-is computationally feasible. This efficient training method allows for
-the distribution of model parameters across multiple devices, enabling
-the training of models that would be impossible to fit on a single
-GPU.</p>
+to innovations in distributed and efficient training methods. GPipe
+<span class="citation"
+data-cites="huang2019gpipe">[@huang2019gpipe]</span> addresses these
+challenges by leveraging pipeline parallelism, enabling the development
+of giant neural models that push the boundaries of what is
+computationally feasible. This efficient training method allows for the
+distribution of model parameters across multiple devices, enabling the
+training of models that would be impossible to fit on a single GPU.</p>
 <p>Understanding how model performance scales with increased size and
 computational resources is crucial for the design and training of
-large-scale AI systems. Scaling laws for neural language models<span
-class="citation" data-cites="kaplan2020scaling"><sup><a
-href="#ref-kaplan2020scaling" role="doc-biblioref">21</a></sup></span>
-provide guidelines for effectively scaling neural networks, offering
-valuable insights into the relationship between model size, dataset
-size, and computational resources. These scaling laws have important
-implications for the development of increasingly powerful AI systems,
-suggesting that continued improvements in performance can be achieved
-through larger models and datasets, given sufficient computational
-resources.</p>
+large-scale AI systems. Scaling laws for neural language models <span
+class="citation"
+data-cites="kaplan2020scaling">[@kaplan2020scaling]</span> provide
+guidelines for effectively scaling neural networks, offering valuable
+insights into the relationship between model size, dataset size, and
+computational resources. These scaling laws have important implications
+for the development of increasingly powerful AI systems, suggesting that
+continued improvements in performance can be achieved through larger
+models and datasets, given sufficient computational resources.</p>
 <p>The versatility of neural networks extends beyond traditional domains
 like computer vision and natural language processing. Advancements in
-neural message passing for quantum chemistry<span class="citation"
-data-cites="gilmer2017neural"><sup><a href="#ref-gilmer2017neural"
-role="doc-biblioref">17</a></sup></span> demonstrate the applicability
-of these techniques to scientific domains, contributing to the
-understanding of complex chemical processes by simulating molecular
+neural message passing for quantum chemistry <span class="citation"
+data-cites="gilmer2017neural">[@gilmer2017neural]</span> demonstrate the
+applicability of these techniques to scientific domains, contributing to
+the understanding of complex chemical processes by simulating molecular
 interactions at a quantum level. These models leverage graph neural
 networks to capture the structure of molecules, enabling more accurate
 predictions of molecular properties and reactions.</p>
-<p>In the domain of speech recognition, Deep Speech 2<span
-class="citation" data-cites="amodei2016deep"><sup><a
-href="#ref-amodei2016deep" role="doc-biblioref">14</a></sup></span>
+<p>In the domain of speech recognition, Deep Speech 2 <span
+class="citation" data-cites="amodei2016deep">[@amodei2016deep]</span>
 exemplifies the power of end-to-end learning approaches. By directly
 mapping speech to text without intermediate representations, this
 approach achieves remarkable performance in automatic speech recognition
@@ -280,37 +262,33 @@ improving performance.</p>
 <p>The ability of neural networks to perform complex reasoning tasks has
 been enhanced through the development of specialized architectures for
 relational reasoning. The simplicity and power of neural network modules
-for relational reasoning<span class="citation"
-data-cites="santoro2017simple"><sup><a href="#ref-santoro2017simple"
-role="doc-biblioref">16</a></sup></span> are evident in their
-application to tasks requiring an understanding of relationships between
-entities. These modules enhance the network’s ability to perform complex
-logical inferences, a crucial aspect of human-like reasoning. Building
-on this concept, Relational RNNs<span class="citation"
-data-cites="santoro2018relational"><sup><a
-href="#ref-santoro2018relational"
-role="doc-biblioref">19</a></sup></span> extend the capabilities of
-traditional RNNs by incorporating relational reasoning, further
-enhancing their ability to understand and predict complex sequences of
-data.</p>
+for relational reasoning <span class="citation"
+data-cites="santoro2017simple">[@santoro2017simple]</span> are evident
+in their application to tasks requiring an understanding of
+relationships between entities. These modules enhance the network’s
+ability to perform complex logical inferences, a crucial aspect of
+human-like reasoning. Building on this concept, Relational RNNs <span
+class="citation"
+data-cites="santoro2018relational">[@santoro2018relational]</span>
+extend the capabilities of traditional RNNs by incorporating relational
+reasoning, further enhancing their ability to understand and predict
+complex sequences of data.</p>
 <p>As we push the boundaries of AI capabilities, it becomes increasingly
 important to understand the theoretical limits and implications of these
 advancements. The study on quantifying the rise and fall of complexity
-in closed systems<span class="citation"
-data-cites="aaronson2014quantifying"><sup><a
-href="#ref-aaronson2014quantifying"
-role="doc-biblioref">5</a></sup></span> applies information theory to
-measure changes in complexity, providing insights into the dynamic
-behavior of complex systems. This work has implications for
-understanding the evolution of AI systems and their interactions with
-their environment, offering a framework for analyzing the emergent
-behaviors of complex AI models.</p>
+in closed systems <span class="citation"
+data-cites="aaronson2014quantifying">[@aaronson2014quantifying]</span>
+applies information theory to measure changes in complexity, providing
+insights into the dynamic behavior of complex systems. This work has
+implications for understanding the evolution of AI systems and their
+interactions with their environment, offering a framework for analyzing
+the emergent behaviors of complex AI models.</p>
 <p>Looking towards the future of AI, the Machine Super Intelligence
-Dissertation<span class="citation" data-cites="legg2008machine"><sup><a
-href="#ref-legg2008machine" role="doc-biblioref">2</a></sup></span>
-explores the theoretical limits of machine intelligence, addressing
-ethical and practical considerations in the development of highly
-advanced AI systems. This work is crucial for anticipating the long-term
+Dissertation <span class="citation"
+data-cites="legg2008machine">[@legg2008machine]</span> explores the
+theoretical limits of machine intelligence, addressing ethical and
+practical considerations in the development of highly advanced AI
+systems. This work is crucial for anticipating the long-term
 implications of AI research and development, considering both the
 potential benefits and risks associated with the creation of systems
 that may surpass human-level intelligence in various domains.</p>
@@ -327,173 +305,7 @@ that it benefits society while mitigating potential risks. The ongoing
 interplay between theoretical insights and practical implementations
 continues to drive the field forward, opening new possibilities for AI
 applications across a wide range of domains and disciplines.</p>
-<h2 class="unnumbered" id="references">References</h2>
-<div id="refs" class="references csl-bib-body" data-entry-spacing="0"
-data-line-spacing="2" role="list">
-<div id="ref-hinton1993keeping" class="csl-entry" role="listitem">
-<div class="csl-left-margin">1. </div><div
-class="csl-right-inline">Hinton, G. E. &amp; Van Camp, D. <a
-href="https://www.cs.toronto.edu/~hinton/absps/colt93.pdf">Keeping the
-neural networks simple by minimizing the description length of the
-weights</a>. in <em>Proceedings of the sixth annual conference on
-computational learning theory</em> 5–13 (1993).</div>
-</div>
-<div id="ref-legg2008machine" class="csl-entry" role="listitem">
-<div class="csl-left-margin">2. </div><div
-class="csl-right-inline">Legg, S. <a
-href="https://www.vetta.org/documents/Machine_Super_Intelligence.pdf">Machine
-super intelligence</a>. (2008).</div>
-</div>
-<div id="ref-krizhevsky2012imagenet" class="csl-entry" role="listitem">
-<div class="csl-left-margin">3. </div><div
-class="csl-right-inline">Krizhevsky, A., Sutskever, I. &amp; Hinton, G.
-E. <a
-href="https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">Imagenet
-classification with deep convolutional neural networks</a>. <em>Advances
-in neural information processing systems</em> <strong>25,</strong>
-(2012).</div>
-</div>
-<div id="ref-bahdanau2014neural" class="csl-entry" role="listitem">
-<div class="csl-left-margin">4. </div><div
-class="csl-right-inline">Bahdanau, D., Cho, K. &amp; Bengio, Y. <a
-href="https://arxiv.org/pdf/1409.0473.pdf">Neural machine translation by
-jointly learning to align and translate</a>. <em>arXiv preprint
-arXiv:1409.0473</em> (2014).</div>
-</div>
-<div id="ref-aaronson2014quantifying" class="csl-entry" role="listitem">
-<div class="csl-left-margin">5. </div><div
-class="csl-right-inline">Aaronson, S., Carroll, S. M. &amp; Ouellette,
-L. <a href="https://arxiv.org/pdf/1405.6903.pdf">Quantifying the rise
-and fall of complexity in closed systems: The coffee automaton</a>.
-<em>arXiv preprint arXiv:1405.6903</em> (2014).</div>
-</div>
-<div id="ref-graves2014neural" class="csl-entry" role="listitem">
-<div class="csl-left-margin">6. </div><div
-class="csl-right-inline">Graves, A., Wayne, G. &amp; Danihelka, I. <a
-href="https://arxiv.org/pdf/1410.5401.pdf">Neural turing machines</a>.
-<em>arXiv preprint arXiv:1410.5401</em> (2014).</div>
-</div>
-<div id="ref-zaremba2014recurrent" class="csl-entry" role="listitem">
-<div class="csl-left-margin">7. </div><div
-class="csl-right-inline">Zaremba, W., Sutskever, I. &amp; Vinyals, O. <a
-href="https://arxiv.org/pdf/1409.2329.pdf">Recurrent neural network
-regularization</a>. <em>arXiv preprint arXiv:1409.2329</em>
-(2014).</div>
-</div>
-<div id="ref-karpathy2015unreasonable" class="csl-entry"
-role="listitem">
-<div class="csl-left-margin">8. </div><div
-class="csl-right-inline">Karpathy, A. <a
-href="https://karpathy.github.io/2015/05/21/rnn-effectiveness">The
-unreasonable effectiveness of RNNs</a>. (2015).</div>
-</div>
-<div id="ref-olah2015understanding" class="csl-entry" role="listitem">
-<div class="csl-left-margin">9. </div><div
-class="csl-right-inline">Olah, C. <a
-href="https://colah.github.io/posts/2015-08-Understanding-LSTMs">Understanding
-LSTM networks</a>. (2015).</div>
-</div>
-<div id="ref-vinyals2015pointer" class="csl-entry" role="listitem">
-<div class="csl-left-margin">10. </div><div
-class="csl-right-inline">Vinyals, O., Fortunato, M. &amp; Jaitly, N. <a
-href="https://arxiv.org/pdf/1506.03134.pdf">Pointer networks</a>.
-<em>Advances in neural information processing systems</em>
-<strong>28,</strong> (2015).</div>
-</div>
-<div id="ref-yu2015multi" class="csl-entry" role="listitem">
-<div class="csl-left-margin">11. </div><div class="csl-right-inline">Yu,
-F. &amp; Koltun, V. <a
-href="https://arxiv.org/pdf/1511.07122.pdf">Multi-scale context
-aggregation by dilated convolutions</a>. <em>arXiv preprint
-arXiv:1511.07122</em> (2015).</div>
-</div>
-<div id="ref-he2016identity" class="csl-entry" role="listitem">
-<div class="csl-left-margin">12. </div><div class="csl-right-inline">He,
-K., Zhang, X., Ren, S. &amp; Sun, J. <a
-href="https://arxiv.org/pdf/1603.05027.pdf">Identity mappings in deep
-residual networks</a>. in <em>Computer vision–ECCV 2016: 14th european
-conference, amsterdam, the netherlands, october 11–14, 2016,
-proceedings, part IV 14</em> 630–645 (Springer, 2016).</div>
-</div>
-<div id="ref-chen2016variational" class="csl-entry" role="listitem">
-<div class="csl-left-margin">13. </div><div
-class="csl-right-inline">Chen, X. <em>et al.</em> <a
-href="https://arxiv.org/pdf/1611.02731.pdf">Variational lossy
-autoencoder</a>. <em>arXiv preprint arXiv:1611.02731</em> (2016).</div>
-</div>
-<div id="ref-amodei2016deep" class="csl-entry" role="listitem">
-<div class="csl-left-margin">14. </div><div
-class="csl-right-inline">Amodei, D. <em>et al.</em> <a
-href="https://arxiv.org/pdf/1512.02595.pdf">Deep speech 2: End-to-end
-speech recognition in english and mandarin</a>. in <em>International
-conference on machine learning</em> 173–182 (PMLR, 2016).</div>
-</div>
-<div id="ref-vaswani2017attention" class="csl-entry" role="listitem">
-<div class="csl-left-margin">15. </div><div
-class="csl-right-inline">Vaswani, A. <em>et al.</em> <a
-href="https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf">Attention
-is all you need</a>. <em>Advances in neural information processing
-systems</em> <strong>30,</strong> (2017).</div>
-</div>
-<div id="ref-santoro2017simple" class="csl-entry" role="listitem">
-<div class="csl-left-margin">16. </div><div
-class="csl-right-inline">Santoro, A. <em>et al.</em> <a
-href="https://proceedings.neurips.cc/paper_files/paper/2017/file/e6acf4b0f69f6f6e60e9a815938aa1ff-Paper.pdf">A
-simple neural network module for relational reasoning</a>. <em>Advances
-in neural information processing systems</em> <strong>30,</strong>
-(2017).</div>
-</div>
-<div id="ref-gilmer2017neural" class="csl-entry" role="listitem">
-<div class="csl-left-margin">17. </div><div
-class="csl-right-inline">Gilmer, J., Schoenholz, S. S., Riley, P. F.,
-Vinyals, O. &amp; Dahl, G. E. <a
-href="https://arxiv.org/pdf/1704.01212">Neural message passing for
-quantum chemistry</a>. in <em>International conference on machine
-learning</em> 1263–1272 (PMLR, 2017).</div>
-</div>
-<div id="ref-rush2018annotated" class="csl-entry" role="listitem">
-<div class="csl-left-margin">18. </div><div
-class="csl-right-inline">Rush, A. M. <a
-href="https://nlp.seas.harvard.edu/annotated-transformer/">The annotated
-transformer</a>. in <em>Proceedings of workshop for NLP open source
-software (NLP-OSS)</em> 52–60 (2018).</div>
-</div>
-<div id="ref-santoro2018relational" class="csl-entry" role="listitem">
-<div class="csl-left-margin">19. </div><div
-class="csl-right-inline">Santoro, A. <em>et al.</em> <a
-href="https://proceedings.neurips.cc/paper_files/paper/2018/file/e2eabaf96372e20a9e3d4b5f83723a61-Paper.pdf">Relational
-recurrent neural networks</a>. <em>Advances in neural information
-processing systems</em> <strong>31,</strong> (2018).</div>
-</div>
-<div id="ref-huang2019gpipe" class="csl-entry" role="listitem">
-<div class="csl-left-margin">20. </div><div
-class="csl-right-inline">Huang, Y. <em>et al.</em> <a
-href="https://proceedings.neurips.cc/paper_files/paper/2019/file/093f65e080a295f8076b1c5722a46aa2-Paper.pdf">Gpipe:
-Efficient training of giant neural networks using pipeline
-parallelism</a>. <em>Advances in neural information processing
-systems</em> <strong>32,</strong> (2019).</div>
-</div>
-<div id="ref-kaplan2020scaling" class="csl-entry" role="listitem">
-<div class="csl-left-margin">21. </div><div
-class="csl-right-inline">Kaplan, J. <em>et al.</em> <a
-href="https://arxiv.org/pdf/2001.08361">Scaling laws for neural language
-models</a>. <em>arXiv preprint arXiv:2001.08361</em> (2020).</div>
-</div>
-<div id="ref-shen2022kolmogorov" class="csl-entry" role="listitem">
-<div class="csl-left-margin">22. </div><div
-class="csl-right-inline">Shen, A., Uspensky, V. A. &amp; Vereshchagin,
-N. <em><a
-href="https://www.lirmm.fr/~ashen/kolmbook-eng-scan.pdf">Kolmogorov
-complexity and algorithmic randomness</a></em>. <strong>220,</strong>
-434–497 (American Mathematical Society, 2022).</div>
-</div>
-<div id="ref-fei2024cs231n" class="csl-entry" role="listitem">
-<div class="csl-left-margin">23. </div><div
-class="csl-right-inline">Fei-Fei, L., Karpathy, A. &amp; Johnson, J. <a
-href="https://cs231n.github.io/">CS231n convolutional neural networks
-for visual recognition</a>. <em>Stanford University</em> (2024).</div>
-</div>
-</div></div>
+<h2 id="references">References</h2></div>
       </main>
       <div class="statusbar">
         <div class="statusbar-left">F1 Help | F2 Save | F10 Exit</div>

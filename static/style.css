@@ -254,7 +254,7 @@ h3 {
 }
 
 p {
-  margin: 0 0 1.5rem 0; /* Bottom margin matches adjusted line height */
+  margin: 0 0 0.5rem 0; /* Bottom margin matches adjusted line height */
   max-width: 40rem; /* Control line length (verify characters per line) */
   /* No explicit letter-spacing for body text (default/neutral tracking) */
 }
@@ -326,25 +326,25 @@ th,
 /* Reference entries line height control */
 #refs.references .csl-entry {
   /* margin-bottom: 1rem; Consistent 1rem spacing between entries */
-  padding: 0.3rem 0; /* Add padding for highlight effect */
+  /* padding: 0.3rem 0; Add padding for highlight effect */
   border-radius: 0.2rem; /* Rounded corners for highlight */
   transition: background-color 0.3s ease-in-out; /* Smooth transition for highlight */
 }
 
 /* Target highlight effect when navigating directly to a reference */
 .csl-entry:target {
-  background-color: var(--black); /* Use dark-cyan with transparency */
+  background-color: var(--lapis-lazuli); /* Use dark-cyan with transparency */
   animation: highlight-pulse 2s ease-in-out 1; /* Subtle pulse animation */
 }
 
 /* Fix superscript citation spacing */
 span.citation {
-  font-size: 0.7em;
+  /* font-size: 0.7em; */
   position: relative;
   display: inline-block;
   line-height: 0; /* Critical to prevent line height expansion */
   vertical-align: baseline; /* Override default super alignment */
-  top: -0.5em; /* Position above baseline without affecting line metrics */
+  /* top: -0.5em; Position above baseline without affecting line metrics */
 }
 
 /* Target both the span.citation and the sup element inside it */
@@ -380,20 +380,14 @@ strong {
 
 .page-content > ul,
 .post-list {
-  padding: 1.5rem; /* Match adjusted line-height */
+  padding: 0rem; /* Match adjusted line-height */
   line-height: 1.5; /* Match body */
   list-style: none;
 }
 
-.page-content > ul {
-  border: 1px solid var(--timberwolf-2);
-  max-width: 31.25rem; /* 500px / 16px = 31.25rem */
-  margin: 1.5rem auto 3rem auto; /* Use adjusted line-height multiples */
-}
-
 .page-content > ul li,
 .post-list li {
-  padding: 0.2rem 0.5rem;
+  /* padding: 0.2rem 0.5rem; */
   margin: 0.1rem 0;
 }
 
@@ -787,4 +781,134 @@ p:last-of-type {
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
+}
+
+/* Terminal-inspired checkbox styles */
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  margin: 0;
+  font: inherit;
+  width: 1.2em;
+  height: 1.2em;
+  border: 1px solid var(--timberwolf-2);
+  border-radius: 0.1em;
+  display: inline-grid;
+  place-content: center;
+  margin-right: 0.5em;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--dark-cyan);
+  background-color: var(--dark-cyan);
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+input[type="checkbox"]:hover {
+  border-color: var(--dark-cyan);
+}
+
+input[type="checkbox"]:active {
+  background-color: rgba(6, 152, 154, 0.2);
+}
+
+input[type="checkbox"]:focus {
+  outline: 2px solid var(--dark-cyan);
+  outline-offset: 2px;
+}
+
+/* Disabled (uneditable) checkbox styles */
+input[type="checkbox"][disabled],
+input[type="checkbox"][readonly] {
+  opacity: 0.7;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+input[type="checkbox"][disabled]:hover,
+input[type="checkbox"][readonly]:hover {
+  border-color: var(--timberwolf-2);
+}
+
+input[type="checkbox"][disabled]:checked::before,
+input[type="checkbox"][readonly]:checked::before {
+  background-color: var(--timberwolf-2);
+  box-shadow: inset 1em 1em var(--timberwolf-2);
+}
+
+/* Alternate terminal-style checkbox with ASCII art appearance */
+.checkbox-terminal {
+  position: relative;
+  padding-left: 1.8em;
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--font-jetbrains);
+}
+
+.checkbox-terminal input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+.checkbox-terminal .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1.2em;
+  width: 1.8em;
+  font-family: var(--font-jetbrains);
+  color: var(--timberwolf-2);
+}
+
+.checkbox-terminal .checkmark::before {
+  content: "[ ]";
+  position: absolute;
+  font-size: 1.1em;
+  transition: color 0.2s ease;
+}
+
+.checkbox-terminal input:checked ~ .checkmark::before {
+  content: "[✓]";
+  color: var(--dark-cyan);
+}
+
+.checkbox-terminal input:focus ~ .checkmark::before {
+  text-shadow: 0 0 2px var(--dark-cyan);
+}
+
+.checkbox-terminal:hover .checkmark::before {
+  color: var(--dark-cyan);
+}
+
+/* Disabled terminal-style checkbox */
+.checkbox-terminal.disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.checkbox-terminal.disabled .checkmark::before {
+  content: "[-]";
+  color: var(--timberwolf-2);
+}
+
+.checkbox-terminal.disabled input:checked ~ .checkmark::before {
+  content: "[x]";
+  color: var(--timberwolf-2);
+}
+
+.checkbox-terminal.disabled:hover .checkmark::before {
+  color: var(--timberwolf-2);
 }
