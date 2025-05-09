@@ -254,7 +254,7 @@ h3 {
 }
 
 p {
-  margin: 0 0 1.5rem 0; /* Bottom margin matches adjusted line height */
+  margin: 0 0 0.5rem 0; /* Bottom margin matches adjusted line height */
   max-width: 40rem; /* Control line length (verify characters per line) */
   /* No explicit letter-spacing for body text (default/neutral tracking) */
 }
@@ -326,25 +326,25 @@ th,
 /* Reference entries line height control */
 #refs.references .csl-entry {
   /* margin-bottom: 1rem; Consistent 1rem spacing between entries */
-  padding: 0.3rem 0; /* Add padding for highlight effect */
+  /* padding: 0.3rem 0; Add padding for highlight effect */
   border-radius: 0.2rem; /* Rounded corners for highlight */
   transition: background-color 0.3s ease-in-out; /* Smooth transition for highlight */
 }
 
 /* Target highlight effect when navigating directly to a reference */
 .csl-entry:target {
-  background-color: var(--black); /* Use dark-cyan with transparency */
+  background-color: var(--lapis-lazuli); /* Use dark-cyan with transparency */
   animation: highlight-pulse 2s ease-in-out 1; /* Subtle pulse animation */
 }
 
 /* Fix superscript citation spacing */
 span.citation {
-  font-size: 0.7em;
+  /* font-size: 0.7em; */
   position: relative;
   display: inline-block;
   line-height: 0; /* Critical to prevent line height expansion */
   vertical-align: baseline; /* Override default super alignment */
-  top: -0.5em; /* Position above baseline without affecting line metrics */
+  /* top: -0.5em; Position above baseline without affecting line metrics */
 }
 
 /* Target both the span.citation and the sup element inside it */
@@ -387,7 +387,7 @@ strong {
 
 .page-content > ul li,
 .post-list li {
-  padding: 0.2rem 0.5rem;
+  /* padding: 0.2rem 0.5rem; */
   margin: 0.1rem 0;
 }
 
