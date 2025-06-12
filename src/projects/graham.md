@@ -1,3 +1,8 @@
+---
+title: "Graham Essays"
+date: 2022-09
+---
+
 # Graham Essays
 
 **A comprehensive digital archive of Paul Graham's influential writings,
