@@ -8,9 +8,11 @@ date: 2022-09
 **A comprehensive digital archive of Paul Graham's influential writings,
 optimized for offline reading in EPUB and Markdown**
 
-_Featured on [Hacker News] front page at launch_
+_Featured on [Hacker News] front page at launch, check on [GitHub] for more details._
 
 ![](https://camo.githubusercontent.com/1236301ee0359b33ae094772ab6482124bd9678ff51e327aba275d0b1fd805a3/68747470733a2f2f36342e6d656469612e74756d626c722e636f6d2f74756d626c725f6c69347032326a45544231717a367071696f315f3530302e706e67)
+
+[GitHub]: https://github.com/ofou/graham-essays
 
 ## Overview
 
