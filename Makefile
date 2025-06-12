@@ -7,6 +7,7 @@ README = README.md
 TEMPLATE = templates/base.html
 DEFAULT_BIBFILE = $(SRC_DIR)/references.bib
 DEFAULT_CSL = https://gist.githubusercontent.com/rmzelle/bc869c900549226483123c11b0a90cb9/raw/d1712c5385b4a1ba52b2f85442ad146ade7197c3/nature.csl
+DOMAIN = olivares.cl
 
 # Source files
 INDEX_SRC = $(README)
@@ -28,7 +29,7 @@ BASE_PANDOC_FLAGS = --standalone --mathml --template=$(TEMPLATE) --highlight-sty
 
 # Default target
 .PHONY: all
-all: clean html
+all: clean html sitemap
 
 # Build all HTML files
 .PHONY: html
@@ -174,12 +175,42 @@ serve: html
 	@echo "Serving site at http://localhost:8000..."
 	@cd $(OUTPUT_DIR) && $(PYTHON) -m http.server 8000
 
+# Generate sitemap.xml
+.PHONY: sitemap
+sitemap: html
+	@echo "Generating sitemap.xml..."
+	@echo '<?xml version="1.0" encoding="UTF-8"?>' > $(OUTPUT_DIR)/sitemap.xml
+	@echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' >> $(OUTPUT_DIR)/sitemap.xml
+	@# Add homepage
+	@echo '  <url>' >> $(OUTPUT_DIR)/sitemap.xml
+	@echo '    <loc>https://$(DOMAIN)/</loc>' >> $(OUTPUT_DIR)/sitemap.xml
+	@echo '    <lastmod>'$$(date +%Y-%m-%d)'</lastmod>' >> $(OUTPUT_DIR)/sitemap.xml
+	@echo '    <priority>1.0</priority>' >> $(OUTPUT_DIR)/sitemap.xml
+	@echo '  </url>' >> $(OUTPUT_DIR)/sitemap.xml
+	@# Find all HTML files in output directory and add them to sitemap
+	@find $(OUTPUT_DIR) -name "*.html" | grep -v "$(OUTPUT_DIR)/index.html" | sort | while read file; do \
+		relpath=$$(echo $$file | sed 's|$(OUTPUT_DIR)/||'); \
+		echo '  <url>' >> $(OUTPUT_DIR)/sitemap.xml; \
+		echo '    <loc>https://$(DOMAIN)/'"$$relpath"'</loc>' >> $(OUTPUT_DIR)/sitemap.xml; \
+		echo '    <lastmod>'$$(date +%Y-%m-%d)'</lastmod>' >> $(OUTPUT_DIR)/sitemap.xml; \
+		echo '    <priority>0.8</priority>' >> $(OUTPUT_DIR)/sitemap.xml; \
+		echo '  </url>' >> $(OUTPUT_DIR)/sitemap.xml; \
+	done
+	@echo '</urlset>' >> $(OUTPUT_DIR)/sitemap.xml
+	@echo "Sitemap generated at $(OUTPUT_DIR)/sitemap.xml"
+	@# Update robots.txt to include sitemap
+	@if ! grep -q "Sitemap:" robots.txt; then \
+		echo "Updating robots.txt with sitemap reference..."; \
+		echo "Sitemap: https://$(DOMAIN)/sitemap.xml" >> robots.txt; \
+	fi
+
 # Help message
 .PHONY: help
 help:
 	@echo "Makefile for Simple Pandoc Site"
 	@echo "---------------------------------"
 	@echo "make html       Build the site (default)"
+	@echo "make sitemap    Generate sitemap.xml for the site"
 	@echo "make clean      Remove the generated output directory"
 	@echo "make serve      Build and serve the site locally on port 8000"
 	@echo "make help       Show this help message" 
