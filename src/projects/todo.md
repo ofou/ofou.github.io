@@ -1,2 +1,0 @@
-# Graham essays
-
