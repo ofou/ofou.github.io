@@ -45,29 +45,27 @@ $(INDEX_HTML): $(INDEX_SRC) $(TEMPLATE)
 $(PROJECTS_INDEX_HTML): $(PROJECTS_HTML_FILES) $(TEMPLATE)
 	@mkdir -p $(dir $@)
 	@echo "Building projects index page..."
-	@# Generate a temp file with just the content we need
-	@echo "# Projects" > $(OUTPUT_DIR)/projects/temp_index.md
-	@echo "" >> $(OUTPUT_DIR)/projects/temp_index.md
-	@# Generate the list of projects directly in the markdown file
-	@for file in $(PROJECTS_HTML_FILES); do \
-	    if [ "$${file}" != "$(PROJECTS_INDEX_HTML)" ]; then \
-	        filename=$$(basename "$$file"); \
-	        src_file=$(SRC_DIR)/projects/$${filename%.html}.md; \
-	        title=$$(head -50 "$$src_file" | grep -m 1 "^# " | sed 's/^# //'); \
-	        if [ -z "$$title" ]; then \
-	            title=$$(basename "$${file%.html}" | sed 's/-/ /g'); \
+	@{ \
+	    echo "# Projects"; \
+	    echo ""; \
+	    for file in $(PROJECTS_HTML_FILES); do \
+	        if [ "$${file}" != "$(PROJECTS_INDEX_HTML)" ]; then \
+	            filename=$$(basename "$$file"); \
+	            src_file=$(SRC_DIR)/projects/$${filename%.html}.md; \
+	            title=$$(head -50 "$$src_file" | grep -m 1 "^# " | sed 's/^# //'); \
+	            if [ -z "$$title" ]; then \
+	                title=$$(basename "$${file%.html}" | sed 's/-/ /g'); \
+	            fi; \
+	            dateinfo=$$(grep -m 1 "^date: " "$$src_file" | sed 's/^date: //'); \
+	            if [ -n "$$dateinfo" ]; then \
+	                echo "$${dateinfo}|* [$$title](/projects/$$filename) <span class=\"post-date\">$$dateinfo</span>"; \
+	            else \
+	                echo "1900-01-01|* [$$title](/projects/$$filename)"; \
+	            fi; \
 	        fi; \
-	        dateinfo=$$(grep -m 1 "^date: " "$$src_file" | sed 's/^date: //'); \
-	        if [ -n "$$dateinfo" ]; then \
-	            echo "* [$${title}](/projects/$$filename) <span class=\"post-date\">$$dateinfo</span>" >> $(OUTPUT_DIR)/projects/temp_index.md; \
-	        else \
-	            echo "* [$${title}](/projects/$$filename)" >> $(OUTPUT_DIR)/projects/temp_index.md; \
-	        fi; \
-	    fi; \
-	done
-	@# Create the final HTML
-	$(PANDOC) $(BASE_PANDOC_FLAGS) $(OUTPUT_DIR)/projects/temp_index.md -o $@ -M title="Projects" -M projects=true
-	@# Clean up temporary files
+	    done | sort -t'|' -k1,1r | cut -d'|' -f2-; \
+	} > $(OUTPUT_DIR)/projects/temp_index.md
+	@$(PANDOC) $(BASE_PANDOC_FLAGS) $(OUTPUT_DIR)/projects/temp_index.md -o $@ -M title="Projects" -M projects=true
 	@rm -f $(OUTPUT_DIR)/projects/temp_index.md
 
 # Pattern rule to build projects
@@ -94,29 +92,27 @@ $(OUTPUT_DIR)/projects/%.html: $(SRC_DIR)/projects/%.md $(TEMPLATE)
 $(BLOG_INDEX_HTML): $(BLOG_HTML_FILES) $(TEMPLATE)
 	@mkdir -p $(dir $@)
 	@echo "Building blog index page..."
-	@# Generate a temp file with just the content we need
-	@echo "# Blog Posts" > $(OUTPUT_DIR)/blog/temp_index.md
-	@echo "" >> $(OUTPUT_DIR)/blog/temp_index.md
-	@# Generate the list of blog posts directly in the markdown file
-	@for file in $(BLOG_HTML_FILES); do \
-	    if [ "$${file}" != "$(BLOG_INDEX_HTML)" ]; then \
-	        filename=$$(basename "$$file"); \
-	        src_file=$(SRC_DIR)/blog/$${filename%.html}.md; \
-	        title=$$(head -50 "$$src_file" | grep -m 1 "^# " | sed 's/^# //'); \
-	        if [ -z "$$title" ]; then \
-	            title=$$(basename "$${file%.html}" | sed 's/-/ /g'); \
+	@{ \
+	    echo "# Blog Posts"; \
+	    echo ""; \
+	    for file in $(BLOG_HTML_FILES); do \
+	        if [ "$${file}" != "$(BLOG_INDEX_HTML)" ]; then \
+	            filename=$$(basename "$$file"); \
+	            src_file=$(SRC_DIR)/blog/$${filename%.html}.md; \
+	            title=$$(head -50 "$$src_file" | grep -m 1 "^# " | sed 's/^# //'); \
+	            if [ -z "$$title" ]; then \
+	                title=$$(basename "$${file%.html}" | sed 's/-/ /g'); \
+	            fi; \
+	            dateinfo=$$(grep -m 1 "^date: " "$$src_file" | sed 's/^date: //'); \
+	            if [ -n "$$dateinfo" ]; then \
+	                echo "$${dateinfo}|* [$$title](/blog/$$filename) <span class=\"post-date\">$$dateinfo</span>"; \
+	            else \
+	                echo "1900-01-01|* [$$title](/blog/$$filename)"; \
+	            fi; \
 	        fi; \
-	        dateinfo=$$(grep -m 1 "^date: " "$$src_file" | sed 's/^date: //'); \
-	        if [ -n "$$dateinfo" ]; then \
-	            echo "* [$${title}](/blog/$$filename) <span class=\"post-date\">$$dateinfo</span>" >> $(OUTPUT_DIR)/blog/temp_index.md; \
-	        else \
-	            echo "* [$${title}](/blog/$$filename)" >> $(OUTPUT_DIR)/blog/temp_index.md; \
-	        fi; \
-	    fi; \
-	done
-	@# Create the final HTML
-	$(PANDOC) $(BASE_PANDOC_FLAGS) $(OUTPUT_DIR)/blog/temp_index.md -o $@ -M title="Blog" -M blog=true
-	@# Clean up temporary files
+	    done | sort -t'|' -k1,1r | cut -d'|' -f2-; \
+	} > $(OUTPUT_DIR)/blog/temp_index.md
+	@$(PANDOC) $(BASE_PANDOC_FLAGS) $(OUTPUT_DIR)/blog/temp_index.md -o $@ -M title="Blog" -M blog=true
 	@rm -f $(OUTPUT_DIR)/blog/temp_index.md
 
 # Pattern rule to build blog posts
