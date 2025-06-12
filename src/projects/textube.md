@@ -1,12 +1,17 @@
-# Textube: YouTube-to-ChatGPT Integration
+---
+title: TexTube
+description: YouTube-to-ChatGPT API
+date: 2024-09
+---
+
+# Textube: YouTube-to-ChatGPT API
 
 **Built before Google integrated YouTube into Gemini natively** :)
 
-_Featured on [Hacker News](https://news.ycombinator.com/item?id=41571706), currently live at
-[textube](https://textube.olivares.cl),
+_Featured on [Hacker News](https://news.ycombinator.com/item?id=41571706),
+currently live at [textube](https://textube.olivares.cl),
 [ChatGPT Plugin](https://chatgpt.com/g/g-2KencLm4f-textube) or
 [GitHub](https://github.com/ofou/texttube)_
-
 
 ## The Problem I Solved
 
@@ -20,8 +25,10 @@ entire playlists.
 
 **FastAPI backend** with two main endpoints:
 
-- `/watch?v={video_id}&format={json|txt}` - Individual video transcripts mirroring the YouTube API
-- `/playlist?list={playlist_id}` - Process entire playlists with metadata mirroring the YouTube API
+- `/watch?v={video_id}&format={json|txt}` - Individual video transcripts
+  mirroring the YouTube API
+- `/playlist?list={playlist_id}` - Process entire playlists with metadata
+  mirroring the YouTube API
 
 **Core Components:**
 
