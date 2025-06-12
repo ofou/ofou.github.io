@@ -1,4 +1,5 @@
 :root {
+  /* Colors */
   --timberwolf: #d6d6d6;
   --dark-cyan: #06989a;
   --onyx: #2e3436;
@@ -7,48 +8,36 @@
   --black: #000000;
   --white: #ffffff;
 
+  /* Fonts */
   --font-jetbrains: "JetBrains Mono", monospace;
   --font-ibm-plex: "IBM Plex Mono", monospace;
   --font-ibm-plex-sans: "IBM Plex Sans", sans-serif;
   --font-ibm-plex-serif: "IBM Plex Serif", serif;
-
-  /* Current active font */
   --font-primary: var(--font-ibm-plex-serif);
-
-  /* Base font size - using JetBrains recommended size with responsive scaling */
-  --font-size-base: calc(15px + 0.1vw); /* Increased from 13px */
+  --font-size-base: calc(15px + 0.1vw);
 }
 
-/* New animations - removing previous keyframes */
+/* Animations */
 @keyframes full-rotate-1 {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes full-rotate-2 {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(-360deg);
-  }
-}
-
-html {
-  font-size: var(--font-size-base); /* JetBrains Mono recommended: 13px base */
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
 }
 
 /* Base styles */
+html {
+  font-size: var(--font-size-base);
+}
+
 body {
   font-family: var(--font-primary);
   font-variant-ligatures: contextual common-ligatures;
-  font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1; /* Enable coding ligatures and stylistic sets */
+  font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
   text-rendering: optimizeLegibility;
-  /* -webkit-font-smoothing: antialiased; */
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
   margin: 0;
@@ -60,91 +49,46 @@ body {
   min-height: 100vh;
   justify-content: center;
   align-items: center;
-  hyphens: none; /* Disabled auto-hyphenation */
+  hyphens: none;
   -webkit-hyphens: none;
   -ms-hyphens: none;
   position: relative;
-  overflow-x: hidden; /* Prevent horizontal scrolling with moiré effect */
+  overflow-x: hidden;
 }
 
-/* Make sure transform-origin is set for proper rotation */
+/* Moiré patterns */
 body::before,
 body::after {
-  transform-origin: center center;
-}
-
-/* First moiré grid pattern */
-body::before {
   content: "";
   position: fixed;
-  top: -50%; /* Extended to avoid visible edges during rotation */
+  top: -50%;
   left: -50%;
-  width: 200%; /* Extended to avoid visible edges during rotation */
+  width: 200%;
   height: 200%;
   pointer-events: none;
   opacity: 0.2;
   z-index: 1;
+  transform-origin: center center;
+}
 
-  /* 1px grid patterns for moiré */
+body::before {
   background-image: 
-    /* Horizontal lines */ repeating-linear-gradient(
-      0deg,
-      var(--dark-cyan) 0px,
-      var(--dark-cyan) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    /* Vertical lines */
-      repeating-linear-gradient(
-        90deg,
-        var(--dark-cyan) 0px,
-        var(--dark-cyan) 1px,
-        transparent 1px,
-        transparent 2px
-      );
-
-  /* Full rotation animation - complete cycle every 2 minutes */
+    repeating-linear-gradient(0deg, var(--dark-cyan) 0px, var(--dark-cyan) 1px, transparent 1px, transparent 2px),
+    repeating-linear-gradient(90deg, var(--dark-cyan) 0px, var(--dark-cyan) 1px, transparent 1px, transparent 2px);
   animation: full-rotate-1 10s linear infinite;
   will-change: transform;
 }
 
-/* Second overlapping moiré grid pattern */
 body::after {
-  content: "";
-  position: fixed;
-  top: -50%; /* Extended to avoid visible edges during rotation */
-  left: -50%;
-  width: 200%; /* Extended to avoid visible edges during rotation */
-  height: 200%;
-  pointer-events: none;
-  opacity: 0.2;
-  z-index: 1;
-
-  /* Grid with slightly different spacing for more complex patterns */
   background-image: 
-    /* Horizontal lines with slight offset */ repeating-linear-gradient(
-      0deg,
-      var(--lapis-lazuli) 0px,
-      var(--lapis-lazuli) 1px,
-      transparent 1px,
-      transparent 3px /* Different spacing creates more complex patterns */
-    ),
-    /* Vertical lines with slight offset */
-      repeating-linear-gradient(
-        90deg,
-        var(--lapis-lazuli) 0px,
-        var(--lapis-lazuli) 1px,
-        transparent 1px,
-        transparent 3px /* Different spacing creates more complex patterns */
-      );
-
-  /* Rotating in opposite direction at different speed - complete cycle every 87 seconds */
-  /* Using a prime number (87) vs 120 ensures patterns rarely repeat exactly */
+    repeating-linear-gradient(0deg, var(--lapis-lazuli) 0px, var(--lapis-lazuli) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(90deg, var(--lapis-lazuli) 0px, var(--lapis-lazuli) 1px, transparent 1px, transparent 3px);
   animation: full-rotate-2 87s linear infinite;
   will-change: transform;
   mix-blend-mode: screen;
 }
 
+/* Layout containers */
 .container {
   max-width: 40rem;
   width: 90vw;
@@ -153,7 +97,6 @@ body::after {
   z-index: 2;
 }
 
-/* Terminal styling */
 .terminal {
   width: 90vw;
   max-width: 40rem;
@@ -205,22 +148,23 @@ body[class] a[data-nav].active {
   color: var(--onyx);
 }
 
+/* Content areas */
 main {
   flex: 1;
   background-color: var(--onyx);
   color: var(--timberwolf);
   width: 100%;
-  padding: 1.5rem; /* Match adjusted line-height */
+  padding: 1.5rem;
   overflow: auto;
   box-sizing: border-box;
-  min-height: 500px; /* Ensure main content has minimum height */
+  min-height: 500px;
 }
 
-/* Content styling */
 .page-content {
   padding-top: 1rem;
 }
 
+/* Typography */
 .page-title,
 .page-content > h1,
 .page-content > h2 {
@@ -232,39 +176,24 @@ main {
   font-family: var(--font-ibm-plex-sans);
 }
 
-.page-title {
-  font-size: 1.5rem;
-}
-
-/* Typography */
-h1,
-h2,
-h3 {
-  margin-top: 3rem; /* 2 * adjusted line-height */
-  margin-bottom: 1.5rem; /* 1 * adjusted line-height */
+h1, h2, h3 {
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
   color: var(--timberwolf-2);
-  line-height: 1.2; /* Keep title line height tighter */
+  line-height: 1.2;
   font-family: var(--font-ibm-plex-sans);
 }
 
-h1 {
-  font-size: 1.5rem;
-}
-
-h2 {
-  font-size: 1.3rem;
-}
-
-h3 {
-  font-size: 1.1rem;
-}
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.3rem; }
+h3 { font-size: 1.1rem; }
 
 p {
-  margin: 0 0 0.5rem 0; /* Bottom margin matches adjusted line height */
-  max-width: 40rem; /* Control line length (verify characters per line) */
-  /* No explicit letter-spacing for body text (default/neutral tracking) */
+  margin: 0 0 0.5rem 0;
+  max-width: 40rem;
 }
 
+/* Links */
 a {
   color: var(--dark-cyan);
   text-decoration: none;
@@ -273,140 +202,51 @@ a {
 }
 
 a:hover {
-  text-decoration: none;
   border-bottom-color: var(--dark-cyan);
 }
 
-/* Add persistent underline for links within paragraphs */
 p a {
-  border-bottom: 1px solid var(--dark-cyan); /* Persistent subtle underline */
-  transition: background-color 0.2s ease, color 0.2s ease,
-    border-color 0.2s ease;
+  border-bottom: 1px solid var(--dark-cyan);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   font-family: var(--font-ibm-plex-sans);
 }
 
-/* Modify hover for paragraph links */
 p a:hover {
-  border-bottom-color: transparent; /* Remove underline on hover */
-  background-color: var(--dark-cyan); /* Add background instead */
+  border-bottom-color: transparent;
+  background-color: var(--dark-cyan);
   color: var(--onyx);
 }
 
-/* Letter spacing for uppercase text / Titles */
-.menubar a,
-th,
-.statusbar,
-.page-title,
-.page-content > h1,
-.page-content > h2 {
-  letter-spacing: -0.01em; /* Slightly tighter tracking for larger/title text */
-}
-
-[class*="all-caps"] {
-  letter-spacing: 0.1em; /* Keep 10% extra for deliberately all-caps text */
-}
-
-.references {
-  font-size: 0.9em;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-/* Citation and Bibliography styles */
-.csl-entry {
-  padding-left: 2rem;
-  text-indent: -2rem;
-}
-
-.csl-left-margin {
-  font-weight: bold;
-  display: inline-block;
-  width: 2rem;
-  text-align: right;
-  padding-right: 0.5rem;
-}
-
-.csl-right-inline {
-  display: inline;
-}
-
-/* Reference entries line height control */
-#refs.references .csl-entry {
-  /* margin-bottom: 1rem; Consistent 1rem spacing between entries */
-  /* padding: 0.3rem 0; Add padding for highlight effect */
-  border-radius: 0.2rem; /* Rounded corners for highlight */
-  transition: background-color 0.3s ease-in-out; /* Smooth transition for highlight */
-}
-
-/* Target highlight effect when navigating directly to a reference */
-.csl-entry:target {
-  background-color: var(--lapis-lazuli); /* Use dark-cyan with transparency */
-  animation: highlight-pulse 2s ease-in-out 1; /* Subtle pulse animation */
-}
-
-/* Fix superscript citation spacing */
-span.citation {
-  /* font-size: 0.7em; */
-  position: relative;
-  display: inline-block;
-  line-height: 0; /* Critical to prevent line height expansion */
-  vertical-align: baseline; /* Override default super alignment */
-  /* top: -0.5em; Position above baseline without affecting line metrics */
-}
-
-/* Target both the span.citation and the sup element inside it */
-span.citation sup {
-  font-size: 1em; /* 100% of parent (which is already 0.7em) */
-  line-height: 0;
-  vertical-align: baseline;
-  position: static; /* Prevent browser's default sup positioning */
-}
-
-span.citation a {
-  text-decoration: none; /* Ensure no underline within citation marker */
-  border-bottom: none; /* Ensure no border within citation marker */
-  display: inline-block;
-  line-height: 0; /* Prevent link from expanding */
-}
-
-span.citation a:hover {
-  background-color: transparent; /* Prevent background change on hover */
-  color: var(--dark-cyan); /* Keep link color on hover */
-}
-
-/* Explicit emphasis styles */
-em {
-  font-style: italic;
-  /* Optional: color: var(--dark-cyan); */
-}
-
-strong {
-  font-weight: 700; /* Match .jetbrains-mono-bold */
-  /* Optional: color: var(--timberwolf-2); */
-}
-
+/* Lists */
 .page-content > ul,
 .post-list {
-  padding: 0rem; /* Match adjusted line-height */
-  line-height: 1.5; /* Match body */
-  list-style: none;
+  padding: 0 0 0 1.5rem;
+  line-height: 1.5;
+  list-style: disc;
+  color: var(--dark-cyan);
 }
 
 .page-content > ul li,
 .post-list li {
-  /* padding: 0.2rem 0.5rem; */
-  margin: 0.1rem 0;
+  margin: 0.5rem 0;
+  color: var(--timberwolf);
 }
 
-.page-content > ul li:hover,
-.page-content > ul li.active {
-  background-color: var(--timberwolf);
-  color: var(--onyx);
-  cursor: pointer;
+.page-content > ul ul {
+  list-style-type: circle;
+  padding-left: 1.5rem;
+  margin: 0.3rem 0;
 }
 
-.post-list {
-  padding-left: 1rem;
+.page-content > ol {
+  padding: 0 0 0 1.5rem;
+  line-height: 1.5;
+  color: var(--dark-cyan);
+}
+
+.page-content > ol li {
+  margin: 0.5rem 0;
+  color: var(--timberwolf);
 }
 
 .post-date {
@@ -424,38 +264,39 @@ strong {
   justify-content: space-between;
   color: var(--timberwolf);
   font-size: 0.9rem;
+  letter-spacing: -0.01em;
 }
 
 /* Code blocks */
-pre,
-code {
+pre, code {
   font-family: var(--font-jetbrains);
   font-variant-ligatures: contextual common-ligatures;
   font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
   font-size: 0.95em;
-  line-height: 1.2; /* Match JetBrains Mono recommended line spacing */
+  line-height: 1.2;
   white-space: pre-wrap;
 }
 
 pre {
   background-color: var(--black);
-  padding: 1.5rem; /* Adjusted padding */
+  padding: 1.5rem;
   overflow: auto;
   border: 1px solid var(--timberwolf-2);
   border-radius: 0.2rem;
-  margin: 1.5rem 0 2.25rem 0; /* Adjusted vertical rhythm (1x, 1.5x line-height) */
+  margin: 1.5rem 0 2.25rem 0;
 }
 
+/* Quotes */
 blockquote {
-  margin: 1.5rem 0; /* Adjusted rhythm */
-  padding: 0.75rem 1.5rem; /* Adjusted rhythm */
+  margin: 1.5rem 0;
+  padding: 0.75rem 1.5rem;
   border-left: 0.25rem solid var(--dark-cyan);
   font-style: italic;
 }
 
 blockquote cite {
   display: block;
-  margin-top: 0.75rem; /* Adjusted rhythm */
+  margin-top: 0.75rem;
   font-style: normal;
   font-size: 0.9em;
 }
@@ -469,7 +310,7 @@ img {
   filter: grayscale(100%);
   transition: filter 0.3s ease;
   display: block;
-  margin: 2.25rem auto; /* 1.5 * adjusted line-height */
+  margin: 2.25rem auto;
 }
 
 img:hover {
@@ -479,7 +320,7 @@ img:hover {
 /* Tables */
 table {
   border-collapse: collapse;
-  margin: 2.25rem 0; /* 1.5 * adjusted line-height */
+  margin: 2.25rem 0;
   width: 100%;
   font-size: 0.9rem;
   border: 1px solid var(--timberwolf-2);
@@ -487,40 +328,6 @@ table {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   -webkit-hyphens: none;
   -ms-hyphens: none;
-}
-
-table.double-border,
-.double-border table {
-  border: 3px double var(--timberwolf-2);
-}
-
-table.double-border th,
-.double-border th,
-table.double-border td,
-.double-border td {
-  border: 1px solid var(--timberwolf-2);
-}
-
-table caption {
-  padding: 0.5rem;
-  font-weight: bold;
-  text-align: center;
-  background-color: var(--onyx);
-  color: var(--dark-cyan);
-  border: 1px solid var(--timberwolf-2);
-  border-bottom: none;
-  letter-spacing: 1px;
-}
-
-table caption::before {
-  content: "┌─── ";
-}
-table caption::after {
-  content: " ───┐";
-}
-
-thead {
-  border-bottom: 2px solid var(--timberwolf-2);
 }
 
 th {
@@ -535,12 +342,6 @@ th {
   letter-spacing: 1px;
 }
 
-th::before {
-  content: "┃ ";
-  color: var(--timberwolf-2);
-  font-weight: normal;
-}
-
 td {
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--timberwolf-2);
@@ -551,187 +352,38 @@ tr:nth-child(even) {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-tr:hover td {
-  background-color: rgba(255, 255, 255, 0.1);
-  position: relative;
+/* Citations and references */
+.references {
+  font-size: 0.9em;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-tr:hover td:first-child::before {
-  content: "→";
-  position: absolute;
-  left: 3px;
-  color: var(--dark-cyan);
+.csl-entry {
+  padding-left: 2rem;
+  text-indent: -2rem;
 }
 
-[style*="text-align: center"] {
-  text-align: center;
-}
-
-[style*="text-align: right"] {
+.csl-left-margin {
+  font-weight: bold;
+  display: inline-block;
+  width: 2rem;
   text-align: right;
+  padding-right: 0.5rem;
 }
 
-table code {
-  background-color: rgba(0, 0, 0, 0.3);
-  padding: 0.1rem 0.3rem;
-  border-radius: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.csl-right-inline {
+  display: inline;
 }
 
-/* Hide elements */
-footer,
-hr {
-  display: none;
-}
-
-/* Specialized table styles */
-.network-table table {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.8rem;
-  background-color: var(--black);
-}
-
-.network-table th {
-  background-color: var(--onyx);
-  border-bottom: 2px solid var(--dark-cyan);
-}
-
-.network-table tr:hover td {
-  background-color: rgba(6, 152, 154, 0.2);
-}
-
-.package-table caption {
-  border-top: 2px solid var(--dark-cyan);
-  border-left: 2px solid var(--dark-cyan);
-  border-right: 2px solid var(--dark-cyan);
-}
-
-.package-table table {
-  border: 2px solid var(--dark-cyan);
-}
-
-.package-table .status-installed {
-  color: var(--dark-cyan);
-}
-
-.package-table .status-available {
-  color: #ffffaa;
-}
-
-/* Utility class to prevent hyphenation */
+/* Utility classes */
 .no-hyphens {
   hyphens: none;
   -webkit-hyphens: none;
   -ms-hyphens: none;
 }
 
-/* Responsive styles with viewport units for scaling */
-@media (max-width: 26.875em) {
-  html {
-    /* Maintain recommended size even on small screens, but with some scaling */
-    font-size: calc(12px + 0.2vw);
-  }
-
-  body {
-    align-items: flex-start;
-  }
-
-  .terminal {
-    min-height: 600px; /* Maintain same min-height on small screens */
-    width: 100%;
-    border: none;
-    max-width: none;
-  }
-
-  .menubar ul {
-    flex-wrap: wrap;
-  }
-
-  /* Better handling of truncated text */
-  .menubar a,
-  .statusbar-left,
-  .statusbar-right {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  /* More compact vertical spacing on mobile, but still proportional */
-  main {
-    padding: 0.75rem; /* Adjusted */
-    min-height: 500px; /* Maintain consistent min-height */
-  }
-
-  h1,
-  h2,
-  h3 {
-    margin-top: 1.5rem; /* Adjusted */
-    margin-bottom: 0.75rem; /* Adjusted */
-  }
-
-  p {
-    margin-bottom: 0.75rem; /* Adjusted */
-  }
-
-  pre {
-    padding: 0.75rem; /* Adjusted */
-    margin: 0.75rem 0 1.5rem 0; /* Adjusted */
-  }
-}
-
-/* First paragraph treatment */
-h1 + p,
-h2 + p,
-h3 + p {
-  text-indent: 0; /* Ensure no indent after headings */
-}
-
-/* Improved typography for proper symbols and characters */
-/* Use CSS content property for better quotes in supported environments */
-blockquote:before {
-  content: open-quote;
-}
-
-blockquote:after {
-  content: close-quote;
-}
-
-/* Better dash handling */
-.em-dash {
-  white-space: nowrap;
-}
-
-.em-dash:before,
-.em-dash:after {
-  content: "\2014"; /* em dash */
-  margin: 0 0.2em 0 0.1em;
-}
-
-/* Proper ellipsis spacing */
-.ellipsis:before {
-  content: "\2026"; /* Unicode ellipsis character */
-  letter-spacing: 0.01em;
-}
-
-/* Prevent widows and orphans in important text */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p:last-of-type {
-  orphans: 3;
-  widows: 3;
-}
-
-/* Improved small caps for browsers that support it */
-.small-caps {
-  font-variant: small-caps;
-  letter-spacing: 0.05em; /* 5-12% as recommended */
-}
-
-/* Font alternative classes - can be applied to body or individual elements */
+/* Font variations */
 .font-jetbrains {
   font-family: var(--font-jetbrains);
   font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
@@ -742,60 +394,12 @@ p:last-of-type {
   font-feature-settings: "calt" 1;
 }
 
-.font-sf-mono {
-  font-family: var(--font-sf-mono);
-}
-
-/* JetBrains Mono variable styles */
-.jetbrains-mono-regular {
-  font-family: "JetBrains Mono", monospace;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.jetbrains-mono-medium {
-  font-family: "JetBrains Mono", monospace;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
-}
-
-.jetbrains-mono-bold {
-  font-family: "JetBrains Mono", monospace;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: normal;
-}
-
-/* EB Garamond variable styles */
-.eb-garamond-regular {
-  font-family: "EB Garamond", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.eb-garamond-medium {
-  font-family: "EB Garamond", serif;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
-}
-
-.eb-garamond-bold {
-  font-family: "EB Garamond", serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: normal;
-}
-
-/* Terminal-inspired checkbox styles */
+/* Checkboxes */
 input[type="checkbox"] {
   -webkit-appearance: none;
   appearance: none;
   background-color: transparent;
-  margin: 0;
+  margin: 0 0.5em 0 0;
   font: inherit;
   width: 1.2em;
   height: 1.2em;
@@ -803,7 +407,6 @@ input[type="checkbox"] {
   border-radius: 0.1em;
   display: inline-grid;
   place-content: center;
-  margin-right: 0.5em;
   position: relative;
   cursor: pointer;
 }
@@ -822,100 +425,43 @@ input[type="checkbox"]:checked::before {
   transform: scale(1);
 }
 
-input[type="checkbox"]:hover {
-  border-color: var(--dark-cyan);
-}
-
-input[type="checkbox"]:active {
-  background-color: rgba(6, 152, 154, 0.2);
-}
-
 input[type="checkbox"]:focus {
   outline: 2px solid var(--dark-cyan);
   outline-offset: 2px;
 }
 
-/* Disabled (uneditable) checkbox styles */
-input[type="checkbox"][disabled],
-input[type="checkbox"][readonly] {
-  opacity: 0.7;
-  cursor: not-allowed;
-  border-style: dashed;
-}
+/* Responsive styles */
+@media (max-width: 26.875em) {
+  html {
+    font-size: calc(12px + 0.2vw);
+  }
 
-input[type="checkbox"][disabled]:hover,
-input[type="checkbox"][readonly]:hover {
-  border-color: var(--timberwolf-2);
-}
+  body {
+    align-items: flex-start;
+  }
 
-input[type="checkbox"][disabled]:checked::before,
-input[type="checkbox"][readonly]:checked::before {
-  background-color: var(--timberwolf-2);
-  box-shadow: inset 1em 1em var(--timberwolf-2);
-}
+  .terminal {
+    min-height: 600px;
+    width: 100%;
+    border: none;
+    max-width: none;
+  }
 
-/* Alternate terminal-style checkbox with ASCII art appearance */
-.checkbox-terminal {
-  position: relative;
-  padding-left: 1.8em;
-  cursor: pointer;
-  user-select: none;
-  font-family: var(--font-jetbrains);
-}
+  .menubar ul {
+    flex-wrap: wrap;
+  }
 
-.checkbox-terminal input {
-  position: absolute;
-  opacity: 0;
-  height: 0;
-  width: 0;
-}
+  main {
+    padding: 0.75rem;
+  }
 
-.checkbox-terminal .checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 1.2em;
-  width: 1.8em;
-  font-family: var(--font-jetbrains);
-  color: var(--timberwolf-2);
-}
+  h1, h2, h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
 
-.checkbox-terminal .checkmark::before {
-  content: "[ ]";
-  position: absolute;
-  font-size: 1.1em;
-  transition: color 0.2s ease;
-}
-
-.checkbox-terminal input:checked ~ .checkmark::before {
-  content: "[✓]";
-  color: var(--dark-cyan);
-}
-
-.checkbox-terminal input:focus ~ .checkmark::before {
-  text-shadow: 0 0 2px var(--dark-cyan);
-}
-
-.checkbox-terminal:hover .checkmark::before {
-  color: var(--dark-cyan);
-}
-
-/* Disabled terminal-style checkbox */
-.checkbox-terminal.disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.checkbox-terminal.disabled .checkmark::before {
-  content: "[-]";
-  color: var(--timberwolf-2);
-}
-
-.checkbox-terminal.disabled input:checked ~ .checkmark::before {
-  content: "[x]";
-  color: var(--timberwolf-2);
-}
-
-.checkbox-terminal.disabled:hover .checkmark::before {
-  color: var(--timberwolf-2);
+  pre {
+    padding: 0.75rem;
+    margin: 0.75rem 0 1.5rem 0;
+  }
 }
