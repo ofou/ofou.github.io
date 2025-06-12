@@ -2,21 +2,28 @@
 
 ![](static/images/profile.png){width="50%"}
 
-I'm a Software Engineer with a background in Artificial Intelligence (AI) and Machine Learning (ML) who like to turn complex ideas into practical applications. I previously worked as an AI Engineer and Developer Advocate, building AI-powered products such as [Kilo Code] coding agent, [Emergent Mind] RAG systems for CS research, and scalable web applications for various startups.
+I'm a Software Engineer with a passion for Artificial Intelligence (AI) and
+Machine Learning (ML) who likes to turn complex ideas into practical
+applications. I previously worked as a music producer, then pivoted into AI
+Engineering and Developer Advocate, building AI-powered products like [Kilo
+Code] coding agent, [Emergent Mind] RAG systems for CS research, and scalable
+web applications for various startups. I'm currently available for hiring,
+consulting, or collaboration.
 
-### What I Do
+#### What I Do
 
-1. _Build production-ready AI solutions_
-2. _Do fundamental research in the intersection of neuroscience and AI_
-3. _Create technical content from docs to documentaries_
+1. _Build production-ready AI/ML products_
+2. _Consulting and training in AI/ML for startups and enterprises_
+3. _Create technical content from internal docs to videos_
+4. _Independent research in AI, neuroscience, and machine learning_
 
-I'm passionate about the intersection of neuroscience and AI, and exploring models like brain organoids, artificial intelligence, and brain-computer interfaces to better understand cognition itself.
+I also enjoy [making music], contributing to [open-source] projects, learning
+Mandarin (你好), and exploring new places around the world.
 
-I also enjoy [making music], contributing to [open-source] projects, learning Mandarin (你好), and exploring new places around the world.
+#### Let's Connect
 
-### Let's Connect
-
-Reach out via [X], [LinkedIn], or [omar@olivares.cl] to discuss your next project or just to chat about technology.
+Reach out via [X], [LinkedIn], or [omar@olivares.cl] to discuss your next
+project or just to chat about technology.
 
 [Emergent Mind]: https://www.emergentmind.com
 [Kilo Code]: https://kilocode.ai
