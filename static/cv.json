@@ -1,0 +1,312 @@
+{
+  "basics": {
+    "name": "Omar Olivares Urrutia",
+    "label": "Artificial Intelligence Engineer",
+    "image": "https://pbs.twimg.com/profile_images/1917419648938577920/GkcGw0mb_400x400.jpg",
+    "email": "omar@olivares.cl",
+    "phone": "+56983810103",
+    "url": "https://olivares.cl",
+    "summary": "I'm a Software Engineer with a strong background in Artificial Intelligence (AI) and Machine Learning (ML) who loves turning complex ideas into practical solutions. I've worked as an AI Engineer, Developer Relations Engineer, and freelance content creator, crafting engaging AI-focused content. I've helped build AI-powered products such as Kilo Code (an autonomous coding agent), Emergent Mind (a RAG system for CS research), and a range of scalable web applications for early-stage startups.",
+    "location": {
+      "address": "Holanda 50",
+      "postalCode": "7510043",
+      "city": "Providencia",
+      "countryCode": "CL",
+      "region": "Metropolitan Region, Chile"
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "url": "https://www.linkedin.com/in/ofou/",
+        "username": "ofou"
+      },
+      {
+        "network": "GitHub",
+        "url": "https://github.com/ofou",
+        "username": "ofou"
+      },
+      {
+        "network": "Twitter",
+        "username": "omarnomad",
+        "url": "https://x.com/omarnomad"
+      }
+    ]
+  },
+  "education": [
+    {
+      "institution": "Universidad Católica del Maule",
+      "url": "https://portal.ucm.cl",
+      "area": "Artificial Intelligence",
+      "studyType": "Engineer's degree",
+      "startDate": "2018-03",
+      "endDate": "2024-01",
+      "score": "7.0",
+      "courses": [
+        "Natural Language Processing",
+        "Machine Learning",
+        "Deep Learning"
+      ],
+      "summary": "Specialization in natural language processing and Artificial Intelligence. Minor in Musical Composition. Graduated with honors. Developed a fine-tuning of the `gpt-3.5-turbo` language model to help PAES students through personalized tutoring as an undergraduate thesis."
+    },
+    {
+      "institution": "Universidad de Talca",
+      "url": "https://www.utalca.cl",
+      "area": "Computer Engineering",
+      "studyType": "Engineer's degree",
+      "startDate": "2015-03",
+      "endDate": "2018-12",
+      "courses": [
+        "Computer Architecture",
+        "Data Structures and Algorithms",
+        "Software Development"
+      ],
+      "summary": "Focus on computer architecture, algorithms, and software development."
+    }
+  ],
+  "publications": [
+    {
+      "name": "Bachelor Thesis",
+      "publisher": "Universidad Católica del Maule",
+      "releaseDate": "2024-02-03",
+      "url": "https://olivares.cl/thesis.pdf",
+      "summary": "Optimization of Language Models for Chile’s Mathematics Higher Education Admission Test (PAES): A Proof of Concept",
+      "highlights": [
+        "Supervised by Dr. Xaviera A. Lopez Cortes",
+        "Supervised by Dr. Maria D. Aravena Diaz",
+        "Supervised by Dr. Sergio I. Hernández Alvarez"
+      ]
+    }
+  ],
+  "work": [
+    {
+      "name": "Kilo Code",
+      "position": " Artificial Intelligence Engineer, Developer Relations",
+      "url": "https://kilocode.ai",
+      "location": "San Francisco, CA, USA",
+      "startDate": "2025-03",
+      "summary": "I travelled from Chile to Amsterdam to spearhead the development of Kilo Code, a clone of the leading open-source Coding Agents, as a Developer Advocate, joining a team of 12 engineers from project inception to founder mode",
+      "highlights": [],
+      "endDate": "2025-05"
+    },
+    {
+      "company": "Emergent Mind",
+      "position": "Artificial Intelligence Engineer",
+      "url": "https://www.emergentmind.com",
+      "startDate": "2024-02",
+      "summary": "Leading AI development for Emergent Mind's innovative arXiv research discovery and learning platform. As part of a small, high-impact team, I'm helping build the next generation of AI assistants for learning and computer science research.",
+      "highlights": [
+        "Collaborate closely with the founder on product strategy and product development",
+        "Implement and fine-tune deep learning models for research discovery and analysis",
+        "Design pipelines with RAG to improve search result quality and relevance",
+        "Conduct experiments to improve model performance and accuracy",
+        "Oversee QA processes for AI-driven features",
+        "Create tools for providing research-backed answers efficiently",
+        "Conceptualize and prototype innovative AI features to drive platform growth"
+      ],
+      "location": "North Carolina, United States",
+      "description": "AI-powered research discovery platform for arXiv content",
+      "name": "Emergent Mind"
+    },
+    {
+      "company": "Neura Pod",
+      "position": "Content Developer",
+      "url": "https://www.neurapod.com",
+      "startDate": "2021-09",
+      "endDate": "2025-01",
+      "summary": "I lead content creation for Neura Pod, a popular series exploring cutting-edge neurotechnology topics including brain-machine interfaces, neurological conditions, and artificial intelligence. As a full-stack content producer, I translate complex scientific concepts into engaging, accessible content for a broad audience.",
+      "highlights": [
+        "Translated complex scientific concepts into engaging, accessible content for a broad audience",
+        "Managed end-to-end production from ideation to publication",
+        "Developed concepts, wrote scripts, recorded voiceovers, edited videos, and oversaw distribution",
+        "Contributed to channel growth exceeding 80,000 YouTube subscribers",
+        "Produced multiple viral videos surpassing 200,000 views each",
+        "Expanded Neura Pod's presence across major social media platforms"
+      ],
+      "location": "San Diego, California, United States",
+      "description": "Popular YouTube channel about neurotechnology and brain-machine interfaces",
+      "name": "Neura Pod"
+    },
+    {
+      "company": "Neura Pod",
+      "position": "Intern",
+      "url": "https://www.neurapod.com",
+      "startDate": "2021-07",
+      "endDate": "2021-09",
+      "summary": "Started my career in technical content creation, learning the basics of audiovisual production and scientific communication.",
+      "location": "San Diego, California, United States",
+      "description": "YouTube channel focused on neurotechnology and AI education",
+      "name": "Neura Pod"
+    },
+    {
+      "company": "Rayo",
+      "position": "Software Engineer",
+      "url": "https://www.rayo.com",
+      "startDate": "2021-07",
+      "endDate": "2021-12",
+      "summary": "Optimized MongoDB and SQL usage to reduce costs.",
+      "location": "Remote",
+      "description": "Technology company focused on database optimization"
+    },
+    {
+      "company": "Suncast",
+      "position": "Software Engineer",
+      "url": "https://www.suncast.cl",
+      "startDate": "2020-01",
+      "endDate": "2020-04",
+      "summary": "Help to rebuild the platform into a microservices-based architecture.",
+      "location": "Las Condes, Santiago Metropolitan Region, Chile",
+      "description": "Company focused on software development and cloud architecture",
+      "name": "Rayo"
+    },
+    {
+      "company": "University of Talca",
+      "position": "IT Support Assistant",
+      "url": "https://www.utalca.cl",
+      "startDate": "2016-01",
+      "endDate": "2018-12",
+      "summary": "Resolved network issues and provided technical support to students, improving the efficiency of the IT team.",
+      "location": "Curicó, Chile",
+      "name": "University of Talca"
+    },
+    {
+      "company": "Music Production",
+      "position": "Music Producer",
+      "startDate": "2008",
+      "endDate": "2015",
+      "summary": "Composing, producing, recording, mixing, and mastering tracks for Artists in Valencia, Spain.",
+      "location": "Valencia, Valencian Community, Spain",
+      "description": "Music production and audio engineering",
+      "name": "Music Production"
+    }
+  ],
+  "certificates": [
+    {
+      "name": "EFSET English Certificate C2 Proficient",
+      "date": "2023-01",
+      "issuer": "EFSET",
+      "url": "https://cert.efset.org/TqZ91i",
+      "score": "77/100"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Core Technologies",
+      "level": "Expert",
+      "keywords": ["Python", "SQL", "JavaScript"]
+    },
+    {
+      "name": "AI/ML Frameworks",
+      "level": "Advanced",
+      "keywords": ["PyTorch", "Hugging Face", "Streamlit"]
+    },
+    {
+      "name": "AI/ML Specializations",
+      "level": "Expert",
+      "keywords": ["Large Language Models", "RAG", "NLP", "Agents"]
+    },
+    {
+      "name": "Advanced AI/ML",
+      "level": "Advanced",
+      "keywords": ["Machine Learning", "MLX", "Langchain"]
+    },
+    {
+      "name": "Cloud Platforms",
+      "level": "Advanced",
+      "keywords": ["AWS", "GCP", "Azure"]
+    },
+    {
+      "name": "Databases",
+      "level": "Advanced",
+      "keywords": ["MongoDB", "PostgreSQL", "SQL"]
+    },
+    {
+      "name": "DevOps & Tools",
+      "level": "Proficient",
+      "keywords": ["Docker", "Git", "CI/CD", "Linux"]
+    }
+  ],
+  "languages": [
+    {
+      "language": "Spanish",
+      "fluency": "Native or Bilingual"
+    },
+    {
+      "language": "English",
+      "fluency": "Full Professional"
+    },
+    {
+      "language": "Chinese Mandarin",
+      "fluency": "Basic"
+    }
+  ],
+  "interests": [
+    {
+      "name": "Technology",
+      "keywords": ["Neurotechnology", "Brain-machine interfaces", "Open source"]
+    },
+    {
+      "name": "Art",
+      "keywords": ["Music production", "Filmaking", "Technical writing"]
+    },
+    {
+      "name": "Languages",
+      "keywords": ["Learning Mandarin"]
+    },
+    {
+      "name": "Travel",
+      "keywords": [
+        "Cultural explorations",
+        "Adventure travel",
+        "Culinary experiences"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Graham Essays",
+      "description": "Developed a program that helps create an electronic book (EPUB) from a website in an automated way.",
+      "highlights": [
+        "Reached the frontpage of Hacker News at its launch (https://news.ycombinator.com/item?id=32465435)",
+        "Built with Python and web scraping technologies",
+        "Open-source project with active community contributions"
+      ],
+      "keywords": ["Python", "EPUB", "Web Scraping", "Open Source"],
+      "startDate": "2023-01",
+      "endDate": "2023-03",
+      "url": "https://github.com/ofou/graham-essays",
+      "type": "application",
+      "roles": ["Creator"],
+      "entity": "Personal Project"
+    }
+  ],
+  "references": [
+    {
+      "name": "Matt Mazur",
+      "reference": "Upon request"
+    },
+    {
+      "name": "Ryan Tanaka",
+      "reference": "Upon request"
+    },
+    {
+      "name": "",
+      "reference": ""
+    }
+  ],
+  "awards": [],
+  "volunteer": [
+    {
+      "organization": "Neuromatch Academy",
+      "position": "Software Engineer",
+      "url": "https://neuromatch.io",
+      "startDate": "2021-07",
+      "endDate": "2021-09",
+      "summary": "Neuromatch is an online community of computational neuroscientists whose mission is to foster inclusive global interactions for learning, mentorship, networking, and professional development.",
+      "highlights": []
+    }
+  ],
+  "meta": {
+    "canonical": "https://olivares.cl/resume.json",
+    "theme": "stackoverflow"
+  }
+}
