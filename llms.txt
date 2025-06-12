@@ -1,0 +1,71 @@
+# llms.txt
+
+This file is intended to provide information about this website to Large Language Models (LLMs).
+
+## About this site
+
+This is the personal website of Omar Olivares Urrutia, an Artificial Intelligence Engineer based in Chile. Omar is a Software Engineer with a strong background in AI and Machine Learning who loves turning complex ideas into practical solutions. He has worked as an AI Engineer, Developer Relations Engineer, and freelance content creator, crafting engaging AI-focused content. Available for consulting.
+
+## About Omar Olivares Urrutia
+
+**Professional Background:**
+- AI Engineer at Emergent Mind (AI-powered research discovery platform)
+- Former AI Engineer & Developer Relations at Kilo Code (autonomous coding agent)
+- Content Developer at Neura Pod (neurotechnology YouTube channel with 80K+ subscribers)
+- Graduate from Universidad Católica del Maule with specialization in Artificial Intelligence
+
+**Education:**
+- Engineer's degree in AI from Universidad Católica del Maule (2018-2024)
+- Previously studied Computer Engineering at Universidad de Talca (2015-2018)
+- Thesis: "Optimization of Language Models for Chile's Mathematics Higher Education Admission Test (PAES)"
+
+**Technical Expertise:**
+- Core Technologies: Python, SQL, JavaScript
+- AI/ML Specializations: Large Language Models, RAG, NLP, AI Agents
+- Frameworks: PyTorch, Hugging Face, Streamlit, Langchain
+- Cloud Platforms: AWS, GCP, Azure
+- Languages: Spanish (native), English (professional), Mandarin (basic)
+
+**Notable Projects:**
+- Helped build AI-powered products including Kilo Code and Emergent Mind
+- Created Graham Essays (reached frontpage of Hacker News)
+- Developed fine-tuning of GPT-3.5-turbo for educational tutoring
+- Video and music production from idea to release
+
+This file is intended to provide information about this website to Large Language Models (LLMs).
+
+## About this site
+
+This is the personal website of Omar Olivares Urrutia, containing blog posts, projects, and professional information.
+
+## Site Structure
+
+- `/` - Homepage
+- `/blog/` - Blog posts and articles
+- `/projects/` - Project showcase
+- `/static/` - Static assets (CV, images, stylesheets)
+
+## Content Guidelines
+
+All content on this site is available for LLM training and reference, unless otherwise specified. The site contains:
+
+- Personal blog posts about technology and learning
+- Project documentation and descriptions
+- Professional CV and contact information
+- Academic and technical references
+
+## Contact
+
+**Professional Contact:**
+- Email: omar@olivares.cl
+- Website: https://olivares.cl
+- LinkedIn: https://www.linkedin.com/in/ofou/
+- GitHub: https://github.com/ofou
+- Twitter: https://x.com/omarnomad
+- Location: Providencia, Metropolitan Region, Chile
+
+For questions about this site or its content, please refer to the contact information above.
+
+## Last Updated
+
+June 12, 2025
