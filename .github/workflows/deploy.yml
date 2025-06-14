@@ -23,7 +23,7 @@ jobs:
         uses: docker://pandoc/core:3.5
         with:
           entrypoint: /bin/sh
-          args: -c "apk add --no-cache make python3 && make html"
+          args: -c "apk add --no-cache make python3 && make all"
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
