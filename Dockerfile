@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Build the site using the Makefile
-RUN make html
+RUN make all
 
 # Use Nginx to serve the static content
 FROM nginx:alpine
