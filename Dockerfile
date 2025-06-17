@@ -1,22 +1,21 @@
-FROM python:3.12-slim-bullseye AS builder
-
-# Install make and Python for building the site
-RUN apt-get update && apt-get install -y make git
-
+FROM python:3.12-slim AS builder
 WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 COPY . .
+RUN mkdocs build
 
-# Build the site using the Makefile
-RUN pip install -r requirements.txt && mkdocs build
-
-# Use Nginx to serve the static content
 FROM nginx:alpine
+COPY --from=builder /app/site /usr/share/nginx/html
 
-# Copy the built site from the builder stage
-COPY --from=builder /app/docs /usr/share/nginx/html
+RUN echo 'server {' > /etc/nginx/conf.d/default.conf && \
+    echo '  listen 8080;' >> /etc/nginx/conf.d/default.conf && \
+    echo '  location / {' >> /etc/nginx/conf.d/default.conf && \
+    echo '    root /usr/share/nginx/html;' >> /etc/nginx/conf.d/default.conf && \
+    echo '    index index.html;' >> /etc/nginx/conf.d/default.conf && \
+    echo '    try_files $uri $uri/ /index.html;' >> /etc/nginx/conf.d/default.conf && \
+    echo '  }' >> /etc/nginx/conf.d/default.conf && \
+    echo '}' >> /etc/nginx/conf.d/default.conf
 
-# Expose port 8080 as required by Cloud Run
 EXPOSE 8080
-
-# Modify Nginx to use the port specified by the PORT environment variable
-CMD sh -c "sed -i 's/listen\\s*80;/listen '\"\\${PORT:-8080}\"';/g' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+CMD ["nginx", "-g", "daemon off;"]
