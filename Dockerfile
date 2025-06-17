@@ -1,7 +1,7 @@
 FROM python:3.12-slim-bullseye AS builder
 
 # Install make and Python for building the site
-RUN apt-get update && apt-get install -y make
+RUN apt-get update && apt-get install -y make git
 
 WORKDIR /app
 COPY . .
