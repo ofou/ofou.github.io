@@ -1,0 +1,159 @@
+site_name: Omar Olivares Urrutia
+site_url: https://olivares.cl
+site_author: Omar Olivares Urrutia
+site_description: "I'm a Software Engineer with a strong background in Artificial Intelligence (AI) and Machine Learning (ML) who loves turning complex ideas into practical solutions. I've worked as an AI Engineer, Developer Relations Engineer, and freelance content creator, crafting engaging AI-focused content. I've helped build AI-powered products such as Kilo Code (an autonomous coding agent), Emergent Mind (a RAG system for CS research), and a range of scalable web applications for early-stage startups."
+
+repo_name: olivares.cl
+repo_url: https://github.com/ofou/ofou.github.io
+
+docs_dir: src
+
+copyright: Copyright &copy; 2025 Omar Olivares Urrutia
+
+nav:
+  - Home: index.md
+  - Blog:
+    - blog/index.md
+  - Projects:
+    - projects/graham.md
+    - projects/textube.md
+
+site_dir: docs
+
+theme:
+  name: material
+  features:
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - content.footnote.tooltips
+    - content.tabs.link
+    - content.tooltips
+    - header.autohide
+    - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.prune
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    # - toc.integrate
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: slate
+      primary: black
+      accent: red
+
+
+  font:
+    text: Noto Serif SC
+    code: JetBrains Mono
+
+  favicon: src/favicon.ico
+  logo: https://pbs.twimg.com/profile_images/1917419648938577920/GkcGw0mb_400x400.jpg
+
+plugins:
+  - blog:
+      archive: true
+      categories: true
+  - search:
+      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - bibtex:
+      bib_file: src/references.bib
+      # csl_file: https://gist.githubusercontent.com/rmzelle/bc869c900549226483123c11b0a90cb9/raw/d1712c5385b4a1ba52b2f85442ad146ade7197c3/nature.csl
+  - rss:
+      match_path: blog/posts/.* 
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags 
+
+
+extra:
+  status:
+    new: Recently added
+    deprecated: Deprecated
+  analytics:
+    provider: google
+    property: G-6MR2H8YX5K
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ofou
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/omarnomad
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/ofou/
+    - icon: fontawesome/brands/youtube
+      link: https://www.youtube.com/@omarnomad
+    - icon: fontawesome/brands/instagram
+      link: https://www.instagram.com/omarnomad/
+    - icon: fontawesome/solid/calendar-days
+      link: https://calendar.app.google/kcbfemxAYBoNPXbS8
+  favicon: favicon.ico
+  generator: false
+
+extra_css:
+  - static/style.css
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      auto_append:
+        - includes/mkdocs.md
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.tilde

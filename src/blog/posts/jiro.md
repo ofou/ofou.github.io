@@ -1,6 +1,10 @@
 ---
 title: "Jiro Dreams of Sushi"
-date: 2025-05
+date: 2025-05-01
+authors:
+    - ofou
+categories:
+    - Films
 ---
 
 # Jiro Dreams of Sushi
@@ -8,6 +12,8 @@ date: 2025-05
 I just watched [Jiro Dreams of Sushi](https://www.imdb.com/es/title/tt1772925/), and I was really amazed by the quality of the documentary. I resonate highly with Jiro's philosophy and work ethic, and I think that his story is a great reminder that anyone can achieve greatness if they're willing to put in the time and effort. I think his insights are applicable to anyone in any field, not just sushi chefs.
 
 Here's a collection of quotes from a follow-up interview with Jiro and his son, Yoshikazu. Now that everyone is trying to _cook_ at work, I think these insights are more relevant than ever.
+
+<!-- more -->
 
 ## On Loving the Work
 

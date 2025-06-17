@@ -1,6 +1,8 @@
 ---
 title: "Graham Essays"
 date: 2022-09
+authors:
+  - ofou
 ---
 
 # Graham Essays
@@ -21,6 +23,9 @@ collection of essays from Paul Graham's website into convenient digital formats.
 What started as a simple web scraping exercise turned into a substantial digital
 library containing over 200 essays and more than 500,000 words of influential
 writing on startups, technology, and entrepreneurship.
+
+<!-- more -->
+
 
 ## Key Features
 

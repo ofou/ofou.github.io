@@ -1,11 +1,21 @@
 ---
+title: "Learning in 2025"
+date: 2024-01-01
 csl: https://www.zotero.org/styles/apa
-bibliography: ../references.bib
+bibliography: ../../references.bib
+authors:
+  - ofou
+categories:
+  - General
+description: >
+  This year, my focus is on exploring the intersection of neuroscience and AI. I'll be diving deep into textbooks and hands-on projects to better understand both the human brain and artificial intelligence. The following lists outline the books, textbooks, and codebases that I'm currently reading and coding from.
 ---
 
 # Things I want to learn in 2025
 
 This year, my focus is on exploring the intersection of neuroscience and AI. I'll be diving deep into textbooks and hands-on projects to better understand both the human brain and artificial intelligence. The following lists outline the books, textbooks, and codebases that I'm currently reading and coding from.
+
+<!-- more -->
 
 ## Books
 

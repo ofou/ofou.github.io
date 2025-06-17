@@ -1,4 +1,4 @@
-name: Build and Deploy with Pandoc
+name: Build and Deploy
 
 on:
   push:
@@ -19,11 +19,17 @@ jobs:
         with:
           fetch-depth: 0 # Fetch all history for git dates
 
-      - name: Build Site with Pandoc in Docker
-        uses: docker://pandoc/core:3.5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          entrypoint: /bin/sh
-          args: -c "apk add --no-cache make python3 && make all"
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build Site
+        run: mkdocs build
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

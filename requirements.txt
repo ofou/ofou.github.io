@@ -1,0 +1,15 @@
+jinja2
+markdown
+mkdocs
+mkdocs-material-extensions
+pygments
+pymdown-extensions
+
+# Requirements for plugins
+babel
+colorama
+paginate
+backrefs
+requests
+mkdocs-bibtex
+mkdocs-rss-plugin
