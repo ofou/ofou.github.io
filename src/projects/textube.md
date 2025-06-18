@@ -1,7 +1,8 @@
 ---
 title: TexTube
-description: YouTube-to-ChatGPT API
+subtitle: YouTube subtitles in ChatGPT fast
 date: 2024-09
+author: ofou
 ---
 
 # Textube: YouTube-to-ChatGPT API

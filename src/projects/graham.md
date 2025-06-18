@@ -1,8 +1,8 @@
 ---
 title: "Graham Essays"
+subtitle: in EPUB and Markdown, updated daily
 date: 2022-09
-authors:
-  - ofou
+author: ofou
 ---
 
 # Graham Essays
