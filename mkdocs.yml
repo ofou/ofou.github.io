@@ -1,22 +1,21 @@
 site_name: Omar Olivares Urrutia
 site_url: https://olivares.cl
 site_author: Omar Olivares Urrutia
-site_description: "I'm a Software Engineer with a strong background in Artificial Intelligence (AI) and Machine Learning (ML) who loves turning complex ideas into practical solutions. I've worked as an AI Engineer, Developer Relations Engineer, and freelance content creator, crafting engaging AI-focused content. I've helped build AI-powered products such as Kilo Code (an autonomous coding agent), Emergent Mind (a RAG system for CS research), and a range of scalable web applications for early-stage startups."
+site_description:
+  "I'm a Software Engineer with a strong background in Artificial Intelligence
+  (AI) and Machine Learning (ML) who loves turning complex ideas into practical
+  solutions. I've worked as an AI Engineer, Developer Relations Engineer, and
+  freelance content creator, crafting engaging AI-focused content. I've helped
+  build AI-powered products such as Kilo Code (an autonomous coding agent),
+  Emergent Mind (a RAG system for CS research), and a range of scalable web
+  applications for early-stage startups."
 
 repo_name: olivares.cl
 repo_url: https://github.com/ofou/ofou.github.io
 
 docs_dir: src
 
-copyright: Copyright &copy; 2025 Omar Olivares Urrutia
-
-nav:
-  - Home: index.md
-  - Blog:
-    - blog/index.md
-  - Projects:
-    - projects/graham.md
-    - projects/textube.md
+copyright: Copy, share and modify freely ♡
 
 site_dir: docs
 
@@ -51,12 +50,28 @@ theme:
     - toc.follow
     # - toc.integrate
   palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: red
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: black
       accent: red
-
-
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
   font:
     text: Noto Serif SC
     code: JetBrains Mono
@@ -74,13 +89,12 @@ plugins:
       bib_file: src/references.bib
       csl_file: https://gist.githubusercontent.com/rmzelle/bc869c900549226483123c11b0a90cb9/raw/d1712c5385b4a1ba52b2f85442ad146ade7197c3/nature.csl
   - rss:
-      match_path: blog/posts/.* 
+      match_path: blog/posts/.*
       date_from_meta:
         as_creation: date
       categories:
         - categories
-        - tags 
-
+        - tags
 
 extra:
   status:
@@ -107,6 +121,12 @@ extra:
 
 extra_css:
   - static/style.css
+  - https://unpkg.com/katex@0/dist/katex.min.css
+
+extra_javascript:
+  - static/katex.js
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
 
 markdown_extensions:
   - abbr
