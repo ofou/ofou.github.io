@@ -1,6 +1,8 @@
 ---
-title: Omar Olivares Urrutia
-description: Software Engineer (AI/ML)
+title: Home
+subtitle: A brief biography about myself
+author: ofou
+date: 2025-12-21
 ---
 
 # Hello, I'm Omar
