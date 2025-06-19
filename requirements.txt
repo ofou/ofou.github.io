@@ -15,3 +15,4 @@ requests
 mkdocs-bibtex
 mkdocs-rss-plugin
 pypandoc
+mkdocs-git-revision-date-localized-plugin
