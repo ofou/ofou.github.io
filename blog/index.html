@@ -18,7 +18,7 @@
         <link rel="prev" href="..">
       
       
-        <link rel="next" href="category/films/">
+        <link rel="next" href="category/books/">
       
       
         <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../feed_rss_created.xml">
@@ -57,6 +57,8 @@
     
       <link rel="stylesheet" href="../static/style.css">
     
+      <link rel="stylesheet" href="https://unpkg.com/katex@0/dist/katex.min.css">
+    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -84,7 +86,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -139,7 +141,31 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
     
   
 </form>
@@ -346,6 +372,9 @@
   
   <span class="md-ellipsis">
     Home
+    
+      <br>
+      <small>A brief biography about myself</small>
     
   </span>
   
@@ -593,12 +622,12 @@
   
   
     <li class="md-nav__item">
-      <a href="category/films/" class="md-nav__link">
+      <a href="category/books/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Films
+    Books
     
   </span>
   
@@ -618,12 +647,12 @@
   
   
     <li class="md-nav__item">
-      <a href="category/general/" class="md-nav__link">
+      <a href="category/films/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    General
+    Films
     
   </span>
   
@@ -712,6 +741,9 @@
   <span class="md-ellipsis">
     Graham Essays
     
+      <br>
+      <small>in EPUB and Markdown, updated daily</small>
+    
   </span>
   
 
@@ -734,6 +766,9 @@
   
   <span class="md-ellipsis">
     TexTube
+    
+      <br>
+      <small>YouTube subtitles in ChatGPT fast</small>
     
   </span>
   
@@ -852,7 +887,7 @@
           <li class="md-meta__item">
             in
             
-              <a href="category/general/" class="md-meta__link">General</a></li>
+              <a href="category/books/" class="md-meta__link">Books</a></li>
         
         
           
@@ -930,13 +965,13 @@
         
         
           
-          <a href="category/films/" class="md-footer__link md-footer__link--next" aria-label="Next: Films">
+          <a href="category/books/" class="md-footer__link md-footer__link--next" aria-label="Next: Books">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Films
+                Books
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -953,7 +988,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2025 Omar Olivares Urrutia
+      Copy, share and modify freely ♡
     </div>
   
   
@@ -1045,6 +1080,12 @@
     
     
       <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+        <script src="../static/katex.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/katex.min.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/contrib/auto-render.min.js"></script>
       
     
   </body>

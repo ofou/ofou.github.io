@@ -42,7 +42,6 @@ h6 {
 .md-typeset h1,
 .md-typeset h2 {
   font-weight: 700;
-  color: var(--timberwolf);
 }
 
 /* Animations */
@@ -57,20 +56,6 @@ h6 {
 
 html {
   font-size: var(--font-size-base);
-}
-
-a {
-  color: var(--timberwolf);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.md-meta__link {
-  color: var(--timberwolf);
-}
-
-.md-typeset a {
-  color: var(--timberwolf);
 }
 
 .md-typeset img,
@@ -107,7 +92,7 @@ a {
 
 .md-typeset code {
   font-family: var(--font-jetbrains);
-  background-color: var(--black);
+  /* background-color: var(--black); */
   font-size: 13px;
   line-height: 1.2;
   font-variant-ligatures: contextual common-ligatures;
@@ -120,7 +105,6 @@ a {
 }
 
 .md-typeset code:hover {
-  color: var(--timberwolf);
   transition: background-color 0.5s ease-in-out;
   position: relative;
 }

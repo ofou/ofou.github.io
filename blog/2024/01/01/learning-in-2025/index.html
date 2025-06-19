@@ -56,6 +56,8 @@
     
       <link rel="stylesheet" href="../../../../../static/style.css">
     
+      <link rel="stylesheet" href="https://unpkg.com/katex@0/dist/katex.min.css">
+    
     <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -83,7 +85,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -138,7 +140,31 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
     
   
 </form>
@@ -347,6 +373,9 @@
   
   <span class="md-ellipsis">
     Home
+    
+      <br>
+      <small>A brief biography about myself</small>
     
   </span>
   
@@ -594,12 +623,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../category/films/" class="md-nav__link">
+      <a href="../../../../category/books/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Films
+    Books
     
   </span>
   
@@ -619,12 +648,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../category/general/" class="md-nav__link">
+      <a href="../../../../category/films/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    General
+    Films
     
   </span>
   
@@ -713,6 +742,9 @@
   <span class="md-ellipsis">
     Graham Essays
     
+      <br>
+      <small>in EPUB and Markdown, updated daily</small>
+    
   </span>
   
 
@@ -735,6 +767,9 @@
   
   <span class="md-ellipsis">
     TexTube
+    
+      <br>
+      <small>YouTube subtitles in ChatGPT fast</small>
     
   </span>
   
@@ -787,6 +822,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Books">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ai-history-future" class="md-nav__link">
+    <span class="md-ellipsis">
+      AI History &amp; Future
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neuroscience-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Neuroscience &amp; Learning
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -796,6 +855,75 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Textbooks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ai-ml-fundamentals" class="md-nav__link">
+    <span class="md-ellipsis">
+      AI &amp; ML Fundamentals
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deep-learning-theory-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deep Learning Theory &amp; Practice
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#machine-learning-hands-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      Machine Learning Hands-On
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-foundations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mathematical Foundations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ml-systems-engineering" class="md-nav__link">
+    <span class="md-ellipsis">
+      ML Systems &amp; Engineering
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reinforcement-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reinforcement Learning
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#high-performance-computing" class="md-nav__link">
+    <span class="md-ellipsis">
+      High-Performance Computing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -804,6 +932,48 @@
       Code
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-frameworks-languages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Frameworks &amp; Languages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#low-level-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Low-Level &amp; Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#educational-implementations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Educational Implementations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apple-ecosystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Apple Ecosystem
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -883,7 +1053,7 @@
                           <span class="md-ellipsis">
                             in
                             
-                              <a href="../../../../category/general/">General</a></span>
+                              <a href="../../../../category/books/">Books</a></span>
                         </div>
                       </li>
                     
@@ -938,196 +1108,399 @@
 <p>This year, my focus is on exploring the intersection of neuroscience and AI. I'll be diving deep into textbooks and hands-on projects to better understand both the human brain and artificial intelligence. The following lists outline the books, textbooks, and codebases that I'm currently reading and coding from.</p>
 <!-- more -->
 
+<pre class="mermaid"><code>graph TD
+    %% Mathematical Foundations (Base Layer)
+    math["Mathematics for Machine Learning"]
+    stats["An Introduction to Statistical Learning"]
+    prob["Probabilistic Machine Learning"]
+    bayes["Bayesian Reasoning and Machine Learning"]
+
+    %% Core AI Foundations
+    aimodern["AI: A Modern Approach"]
+    aihistory["AI: From Medieval Robots to Neural Networks"]
+    profiles["Profiles of the Future"]
+
+    %% Learning &amp; Neuroscience
+    howlearn["How We Learn"]
+    artlearn["Art of Doing Science and Engineering"]
+
+    %% ML Fundamentals
+    mlintro["Introduction to Machine Learning"]
+    hundred["The Hundred-Page ML Book"]
+    grokking["Grokking Machine Learning"]
+    foundations["Foundations of Machine Learning"]
+
+    %% Deep Learning Theory
+    littlebook["The Little Book of Deep Learning"]
+    dlconcepts["Deep Learning: Foundations and Concepts"]
+    dlgoodfellow["Deep Learning (Goodfellow)"]
+    understanding["Understanding Deep Learning"]
+    principles["Principles of Deep Learning Theory"]
+    neural["Neural Networks and Deep Learning"]
+
+    %% Practical Deep Learning
+    dlcoders["Deep Learning for Coders with Fastai"]
+    dlscratch["Deep Learning from Scratch"]
+    nnpython["Neural Networks from Scratch in Python"]
+    dlpython["Deep Learning with Python"]
+    pytorch["Machine Learning with PyTorch and Scikit-Learn"]
+    dive["Dive into Deep Learning"]
+
+    %% AI Engineering &amp; Systems
+    aieng["AI Engineering: Building Applications"]
+    mlsystems["Designing Machine Learning Systems"]
+
+    %% AI Safety &amp; Ethics
+    aisafety["Introduction to AI Safety, Ethics and Society"]
+    alignment["The Alignment Problem"]
+    compatible["Human Compatible"]
+
+    %% AI Future &amp; Philosophy
+    paths["Paths, Dangers, Strategies"]
+    life3["Life 3.0"]
+    worlds["The Worlds I See"]
+    singularity["The Singularity Is Nearer"]
+
+    %% Specialized Topics
+    rl["Reinforcement Learning: An Introduction"]
+    marl["Multi-agent Reinforcement Learning"]
+    parallel["Programming Massively Parallel Processors"]
+
+    %% Code &amp; Frameworks
+    python["Python"]
+    pytorchcode["PyTorch"]
+    jax["JAX"]
+    xla["XLA"]
+    transformers["Transformers (HuggingFace)"]
+    mlx["MLX"]
+    mlxexamples["MLX Examples"]
+    axlearn["axlearn"]
+    tinygrad["tinygrad"]
+    ggml["ggml"]
+    triton["Triton"]
+    cuda["CUDA"]
+    gpupuzzles["GPU Puzzles"]
+    nanogpt["nanoGPT"]
+    micrograd["micrograd"]
+    llmc["llm.c"]
+    xtransformers["x-transformers"]
+
+    %% Core Dependencies
+    math --&gt; stats
+    math --&gt; prob
+    math --&gt; bayes
+    math --&gt; mlintro
+    math --&gt; foundations
+
+    profiles --&gt; aihistory
+    aihistory --&gt; aimodern
+    aimodern --&gt; mlintro
+    aimodern --&gt; aisafety
+
+    howlearn --&gt; artlearn
+    artlearn --&gt; mlintro
+
+    %% ML to DL progression
+    mlintro --&gt; hundred
+    hundred --&gt; grokking
+    mlintro --&gt; foundations
+    foundations --&gt; littlebook
+
+    stats --&gt; dlconcepts
+    prob --&gt; dlconcepts
+    bayes --&gt; dlgoodfellow
+
+    littlebook --&gt; understanding
+    dlconcepts --&gt; dlgoodfellow
+    dlgoodfellow --&gt; principles
+    dlgoodfellow --&gt; neural
+    neural --&gt; understanding
+
+    %% Theory to Practice
+    littlebook --&gt; dlcoders
+    neural --&gt; dlscratch
+    neural --&gt; nnpython
+    dlconcepts --&gt; dlpython
+    dlconcepts --&gt; pytorch
+    understanding --&gt; dive
+
+    %% AI Engineering connections
+    aimodern --&gt; aieng
+    dlpython --&gt; aieng
+    mlintro --&gt; mlsystems
+    aieng --&gt; mlsystems
+
+    %% Safety and Future
+    aimodern --&gt; paths
+    paths --&gt; life3
+    paths --&gt; compatible
+    compatible --&gt; alignment
+    aisafety --&gt; alignment
+    aieng --&gt; aisafety
+    howlearn --&gt; worlds
+    life3 --&gt; singularity
+    worlds --&gt; singularity
+
+    %% Specialized topics
+    foundations --&gt; rl
+    rl --&gt; marl
+    dlgoodfellow --&gt; parallel
+
+    %% Code implementations
+    python --&gt; pytorchcode
+    python --&gt; jax
+    pytorchcode --&gt; xla
+    pytorchcode --&gt; transformers
+    pytorchcode --&gt; triton
+    jax --&gt; xla
+
+    dlscratch --&gt; micrograd
+    micrograd --&gt; tinygrad
+    nnpython --&gt; micrograd
+
+    dlcoders --&gt; nanogpt
+    transformers --&gt; nanogpt
+    nanogpt --&gt; llmc
+    transformers --&gt; xtransformers
+
+    python --&gt; mlx
+    mlx --&gt; mlxexamples
+    mlx --&gt; axlearn
+    jax --&gt; axlearn
+
+    parallel --&gt; cuda
+    cuda --&gt; triton
+    cuda --&gt; gpupuzzles
+    triton --&gt; tinygrad
+
+    dlpython --&gt; ggml
+    ggml --&gt; llmc
+
+    %% Connecting practice to code
+    pytorch --&gt; pytorchcode
+    dlcoders --&gt; pytorchcode
+    dive --&gt; jax
+    dive --&gt; pytorchcode
+
+    %% Ensuring all nodes are connected
+    aieng --&gt; transformers
+    mlsystems --&gt; tinygrad
+    principles --&gt; xtransformers</code></pre>
 <h2 id="books">Books<a class="headerlink" href="#books" title="Permanent link">&para;</a></h2>
+<h3 id="ai-history-future">AI History &amp; Future<a class="headerlink" href="#ai-history-future" title="Permanent link">&para;</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Profiles of the Future <sup id="fnref:clarke2013profiles"><a class="footnote-ref" href="#fn:clarke2013profiles">1</a></sup></li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Artificial Intelligence: From Medieval Robots to Neural Networks <sup id="fnref:pickover2019artificial"><a class="footnote-ref" href="#fn:pickover2019artificial">2</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Code: The Hidden Language of Computer Hardware and Software <sup id="fnref:petzold2000code"><a class="footnote-ref" href="#fn:petzold2000code">3</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Paths, Dangers, Strategies <sup id="fnref:bostrom2014paths"><a class="footnote-ref" href="#fn:bostrom2014paths">4</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> How we learn: Why brains learn better than any machine... for now <sup id="fnref:dehaene2021we"><a class="footnote-ref" href="#fn:dehaene2021we">5</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Elements of Computing Systems: Building a Modern Computer from First Principles <sup id="fnref:nisan2021elements"><a class="footnote-ref" href="#fn:nisan2021elements">6</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Art of Doing Science and Engineering: Learning to Learn <sup id="fnref:hamming1997art"><a class="footnote-ref" href="#fn:hamming1997art">7</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> But How Do It Know?: The Basic Principles of Computers for Everyone <sup id="fnref:scott2009but"><a class="footnote-ref" href="#fn:scott2009but">8</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Life 3.0: Being Human in the Age of Artificial Intelligence <sup id="fnref:tegmark2018life"><a class="footnote-ref" href="#fn:tegmark2018life">9</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Human Compatible: AI and the Problem of Control <sup id="fnref:russell2019human"><a class="footnote-ref" href="#fn:russell2019human">10</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> A New History of Modern Computing <sup id="fnref:haigh2021new"><a class="footnote-ref" href="#fn:haigh2021new">11</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Alignment Problem: How Can Machines Learn Human Values? <sup id="fnref:christian2021alignment"><a class="footnote-ref" href="#fn:christian2021alignment">12</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Worlds I See: Curiosity, Exploration, and Discovery at the Dawn of AI <sup id="fnref:li2023worlds"><a class="footnote-ref" href="#fn:li2023worlds">13</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Singularity Is Nearer: When We Merge with AI <sup id="fnref:kurzweil2024singularity"><a class="footnote-ref" href="#fn:kurzweil2024singularity">14</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Paths, Dangers, Strategies <sup id="fnref:bostrom2014paths"><a class="footnote-ref" href="#fn:bostrom2014paths">3</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Life 3.0: Being Human in the Age of Artificial Intelligence <sup id="fnref:tegmark2018life"><a class="footnote-ref" href="#fn:tegmark2018life">4</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Human Compatible: AI and the Problem of Control <sup id="fnref:russell2019human"><a class="footnote-ref" href="#fn:russell2019human">5</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Alignment Problem: How Can Machines Learn Human Values? <sup id="fnref:christian2021alignment"><a class="footnote-ref" href="#fn:christian2021alignment">6</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Worlds I See: Curiosity, Exploration, and Discovery at the Dawn of AI <sup id="fnref:li2023worlds"><a class="footnote-ref" href="#fn:li2023worlds">7</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Singularity Is Nearer: When We Merge with AI <sup id="fnref:kurzweil2024singularity"><a class="footnote-ref" href="#fn:kurzweil2024singularity">8</a></sup></li>
+</ul>
+<h3 id="neuroscience-learning">Neuroscience &amp; Learning<a class="headerlink" href="#neuroscience-learning" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> How we learn: Why brains learn better than any machine... for now <sup id="fnref:dehaene2021we"><a class="footnote-ref" href="#fn:dehaene2021we">9</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Art of Doing Science and Engineering: Learning to Learn <sup id="fnref:hamming1997art"><a class="footnote-ref" href="#fn:hamming1997art">10</a></sup></li>
 </ul>
 <h2 id="textbooks">Textbooks<a class="headerlink" href="#textbooks" title="Permanent link">&para;</a></h2>
+<h3 id="ai-ml-fundamentals">AI &amp; ML Fundamentals<a class="headerlink" href="#ai-ml-fundamentals" title="Permanent link">&para;</a></h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> AI Engineering: Building Applications with Foundation Models <sup id="fnref:aiebook2025"><a class="footnote-ref" href="#fn:aiebook2025">15</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Artificial Intelligence: A Modern Approach <sup id="fnref:russell2020artificial"><a class="footnote-ref" href="#fn:russell2020artificial">16</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Deep Learning: Foundations and Concepts <sup id="fnref:bishop2024deep"><a class="footnote-ref" href="#fn:bishop2024deep">17</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> The Little Book of Deep Learning <sup id="fnref:fleuret2023little"><a class="footnote-ref" href="#fn:fleuret2023little">18</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Mathematics for Machine Learning <sup id="fnref:deisenroth2020mathematics"><a class="footnote-ref" href="#fn:deisenroth2020mathematics">19</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Designing Machine Learning Systems <sup id="fnref:huyen2022designing"><a class="footnote-ref" href="#fn:huyen2022designing">20</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Reinforcement Learning: An Introduction <sup id="fnref:andrew2018reinforcement"><a class="footnote-ref" href="#fn:andrew2018reinforcement">21</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> An Introduction to Statistical Learning: With Applications in Python <sup id="fnref:james2023introduction"><a class="footnote-ref" href="#fn:james2023introduction">22</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Introduction to Information Retrieval <sup id="fnref:schutze2008introduction"><a class="footnote-ref" href="#fn:schutze2008introduction">23</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Bayesian Reasoning and Machine Learning <sup id="fnref:barber2012bayesian"><a class="footnote-ref" href="#fn:barber2012bayesian">24</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Neural Networks and Deep Learning <sup id="fnref:nielsen2015neural"><a class="footnote-ref" href="#fn:nielsen2015neural">25</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Deep Learning <sup id="fnref:goodfellow2016deep"><a class="footnote-ref" href="#fn:goodfellow2016deep">26</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Foundations of Machine Learning <sup id="fnref:mohri2018foundations"><a class="footnote-ref" href="#fn:mohri2018foundations">27</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Grokking Machine Learning <sup id="fnref:serrano2021grokking"><a class="footnote-ref" href="#fn:serrano2021grokking">28</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Deep Learning from Scratch: Building with Python from First Principles <sup id="fnref:weidman2019deep"><a class="footnote-ref" href="#fn:weidman2019deep">29</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Hundred-Page Machine Learning Book <sup id="fnref:burkov2019hundred"><a class="footnote-ref" href="#fn:burkov2019hundred">30</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Neural Networks from Scratch in Python: Building Neural Networks in Raw Python <sup id="fnref:kinsley2020neural"><a class="footnote-ref" href="#fn:kinsley2020neural">31</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Deep Learning for Coders with Fastai and PyTorch: AI Applications Without a PhD <sup id="fnref:howard2020deep"><a class="footnote-ref" href="#fn:howard2020deep">32</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Introduction to Machine Learning <sup id="fnref:alpaydin2020introduction"><a class="footnote-ref" href="#fn:alpaydin2020introduction">33</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Deep Learning with Python <sup id="fnref:chollet2021deep"><a class="footnote-ref" href="#fn:chollet2021deep">34</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Programming Massively Parallel Processors: A Hands-on Approach <sup id="fnref:kirk2016programming"><a class="footnote-ref" href="#fn:kirk2016programming">35</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Machine Learning with PyTorch and Scikit-Learn: Develop Machine Learning and Deep Learning Models with Python <sup id="fnref:raschka2022machine"><a class="footnote-ref" href="#fn:raschka2022machine">36</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Probabilistic Machine Learning: An Introduction <sup id="fnref:murphy2022probabilistic"><a class="footnote-ref" href="#fn:murphy2022probabilistic">37</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Principles of Deep Learning Theory <sup id="fnref:roberts2022principles"><a class="footnote-ref" href="#fn:roberts2022principles">38</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Understanding Deep Learning <sup id="fnref:prince2023understanding"><a class="footnote-ref" href="#fn:prince2023understanding">39</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Dive into Deep Learning <sup id="fnref:zhang2023dive"><a class="footnote-ref" href="#fn:zhang2023dive">40</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Multi-agent Reinforcement Learning: Foundations and Modern Approaches <sup id="fnref:albrecht2024multi"><a class="footnote-ref" href="#fn:albrecht2024multi">41</a></sup></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Introduction to AI Safety, Ethics and Society <sup id="fnref:hendrycks2024introduction"><a class="footnote-ref" href="#fn:hendrycks2024introduction">42</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> AI Engineering: Building Applications with Foundation Models <sup id="fnref:aiebook2025"><a class="footnote-ref" href="#fn:aiebook2025">11</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Artificial Intelligence: A Modern Approach <sup id="fnref:russell2020artificial"><a class="footnote-ref" href="#fn:russell2020artificial">12</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Introduction to AI Safety, Ethics and Society <sup id="fnref:hendrycks2024introduction"><a class="footnote-ref" href="#fn:hendrycks2024introduction">13</a></sup></li>
+</ul>
+<h3 id="deep-learning-theory-practice">Deep Learning Theory &amp; Practice<a class="headerlink" href="#deep-learning-theory-practice" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> The Little Book of Deep Learning <sup id="fnref:fleuret2023little"><a class="footnote-ref" href="#fn:fleuret2023little">14</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Deep Learning: Foundations and Concepts <sup id="fnref:bishop2024deep"><a class="footnote-ref" href="#fn:bishop2024deep">15</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Neural Networks and Deep Learning <sup id="fnref:nielsen2015neural"><a class="footnote-ref" href="#fn:nielsen2015neural">16</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Deep Learning <sup id="fnref:goodfellow2016deep"><a class="footnote-ref" href="#fn:goodfellow2016deep">17</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Understanding Deep Learning <sup id="fnref:prince2023understanding"><a class="footnote-ref" href="#fn:prince2023understanding">18</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Dive into Deep Learning <sup id="fnref:zhang2023dive"><a class="footnote-ref" href="#fn:zhang2023dive">19</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Principles of Deep Learning Theory <sup id="fnref:roberts2022principles"><a class="footnote-ref" href="#fn:roberts2022principles">20</a></sup></li>
+</ul>
+<h3 id="machine-learning-hands-on">Machine Learning Hands-On<a class="headerlink" href="#machine-learning-hands-on" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Deep Learning for Coders with Fastai and PyTorch: AI Applications Without a PhD <sup id="fnref:howard2020deep"><a class="footnote-ref" href="#fn:howard2020deep">21</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Deep Learning from Scratch: Building with Python from First Principles <sup id="fnref:weidman2019deep"><a class="footnote-ref" href="#fn:weidman2019deep">22</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Neural Networks from Scratch in Python: Building Neural Networks in Raw Python <sup id="fnref:kinsley2020neural"><a class="footnote-ref" href="#fn:kinsley2020neural">23</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Deep Learning with Python <sup id="fnref:chollet2021deep"><a class="footnote-ref" href="#fn:chollet2021deep">24</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Machine Learning with PyTorch and Scikit-Learn: Develop Machine Learning and Deep Learning Models with Python <sup id="fnref:raschka2022machine"><a class="footnote-ref" href="#fn:raschka2022machine">25</a></sup></li>
+</ul>
+<h3 id="mathematical-foundations">Mathematical Foundations<a class="headerlink" href="#mathematical-foundations" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> An Introduction to Statistical Learning: With Applications in Python <sup id="fnref:james2023introduction"><a class="footnote-ref" href="#fn:james2023introduction">26</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Mathematics for Machine Learning <sup id="fnref:deisenroth2020mathematics"><a class="footnote-ref" href="#fn:deisenroth2020mathematics">27</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Bayesian Reasoning and Machine Learning <sup id="fnref:barber2012bayesian"><a class="footnote-ref" href="#fn:barber2012bayesian">28</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Probabilistic Machine Learning: An Introduction <sup id="fnref:murphy2022probabilistic"><a class="footnote-ref" href="#fn:murphy2022probabilistic">29</a></sup></li>
+</ul>
+<h3 id="ml-systems-engineering">ML Systems &amp; Engineering<a class="headerlink" href="#ml-systems-engineering" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Designing Machine Learning Systems <sup id="fnref:huyen2022designing"><a class="footnote-ref" href="#fn:huyen2022designing">30</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Foundations of Machine Learning <sup id="fnref:mohri2018foundations"><a class="footnote-ref" href="#fn:mohri2018foundations">31</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Introduction to Machine Learning <sup id="fnref:alpaydin2020introduction"><a class="footnote-ref" href="#fn:alpaydin2020introduction">32</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The Hundred-Page Machine Learning Book <sup id="fnref:burkov2019hundred"><a class="footnote-ref" href="#fn:burkov2019hundred">33</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Grokking Machine Learning <sup id="fnref:serrano2021grokking"><a class="footnote-ref" href="#fn:serrano2021grokking">34</a></sup></li>
+</ul>
+<h3 id="reinforcement-learning">Reinforcement Learning<a class="headerlink" href="#reinforcement-learning" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Reinforcement Learning: An Introduction <sup id="fnref:andrew2018reinforcement"><a class="footnote-ref" href="#fn:andrew2018reinforcement">35</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Multi-agent Reinforcement Learning: Foundations and Modern Approaches <sup id="fnref:albrecht2024multi"><a class="footnote-ref" href="#fn:albrecht2024multi">36</a></sup></li>
+</ul>
+<h3 id="high-performance-computing">High-Performance Computing<a class="headerlink" href="#high-performance-computing" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Programming Massively Parallel Processors: A Hands-on Approach <sup id="fnref:kirk2016programming"><a class="footnote-ref" href="#fn:kirk2016programming">37</a></sup></li>
 </ul>
 <h2 id="code">Code<a class="headerlink" href="#code" title="Permanent link">&para;</a></h2>
+<h3 id="core-frameworks-languages">Core Frameworks &amp; Languages<a class="headerlink" href="#core-frameworks-languages" title="Permanent link">&para;</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/python/cpython">Python</a> &amp; <a href="https://github.com/pytorch/pytorch">PyTorch</a> by Meta, <a href="https://github.com/pytorch/xla">XLA</a> by Google</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/jax-ml/jax">JAX</a> by Google DeepMind -James Bradbury, Roy Frostig, Peter Hawkins, Matthew James Johnson, Chris Leary, Dougal Maclaurin, George Necula, Adam Paszke, Jake VanderPlas, Skye Wanderman-Milne, and Qiao Zhang. JAX: composable transformations of Python+NumPy programs. 2018. URL: <a href="http://github.com/jax-ml/jax">http://github.com/jax-ml/jax</a>.</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/tinygrad/tinygrad">tinygrad</a> by George Hotz &amp; <a href="https://tinygrad.org">tiny corp</a></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/huggingface">Hugging Face</a></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/lucidrains/x-transformers">x-transfomers</a> by Phil Wang (aka lucidrains)</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/ml-explore/mlx">MLX</a> -Awni Awni, Angelos Wathieu, Philippe Tillet, Tullie Tape, Jack Ledsam, Jacob Weber, Ari Garris, Amal Almahairi, William Gormley, and Edward Grefenstette. Mlx. 2023. URL: <a href="https://github.com/ml-explore/mlx">https://github.com/ml-explore/mlx</a>., <a href="https://github.com/ml-explore/mlx-examples">MLX examples</a> &amp; <a href="https://github.com/apple/axlearn">axlearn</a> by Apple</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/jax-ml/jax">JAX</a> by Google DeepMind <sup id="fnref:jax2018github"><a class="footnote-ref" href="#fn:jax2018github">38</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Transformers <sup id="fnref:wolf-etal-2020-transformers"><a class="footnote-ref" href="#fn:wolf-etal-2020-transformers">39</a></sup> by <a href="https://github.com/huggingface">Hugging Face</a></li>
+</ul>
+<h3 id="low-level-performance">Low-Level &amp; Performance<a class="headerlink" href="#low-level-performance" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/tinygrad/tinygrad">tinygrad</a> by <a href="https://tinygrad.org">tiny corp</a></li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/ggerganov/ggml">ggml</a> by Georgi Gerganov</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a>, <a href="https://github.com/karpathy/micrograd">micrograd</a>, &amp; <a href="https://github.com/karpathy/llm.c">llm.c</a> by Andrej Karpathy</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/triton-lang/triton">Triton</a> by OpenAI -Philippe Tillet, Hsiang-Tsung Kung, and David Cox. Triton: an intermediate language and compiler for tiled neural network computations. 2019. URL: <a href="https://www.eecs.harvard.edu/~htk/publication/2019-mapl-tillet-kung-cox.pdf">https://www.eecs.harvard.edu/~htk/publication/2019-mapl-tillet-kung-cox.pdf</a>.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/triton-lang/triton">Triton</a> by OpenAI <sup id="fnref:tillet2019triton"><a class="footnote-ref" href="#fn:tillet2019triton">40</a></sup></li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/NVIDIA/cuda-samples">CUDA</a> by Nvidia &amp; <a href="https://github.com/srush/GPU-Puzzles">GPU Puzzles</a> by Sasha Rush</li>
+</ul>
+<h3 id="educational-implementations">Educational Implementations<a class="headerlink" href="#educational-implementations" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a>, <a href="https://github.com/karpathy/micrograd">micrograd</a>, &amp; <a href="https://github.com/karpathy/llm.c">llm.c</a> by Andrej Karpathy</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/lucidrains/x-transformers">x-transfomers</a> by Phil Wang (aka lucidrains)</li>
+</ul>
+<h3 id="apple-ecosystem">Apple Ecosystem<a class="headerlink" href="#apple-ecosystem" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/ml-explore/mlx">MLX</a> <sup id="fnref:mlx2023"><a class="footnote-ref" href="#fn:mlx2023">41</a></sup>, <a href="https://github.com/ml-explore/mlx-examples">MLX examples</a> &amp; <a href="https://github.com/apple/axlearn">axlearn</a> by Apple</li>
 </ul>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <div class="footnote">
 <hr />
 <ol>
 <li id="fn:clarke2013profiles">
-<p>Arthur C Clarke. <em>Profiles of the Future</em>. Hachette UK, 1962.&#160;<a class="footnote-backref" href="#fnref:clarke2013profiles" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<p>Clarke, A. C. <em>Profiles of the future</em>. (Hachette UK, 1962).&#160;<a class="footnote-backref" href="#fnref:clarke2013profiles" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 <li id="fn:pickover2019artificial">
-<p>Clifford A Pickover. <em>Artificial Intelligence: From Medieval Robots to Neural Networks</em>. Union Square+ ORM, 2019.&#160;<a class="footnote-backref" href="#fnref:pickover2019artificial" title="Jump back to footnote 2 in the text">&#8617;</a></p>
-</li>
-<li id="fn:petzold2000code">
-<p>Charles Petzold. <em>Code: The hidden language of computer hardware and software</em>. Microsoft Press, 2000.&#160;<a class="footnote-backref" href="#fnref:petzold2000code" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+<p>Pickover, C. A. <em>Artificial intelligence: From medieval robots to neural networks</em>. (Union Square+ ORM, 2019).&#160;<a class="footnote-backref" href="#fnref:pickover2019artificial" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 <li id="fn:bostrom2014paths">
-<p>N Superintelligence Bostrom. <em>Paths, dangers, strategies</em>. Oxford University Press: Oxford, UK, 2014.&#160;<a class="footnote-backref" href="#fnref:bostrom2014paths" title="Jump back to footnote 4 in the text">&#8617;</a></p>
-</li>
-<li id="fn:dehaene2021we">
-<p>Stanislas Dehaene. <em>How we learn: Why brains learn better than any machine... for now</em>. Penguin, 2021.&#160;<a class="footnote-backref" href="#fnref:dehaene2021we" title="Jump back to footnote 5 in the text">&#8617;</a></p>
-</li>
-<li id="fn:nisan2021elements">
-<p>Noam Nisan and Shimon Schocken. <em>The elements of computing systems: building a modern computer from first principles</em>. MIT press, 2021.&#160;<a class="footnote-backref" href="#fnref:nisan2021elements" title="Jump back to footnote 6 in the text">&#8617;</a></p>
-</li>
-<li id="fn:hamming1997art">
-<p>Richard R Hamming. <em>Art of doing science and engineering: Learning to learn</em>. CRC Press, 1997.&#160;<a class="footnote-backref" href="#fnref:hamming1997art" title="Jump back to footnote 7 in the text">&#8617;</a></p>
-</li>
-<li id="fn:scott2009but">
-<p>J Clark Scott. <em>But how do it know?: the basic principles of computers for everyone</em>. John C Scott, 2009.&#160;<a class="footnote-backref" href="#fnref:scott2009but" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+<p>Bostrom, N. S. <em>Paths, dangers, strategies</em>. (Oxford University Press: Oxford, UK, 2014).&#160;<a class="footnote-backref" href="#fnref:bostrom2014paths" title="Jump back to footnote 3 in the text">&#8617;</a></p>
 </li>
 <li id="fn:tegmark2018life">
-<p>Max Tegmark. <em>Life 3.0: Being human in the age of artificial intelligence</em>. Vintage, 2018.&#160;<a class="footnote-backref" href="#fnref:tegmark2018life" title="Jump back to footnote 9 in the text">&#8617;</a></p>
+<p>Tegmark, M. <em>Life 3.0: Being human in the age of artificial intelligence</em>. (Vintage, 2018).&#160;<a class="footnote-backref" href="#fnref:tegmark2018life" title="Jump back to footnote 4 in the text">&#8617;</a></p>
 </li>
 <li id="fn:russell2019human">
-<p>Stuart Russell. <em>Human compatible: AI and the problem of control</em>. Penguin Uk, 2019.&#160;<a class="footnote-backref" href="#fnref:russell2019human" title="Jump back to footnote 10 in the text">&#8617;</a></p>
-</li>
-<li id="fn:haigh2021new">
-<p>Thomas Haigh and Paul E Ceruzzi. <em>A new history of modern computing</em>. MIT Press, 2021.&#160;<a class="footnote-backref" href="#fnref:haigh2021new" title="Jump back to footnote 11 in the text">&#8617;</a></p>
+<p>Russell, S. <em>Human compatible: AI and the problem of control</em>. (Penguin Uk, 2019).&#160;<a class="footnote-backref" href="#fnref:russell2019human" title="Jump back to footnote 5 in the text">&#8617;</a></p>
 </li>
 <li id="fn:christian2021alignment">
-<p>Brian Christian. <em>The alignment problem: How can machines learn human values?</em> Atlantic Books, 2021.&#160;<a class="footnote-backref" href="#fnref:christian2021alignment" title="Jump back to footnote 12 in the text">&#8617;</a></p>
+<p>Christian, B. <em>The alignment problem: How can machines learn human values?</em> (Atlantic Books, 2021).&#160;<a class="footnote-backref" href="#fnref:christian2021alignment" title="Jump back to footnote 6 in the text">&#8617;</a></p>
 </li>
 <li id="fn:li2023worlds">
-<p>Fei-Fei Li. <em>The Worlds I See: Curiosity, exploration, and discovery at the dawn of AI</em>. Flatiron books: a moment of lift book, 2023.&#160;<a class="footnote-backref" href="#fnref:li2023worlds" title="Jump back to footnote 13 in the text">&#8617;</a></p>
+<p>Li, F.-F. <em>The worlds i see: Curiosity, exploration, and discovery at the dawn of AI</em>. (Flatiron books: a moment of lift book, 2023).&#160;<a class="footnote-backref" href="#fnref:li2023worlds" title="Jump back to footnote 7 in the text">&#8617;</a></p>
 </li>
 <li id="fn:kurzweil2024singularity">
-<p>Ray Kurzweil. <em>The Singularity Is Nearer: When We Merge with AI</em>. Random House, 2024.&#160;<a class="footnote-backref" href="#fnref:kurzweil2024singularity" title="Jump back to footnote 14 in the text">&#8617;</a></p>
+<p>Kurzweil, R. <em>The singularity is nearer: When we merge with AI</em>. (Random House, 2024).&#160;<a class="footnote-backref" href="#fnref:kurzweil2024singularity" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+</li>
+<li id="fn:dehaene2021we">
+<p>Dehaene, S. <em>How we learn: Why brains learn better than any machine... For now</em>. (Penguin, 2021).&#160;<a class="footnote-backref" href="#fnref:dehaene2021we" title="Jump back to footnote 9 in the text">&#8617;</a></p>
+</li>
+<li id="fn:hamming1997art">
+<p>Hamming, R. R. <em>Art of doing science and engineering: Learning to learn</em>. 432 (CRC Press, 1997).&#160;<a class="footnote-backref" href="#fnref:hamming1997art" title="Jump back to footnote 10 in the text">&#8617;</a></p>
 </li>
 <li id="fn:aiebook2025">
-<p>Chip Huyen. <em>AI Engineering</em>. O'Reilly Media, USA, 2025. ISBN 978-1801819312.&#160;<a class="footnote-backref" href="#fnref:aiebook2025" title="Jump back to footnote 15 in the text">&#8617;</a></p>
+<p>Huyen, C. <em>AI Engineering</em>. (O'Reilly Media, 2025).&#160;<a class="footnote-backref" href="#fnref:aiebook2025" title="Jump back to footnote 11 in the text">&#8617;</a></p>
 </li>
 <li id="fn:russell2020artificial">
-<p>Stuart J Russell and Peter Norvig. <em>Artificial intelligence: a modern approach</em>. Pearson, 2020.&#160;<a class="footnote-backref" href="#fnref:russell2020artificial" title="Jump back to footnote 16 in the text">&#8617;</a></p>
-</li>
-<li id="fn:bishop2024deep">
-<p>Christopher M Bishop and Hugh Bishop. <em>Deep learning: foundations and concepts</em>. Springer, 2024. URL: <a href="https://annas-archive.org/md5/6d1f851e90bf7847ad9999efadc56d5b">https://annas-archive.org/md&#8538;d1f851e90bf7847ad9999efadc56d5b</a>.&#160;<a class="footnote-backref" href="#fnref:bishop2024deep" title="Jump back to footnote 17 in the text">&#8617;</a></p>
-</li>
-<li id="fn:fleuret2023little">
-<p>François Fleuret. <em>The little book of deep learning</em>. François Fleuret, 2023.&#160;<a class="footnote-backref" href="#fnref:fleuret2023little" title="Jump back to footnote 18 in the text">&#8617;</a></p>
-</li>
-<li id="fn:deisenroth2020mathematics">
-<p>Marc Peter Deisenroth, A Aldo Faisal, and Cheng Soon Ong. <em>Mathematics for machine learning</em>. Cambridge University Press, 2020. URL: <a href="https://annas-archive.org/md5/170355f6bd92c95c84a43414cfcffec2">https://annas-archive.org/md5/170355f6bd92c95c84a43414cfcffec2</a>.&#160;<a class="footnote-backref" href="#fnref:deisenroth2020mathematics" title="Jump back to footnote 19 in the text">&#8617;</a></p>
-</li>
-<li id="fn:huyen2022designing">
-<p>Chip Huyen. <em>Designing machine learning systems</em>. " O'Reilly Media, Inc.", 2022. URL: <a href="https://annas-archive.org/md5/f5c999ff6f4f7def83fa044b038f9390">https://annas-archive.org/md5/f5c999ff6f4f7def83fa044b038f9390</a>.&#160;<a class="footnote-backref" href="#fnref:huyen2022designing" title="Jump back to footnote 20 in the text">&#8617;</a></p>
-</li>
-<li id="fn:andrew2018reinforcement">
-<p>Barto Andrew and Sutton Richard S. <em>Reinforcement Learning: An Introduction</em>. The MIT Press, 2018. URL: <a href="https://annas-archive.org/md5/cd556761e796b7c76c1c7a570482eba7">https://annas-archive.org/md5/cd556761e796b7c76c1c7a570482eba7</a>.&#160;<a class="footnote-backref" href="#fnref:andrew2018reinforcement" title="Jump back to footnote 21 in the text">&#8617;</a></p>
-</li>
-<li id="fn:james2023introduction">
-<p>Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani, and Jonathan Taylor. <em>An introduction to statistical learning: With applications in Python</em>. Springer Nature, 2023. URL: <a href="https://www.statlearning.com">https://www.statlearning.com</a>.&#160;<a class="footnote-backref" href="#fnref:james2023introduction" title="Jump back to footnote 22 in the text">&#8617;</a></p>
-</li>
-<li id="fn:schutze2008introduction">
-<p>Hinrich Schütze, Christopher D Manning, and Prabhakar Raghavan. <em>Introduction to information retrieval</em>. Volume 39. Cambridge University Press Cambridge, 2008. URL: <a href="https://nlp.stanford.edu/IR-book/information-retrieval-book.html">https://nlp.stanford.edu/IR-book/information-retrieval-book.html</a>.&#160;<a class="footnote-backref" href="#fnref:schutze2008introduction" title="Jump back to footnote 23 in the text">&#8617;</a></p>
-</li>
-<li id="fn:barber2012bayesian">
-<p>David Barber. <em>Bayesian reasoning and machine learning</em>. Cambridge University Press, 2012. URL: <a href="http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/020217.pdf">http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/020217.pdf</a>.&#160;<a class="footnote-backref" href="#fnref:barber2012bayesian" title="Jump back to footnote 24 in the text">&#8617;</a></p>
-</li>
-<li id="fn:nielsen2015neural">
-<p>A Nielsen. Neural networks and deep learning. 2015. URL: <a href="https://lit2talks.com/upload/neuralnetworksanddeeplearning.pdf">https://lit2talks.com/upload/neuralnetworksanddeeplearning.pdf</a>.&#160;<a class="footnote-backref" href="#fnref:nielsen2015neural" title="Jump back to footnote 25 in the text">&#8617;</a></p>
-</li>
-<li id="fn:goodfellow2016deep">
-<p>Ian Goodfellow, Yoshua Bengio, and Aaron Courville. <em>Deep learning</em>. MIT press, 2016. URL: <a href="https://annas-archive.org/md5/147862ee2c14791ac71520dca611a7d5">https://annas-archive.org/md5/147862ee2c14791ac71520dca611a7d5</a>.&#160;<a class="footnote-backref" href="#fnref:goodfellow2016deep" title="Jump back to footnote 26 in the text">&#8617;</a></p>
-</li>
-<li id="fn:mohri2018foundations">
-<p>Mehryar Mohri, Afshin Rostamizadeh, and Ameet Talwalkar. <em>Foundations of machine learning</em>. MIT press, 2018. URL: <a href="https://annas-archive.org/md5/1495446fc912817f0cd2986905eb8389">https://annas-archive.org/md5/1495446fc912817f0cd2986905eb8389</a>.&#160;<a class="footnote-backref" href="#fnref:mohri2018foundations" title="Jump back to footnote 27 in the text">&#8617;</a></p>
-</li>
-<li id="fn:serrano2021grokking">
-<p>Luis Serrano. <em>Grokking machine learning</em>. Simon and Schuster, 2021.&#160;<a class="footnote-backref" href="#fnref:serrano2021grokking" title="Jump back to footnote 28 in the text">&#8617;</a></p>
-</li>
-<li id="fn:weidman2019deep">
-<p>Seth Weidman. <em>Deep learning from scratch: Building with python from first principles</em>. O'Reilly Media, 2019. URL: <a href="https://annas-archive.org/md5/af1400a89b34bf0ac0a4a35d108d67ad">https://annas-archive.org/md5/af1400a89b34bf0ac0a4a35d108d67ad</a>.&#160;<a class="footnote-backref" href="#fnref:weidman2019deep" title="Jump back to footnote 29 in the text">&#8617;</a></p>
-</li>
-<li id="fn:burkov2019hundred">
-<p>Andriy Burkov. <em>The hundred-page machine learning book</em>. Andriy Burkov Quebec City, QC, Canada, 2019. URL: <a href="https://annas-archive.org/md5/07912d7f54c6ef124c53d18cc69859bf">https://annas-archive.org/md5/07912d7f54c6ef124c53d18cc69859bf</a>.&#160;<a class="footnote-backref" href="#fnref:burkov2019hundred" title="Jump back to footnote 30 in the text">&#8617;</a></p>
-</li>
-<li id="fn:kinsley2020neural">
-<p>Harrison Kinsley and Daniel Kukieła. <em>Neural Networks from Scratch in Python: Building Neural Networks in Raw Python</em>. Verlag nicht ermittelbar, 2020.&#160;<a class="footnote-backref" href="#fnref:kinsley2020neural" title="Jump back to footnote 31 in the text">&#8617;</a></p>
-</li>
-<li id="fn:howard2020deep">
-<p>Jeremy Howard and Sylvain Gugger. <em>Deep Learning for Coders with fastai and PyTorch</em>. O'Reilly Media, 2020. URL: <a href="https://annas-archive.org/md5/7e55aada5f4f30daa2a340c5409c896c">https://annas-archive.org/md5/7e55aada5f4f30daa2a340c5409c896c</a>.&#160;<a class="footnote-backref" href="#fnref:howard2020deep" title="Jump back to footnote 32 in the text">&#8617;</a></p>
-</li>
-<li id="fn:alpaydin2020introduction">
-<p>Ethem Alpaydin. <em>Introduction to machine learning</em>. MIT press, 2020. URL: <a href="https://annas-archive.org/md5/4e078be579f512b629817cbc83b62e93">https://annas-archive.org/md5/4e078be579f512b629817cbc83b62e93</a>.&#160;<a class="footnote-backref" href="#fnref:alpaydin2020introduction" title="Jump back to footnote 33 in the text">&#8617;</a></p>
-</li>
-<li id="fn:chollet2021deep">
-<p>Francois Chollet. <em>Deep learning with Python</em>. Simon and Schuster, 2021. URL: <a href="https://annas-archive.org/md5/59737ebea569c42afd3c3acabf2a5f9a">https://annas-archive.org/md5/59737ebea569c42afd3c3acabf2a5f9a</a>.&#160;<a class="footnote-backref" href="#fnref:chollet2021deep" title="Jump back to footnote 34 in the text">&#8617;</a></p>
-</li>
-<li id="fn:kirk2016programming">
-<p>David B Kirk and Wen-mei W Hwu. <em>Programming massively parallel processors: a hands-on approach</em>. Morgan Kaufmann, 2016.&#160;<a class="footnote-backref" href="#fnref:kirk2016programming" title="Jump back to footnote 35 in the text">&#8617;</a></p>
-</li>
-<li id="fn:raschka2022machine">
-<p>Sebastian Raschka, Yuxi Hayden Liu, Vahid Mirjalili, and Dmytro Dzhulgakov. <em>Machine Learning with PyTorch and Scikit-Learn: Develop machine learning and deep learning models with Python</em>. Packt Publishing Ltd, 2022. URL: <a href="https://annas-archive.org/md5/c1ae0c9c5eaff8b929972790879197e6">https://annas-archive.org/md5/c1ae0c9c5eaff8b929972790879197e6</a>.&#160;<a class="footnote-backref" href="#fnref:raschka2022machine" title="Jump back to footnote 36 in the text">&#8617;</a></p>
-</li>
-<li id="fn:murphy2022probabilistic">
-<p>Kevin P Murphy. <em>Probabilistic machine learning: an introduction</em>. MIT press, 2022. URL: <a href="https://annas-archive.org/md5/9a26e8cc5fa4c0b40d7a91443f9b71f8">https://annas-archive.org/md5/9a26e8cc5fa4c0b40d7a91443f9b71f8</a>.&#160;<a class="footnote-backref" href="#fnref:murphy2022probabilistic" title="Jump back to footnote 37 in the text">&#8617;</a></p>
-</li>
-<li id="fn:roberts2022principles">
-<p>Daniel A Roberts, Sho Yaida, and Boris Hanin. <em>The principles of deep learning theory</em>. Cambridge University Press Cambridge, MA, USA, 2022. URL: <a href="https://annas-archive.org/md5/e1fdfd303f45ed2689fe3c0dcfe1db62">https://annas-archive.org/md5/e1fdfd303f45ed2689fe3c0dcfe1db62</a>.&#160;<a class="footnote-backref" href="#fnref:roberts2022principles" title="Jump back to footnote 38 in the text">&#8617;</a></p>
-</li>
-<li id="fn:prince2023understanding">
-<p>Simon J.D. Prince. <em>Understanding Deep Learning</em>. The MIT Press, 2023. URL: <a href="http://udlbook.com">http://udlbook.com</a>.&#160;<a class="footnote-backref" href="#fnref:prince2023understanding" title="Jump back to footnote 39 in the text">&#8617;</a></p>
-</li>
-<li id="fn:zhang2023dive">
-<p>Aston Zhang, Zachary C. Lipton, Mu Li, and Alexander J. Smola. <em>Dive into Deep Learning</em>. Cambridge University Press, 2023. \url <a href="https://D2L.ai">https://D2L.ai</a>. URL: <a href="https://d2l.ai">https://d2l.ai</a>.&#160;<a class="footnote-backref" href="#fnref:zhang2023dive" title="Jump back to footnote 40 in the text">&#8617;</a></p>
-</li>
-<li id="fn:albrecht2024multi">
-<p>Stefano V Albrecht, Filippos Christianos, and Lukas Schäfer. <em>Multi-agent reinforcement learning: Foundations and modern approaches</em>. MIT Press, 2024.&#160;<a class="footnote-backref" href="#fnref:albrecht2024multi" title="Jump back to footnote 41 in the text">&#8617;</a></p>
+<p>Russell, S. J. &amp; Norvig, P. <em>Artificial intelligence: A modern approach</em>. (Pearson, 2020).&#160;<a class="footnote-backref" href="#fnref:russell2020artificial" title="Jump back to footnote 12 in the text">&#8617;</a></p>
 </li>
 <li id="fn:hendrycks2024introduction">
-<p>Dan Hendrycks. <em>Introduction to AI safety, ethics and society</em>. Dan Hendrycks, 2024.&#160;<a class="footnote-backref" href="#fnref:hendrycks2024introduction" title="Jump back to footnote 42 in the text">&#8617;</a></p>
+<p>Hendrycks, D. <em>Introduction to AI safety, ethics and society</em>. (Dan Hendrycks, 2024).&#160;<a class="footnote-backref" href="#fnref:hendrycks2024introduction" title="Jump back to footnote 13 in the text">&#8617;</a></p>
+</li>
+<li id="fn:fleuret2023little">
+<p>Fleuret, F. <em>The little book of deep learning</em>. (François Fleuret, 2023).&#160;<a class="footnote-backref" href="#fnref:fleuret2023little" title="Jump back to footnote 14 in the text">&#8617;</a></p>
+</li>
+<li id="fn:bishop2024deep">
+<p>Bishop, C. M. &amp; Bishop, H. <em><a href="https://annas-archive.org/md5/6d1f851e90bf7847ad9999efadc56d5b">Deep learning: Foundations and concepts</a></em>. (Springer, 2024).&#160;<a class="footnote-backref" href="#fnref:bishop2024deep" title="Jump back to footnote 15 in the text">&#8617;</a></p>
+</li>
+<li id="fn:nielsen2015neural">
+<p>Nielsen, A. <a href="https://lit2talks.com/upload/neuralnetworksanddeeplearning.pdf">Neural networks and deep learning</a>. (2015).&#160;<a class="footnote-backref" href="#fnref:nielsen2015neural" title="Jump back to footnote 16 in the text">&#8617;</a></p>
+</li>
+<li id="fn:goodfellow2016deep">
+<p>Goodfellow, I., Bengio, Y. &amp; Courville, A. <em><a href="https://annas-archive.org/md5/147862ee2c14791ac71520dca611a7d5">Deep learning</a></em>. (MIT press, 2016).&#160;<a class="footnote-backref" href="#fnref:goodfellow2016deep" title="Jump back to footnote 17 in the text">&#8617;</a></p>
+</li>
+<li id="fn:prince2023understanding">
+<p>Prince, S. J. D. <em><a href="http://udlbook.com">Understanding deep learning</a></em>. (The MIT Press, 2023).&#160;<a class="footnote-backref" href="#fnref:prince2023understanding" title="Jump back to footnote 18 in the text">&#8617;</a></p>
+</li>
+<li id="fn:zhang2023dive">
+<p>Zhang, A., Lipton, Z. C., Li, M. &amp; Smola, A. J. <em><a href="https://d2l.ai">Dive into deep learning</a></em>. (Cambridge University Press, 2023).&#160;<a class="footnote-backref" href="#fnref:zhang2023dive" title="Jump back to footnote 19 in the text">&#8617;</a></p>
+</li>
+<li id="fn:roberts2022principles">
+<p>Roberts, D. A., Yaida, S. &amp; Hanin, B. <em><a href="https://annas-archive.org/md5/e1fdfd303f45ed2689fe3c0dcfe1db62">The principles of deep learning theory</a></em>. (Cambridge University Press Cambridge, MA, USA, 2022).&#160;<a class="footnote-backref" href="#fnref:roberts2022principles" title="Jump back to footnote 20 in the text">&#8617;</a></p>
+</li>
+<li id="fn:howard2020deep">
+<p>Howard, J. &amp; Gugger, S. <em><a href="https://annas-archive.org/md5/7e55aada5f4f30daa2a340c5409c896c">Deep learning for coders with fastai and PyTorch</a></em>. (O'Reilly Media, 2020).&#160;<a class="footnote-backref" href="#fnref:howard2020deep" title="Jump back to footnote 21 in the text">&#8617;</a></p>
+</li>
+<li id="fn:weidman2019deep">
+<p>Weidman, S. <em><a href="https://annas-archive.org/md5/af1400a89b34bf0ac0a4a35d108d67ad">Deep learning from scratch: Building with python from first principles</a></em>. (O'Reilly Media, 2019).&#160;<a class="footnote-backref" href="#fnref:weidman2019deep" title="Jump back to footnote 22 in the text">&#8617;</a></p>
+</li>
+<li id="fn:kinsley2020neural">
+<p>Kinsley, H. &amp; Kukieła, D. <em>Neural networks from scratch in python: Building neural networks in raw python</em>. (Verlag nicht ermittelbar, 2020).&#160;<a class="footnote-backref" href="#fnref:kinsley2020neural" title="Jump back to footnote 23 in the text">&#8617;</a></p>
+</li>
+<li id="fn:chollet2021deep">
+<p>Chollet, F. <em><a href="https://annas-archive.org/md5/59737ebea569c42afd3c3acabf2a5f9a">Deep learning with python</a></em>. (Simon; Schuster, 2021).&#160;<a class="footnote-backref" href="#fnref:chollet2021deep" title="Jump back to footnote 24 in the text">&#8617;</a></p>
+</li>
+<li id="fn:raschka2022machine">
+<p>Raschka, S., Liu, Y. H., Mirjalili, V. &amp; Dzhulgakov, D. <em><a href="https://annas-archive.org/md5/c1ae0c9c5eaff8b929972790879197e6">Machine learning with PyTorch and scikit-learn: Develop machine learning and deep learning models with python</a></em>. (Packt Publishing Ltd, 2022).&#160;<a class="footnote-backref" href="#fnref:raschka2022machine" title="Jump back to footnote 25 in the text">&#8617;</a></p>
+</li>
+<li id="fn:james2023introduction">
+<p>James, G., Witten, D., Hastie, T., Tibshirani, R. &amp; Taylor, J. <em><a href="https://www.statlearning.com">An introduction to statistical learning: With applications in python</a></em>. (Springer Nature, 2023).&#160;<a class="footnote-backref" href="#fnref:james2023introduction" title="Jump back to footnote 26 in the text">&#8617;</a></p>
+</li>
+<li id="fn:deisenroth2020mathematics">
+<p>Deisenroth, M. P., Faisal, A. A. &amp; Ong, C. S. <em><a href="https://annas-archive.org/md5/170355f6bd92c95c84a43414cfcffec2">Mathematics for machine learning</a></em>. (Cambridge University Press, 2020).&#160;<a class="footnote-backref" href="#fnref:deisenroth2020mathematics" title="Jump back to footnote 27 in the text">&#8617;</a></p>
+</li>
+<li id="fn:barber2012bayesian">
+<p>Barber, D. <em><a href="http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/020217.pdf">Bayesian reasoning and machine learning</a></em>. (Cambridge University Press, 2012).&#160;<a class="footnote-backref" href="#fnref:barber2012bayesian" title="Jump back to footnote 28 in the text">&#8617;</a></p>
+</li>
+<li id="fn:murphy2022probabilistic">
+<p>Murphy, K. P. <em><a href="https://annas-archive.org/md5/9a26e8cc5fa4c0b40d7a91443f9b71f8">Probabilistic machine learning: An introduction</a></em>. (MIT press, 2022).&#160;<a class="footnote-backref" href="#fnref:murphy2022probabilistic" title="Jump back to footnote 29 in the text">&#8617;</a></p>
+</li>
+<li id="fn:huyen2022designing">
+<p>Huyen, C. <em><a href="https://annas-archive.org/md5/f5c999ff6f4f7def83fa044b038f9390">Designing machine learning systems</a></em>. (\" O'Reilly Media, Inc.\", 2022).&#160;<a class="footnote-backref" href="#fnref:huyen2022designing" title="Jump back to footnote 30 in the text">&#8617;</a></p>
+</li>
+<li id="fn:mohri2018foundations">
+<p>Mohri, M., Rostamizadeh, A. &amp; Talwalkar, A. <em><a href="https://annas-archive.org/md5/1495446fc912817f0cd2986905eb8389">Foundations of machine learning</a></em>. (MIT press, 2018).&#160;<a class="footnote-backref" href="#fnref:mohri2018foundations" title="Jump back to footnote 31 in the text">&#8617;</a></p>
+</li>
+<li id="fn:alpaydin2020introduction">
+<p>Alpaydin, E. <em><a href="https://annas-archive.org/md5/4e078be579f512b629817cbc83b62e93">Introduction to machine learning</a></em>. (MIT press, 2020).&#160;<a class="footnote-backref" href="#fnref:alpaydin2020introduction" title="Jump back to footnote 32 in the text">&#8617;</a></p>
+</li>
+<li id="fn:burkov2019hundred">
+<p>Burkov, A. <em><a href="https://annas-archive.org/md5/07912d7f54c6ef124c53d18cc69859bf">The hundred-page machine learning book</a></em>. (Andriy Burkov Quebec City, QC, Canada, 2019).&#160;<a class="footnote-backref" href="#fnref:burkov2019hundred" title="Jump back to footnote 33 in the text">&#8617;</a></p>
+</li>
+<li id="fn:serrano2021grokking">
+<p>Serrano, L. <em>Grokking machine learning</em>. (Simon; Schuster, 2021).&#160;<a class="footnote-backref" href="#fnref:serrano2021grokking" title="Jump back to footnote 34 in the text">&#8617;</a></p>
+</li>
+<li id="fn:andrew2018reinforcement">
+<p>Andrew, B. &amp; Richard S, S. <em><a href="https://annas-archive.org/md5/cd556761e796b7c76c1c7a570482eba7">Reinforcement learning: An introduction</a></em>. (The MIT Press, 2018).&#160;<a class="footnote-backref" href="#fnref:andrew2018reinforcement" title="Jump back to footnote 35 in the text">&#8617;</a></p>
+</li>
+<li id="fn:albrecht2024multi">
+<p>Albrecht, S. V., Christianos, F. &amp; Schäfer, L. <em>Multi-agent reinforcement learning: Foundations and modern approaches</em>. (MIT Press, 2024).&#160;<a class="footnote-backref" href="#fnref:albrecht2024multi" title="Jump back to footnote 36 in the text">&#8617;</a></p>
+</li>
+<li id="fn:kirk2016programming">
+<p>Kirk, D. B. &amp; Hwu, W. W. <em>Programming massively parallel processors: A hands-on approach</em>. (Morgan Kaufmann, 2016).&#160;<a class="footnote-backref" href="#fnref:kirk2016programming" title="Jump back to footnote 37 in the text">&#8617;</a></p>
+</li>
+<li id="fn:jax2018github">
+<p>Bradbury, J. <em>et al.</em> <a href="http://github.com/jax-ml/jax">JAX: Composable transformations of Python+NumPy programs</a>. (2018).&#160;<a class="footnote-backref" href="#fnref:jax2018github" title="Jump back to footnote 38 in the text">&#8617;</a></p>
+</li>
+<li id="fn:wolf-etal-2020-transformers">
+<p>Wolf, T. <em>et al.</em> <a href="https://www.aclweb.org/anthology/2020.emnlp-demos.6">Transformers: State-of-the-art natural language processing</a>. in <em>Proceedings of the 2020 conference on empirical methods in natural language processing: System demonstrations</em> 38--45 (Association for Computational Linguistics, 2020).&#160;<a class="footnote-backref" href="#fnref:wolf-etal-2020-transformers" title="Jump back to footnote 39 in the text">&#8617;</a></p>
+</li>
+<li id="fn:tillet2019triton">
+<p>Tillet, P., Kung, H.-T. &amp; Cox, D. <a href="https://www.eecs.harvard.edu/\textasciitilde htk/publication/2019-mapl-tillet-kung-cox.pdf">Triton: An intermediate language and compiler for tiled neural network computations</a>. 10--19 (2019).&#160;<a class="footnote-backref" href="#fnref:tillet2019triton" title="Jump back to footnote 40 in the text">&#8617;</a></p>
+</li>
+<li id="fn:mlx2023">
+<p>Awni, A. <em>et al.</em> <a href="https://github.com/ml-explore/mlx">MLX</a>. (2023).&#160;<a class="footnote-backref" href="#fnref:mlx2023" title="Jump back to footnote 41 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>
@@ -1199,7 +1572,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2025 Omar Olivares Urrutia
+      Copy, share and modify freely ♡
     </div>
   
   
@@ -1291,6 +1664,12 @@
     
     
       <script src="../../../../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+        <script src="../../../../../static/katex.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/katex.min.js"></script>
+      
+        <script src="https://unpkg.com/katex@0/dist/contrib/auto-render.min.js"></script>
       
     
   </body>
