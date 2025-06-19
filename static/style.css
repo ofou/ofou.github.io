@@ -188,3 +188,7 @@ blockquote {
 .book-grid img:hover {
   transform: scale(1.05);
 }
+
+.md-source-file {
+  font-family: var(--font-noto-sans);
+}
