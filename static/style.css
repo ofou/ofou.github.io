@@ -60,12 +60,9 @@ html {
 
 .md-typeset img,
 .md-typeset video {
-  border-radius: 1rem;
   margin: 0 auto;
   display: block;
-  border: 1px solid var(--timberwolf-2);
-  border-radius: 0.5em;
-  padding: 0.5em;
+  border-radius: 0.2rem;
 }
 
 .md-typeset .md-author img {
@@ -77,8 +74,8 @@ html {
 
 .md-typeset img:hover,
 .md-typeset video:hover {
-  border-color: var(--timberwolf);
-  background-color: var(--black);
+  /* border-color: var(--timberwolf); */
+  /* background-color: var(--black); */
   transition: background-color 0.5s ease-in-out;
   position: relative;
   z-index: 1;
@@ -170,4 +167,24 @@ body::after {
 
 blockquote {
   font-style: italic;
+}
+
+/* Book grid layout */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+  justify-items: center;
+}
+
+.book-grid img {
+  width: auto;
+  height: 200px;
+  border-radius: 0.2rem;
+  transition: transform 0.3s ease;
+}
+
+.book-grid img:hover {
+  transform: scale(1.05);
 }
