@@ -14,3 +14,4 @@ backrefs
 requests
 mkdocs-bibtex
 mkdocs-rss-plugin
+pypandoc
