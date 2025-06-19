@@ -1,6 +1,8 @@
+FROM pandoc/core:latest AS pandoc
 FROM python:3.12-slim AS builder
 WORKDIR /app
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+COPY --from=pandoc /usr/local/bin/pandoc /usr/local/bin/pandoc
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
