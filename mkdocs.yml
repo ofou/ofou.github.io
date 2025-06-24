@@ -107,7 +107,6 @@ plugins:
       enable_git_follow: true
       enabled: true
       strict: true
-      ignored_commits_file: .git-blame-ignore-revs
 
 extra:
   status:
