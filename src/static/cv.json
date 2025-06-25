@@ -6,7 +6,7 @@
     "email": "omar@olivares.cl",
     "phone": "+56983810103",
     "url": "https://olivares.cl",
-    "summary": "I'm a Software Engineer with a strong background in Artificial Intelligence (AI) and Machine Learning (ML) who loves turning complex ideas into practical solutions. I've worked as an AI Engineer, Developer Relations Engineer, and freelance content creator, crafting engaging AI-focused content. I've helped build AI-powered products such as Kilo Code (an autonomous coding agent), Emergent Mind (a RAG system for CS research), and a range of scalable web applications for early-stage startups.",
+    "summary": "I'm a Software Engineer with a passion for Artificial Intelligence (AI) and Machine Learning (ML) who likes to turn complex ideas into practical applications. I previously worked as a music producer, content creator for Neura Pod, then pivoted into AI Engineering and Developer Advocate, building AI-powered products like Kilo Code coding agent, Emergent Mind RAG systems for Computer Science research, and scalable web applications for multiple early-stage startups. I'm currently available for hiring, consulting, or collaboration.",
     "location": {
       "address": "Holanda 50",
       "postalCode": "7510043",
@@ -29,6 +29,10 @@
         "network": "Twitter",
         "username": "omarnomad",
         "url": "https://x.com/omarnomad"
+      },
+      {
+        "network": "Spotify",
+        "url": "https://open.spotify.com/artist/5e6x7QJXOGbkDEPpEOWm1w"
       }
     ]
   },
@@ -36,17 +40,18 @@
     {
       "institution": "Universidad Católica del Maule",
       "url": "https://portal.ucm.cl",
-      "area": "Artificial Intelligence",
+      "area": "Computer Science",
       "studyType": "Engineer's degree",
       "startDate": "2018-03",
-      "endDate": "2024-01",
-      "score": "7.0",
+      "endDate": "2023-12",
+      "score": "5.71/7.0",
       "courses": [
-        "Natural Language Processing",
+        "Artificial Intelligence",
         "Machine Learning",
+        "Natural Language Processing",
         "Deep Learning"
       ],
-      "summary": "Specialization in natural language processing and Artificial Intelligence. Minor in Musical Composition. Graduated with honors. Developed a fine-tuning of the `gpt-3.5-turbo` language model to help PAES students through personalized tutoring as an undergraduate thesis."
+      "summary": "Engineer's degree in Computer Science (+5 years) with Minor in Music Composition. Activities and societies: Cross-country Team, Music Composition Group. Thesis: 'Optimization of Language Models for Mathematics Higher Education Access Test (PAES)', supervised by Dr. Xaviera A. Lopez Cortes, along with Dr. Maria D. Aravena Diaz, and Dr. Sergio I. Hernández Alvarez. Graduated with honors."
     },
     {
       "institution": "Universidad de Talca",
@@ -54,18 +59,18 @@
       "area": "Computer Engineering",
       "studyType": "Engineer's degree",
       "startDate": "2015-03",
-      "endDate": "2018-12",
+      "endDate": "2017-12",
       "courses": [
         "Computer Architecture",
         "Data Structures and Algorithms",
         "Software Development"
       ],
-      "summary": "Focus on computer architecture, algorithms, and software development."
+      "summary": "Completed core engineering fundamentals such as Multivariate Calculus, Linear Algebra, and Software Engineering. Activities and societies: Rugby Sevens Team. Maintained academic excellence while working as IT Support Assistant. Transferred to UCM to eliminate 2-hour daily commute and focus on Computer Science."
     }
   ],
   "publications": [
     {
-      "name": "Bachelor Thesis",
+      "name": "Undergraduate Thesis",
       "publisher": "Universidad Católica del Maule",
       "releaseDate": "2024-02-03",
       "url": "https://olivares.cl/thesis.pdf",
@@ -132,7 +137,7 @@
       "url": "https://www.neurapod.com",
       "startDate": "2021-07",
       "endDate": "2021-09",
-      "summary": "Started my career in technical content creation, learning the basics of audiovisual production and scientific communication.",
+      "summary": "Started my career in technical content creation, audiovisual production and scientific communication.",
       "location": "San Diego, California, United States",
       "description": "YouTube channel focused on neurotechnology and AI education",
       "name": "Neura Pod"
@@ -169,14 +174,14 @@
       "name": "University of Talca"
     },
     {
-      "company": "Music Production",
+      "company": "Ableton",
       "position": "Music Producer",
       "startDate": "2008",
       "endDate": "2015",
       "summary": "Composing, producing, recording, mixing, and mastering tracks for Artists in Valencia, Spain.",
       "location": "Valencia, Valencian Community, Spain",
       "description": "Music production and audio engineering",
-      "name": "Music Production"
+      "name": "Ableton"
     }
   ],
   "certificates": [
@@ -273,9 +278,9 @@
       "keywords": ["Python", "EPUB", "Web Scraping", "Open Source"],
       "startDate": "2023-01",
       "endDate": "2023-03",
-      "url": "https://github.com/ofou/graham-essays",
+      "url": "https://olivares.cl/projects/graham/",
       "type": "application",
-      "roles": ["Creator"],
+      "roles": ["Creator", "Lead Developer"],
       "entity": "Personal Project"
     }
   ],
@@ -307,6 +312,7 @@
   ],
   "meta": {
     "canonical": "https://olivares.cl/resume.json",
-    "theme": "stackoverflow"
+    "theme": "stackoverflow",
+    "lastModified": "2025-06-24"
   }
 }

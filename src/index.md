@@ -7,13 +7,7 @@ date: 2025-12-21
 
 # Hello, I'm Omar
 
-I'm a Software Engineer with a passion for Artificial Intelligence (AI) and
-Machine Learning (ML) who likes to turn complex ideas into practical
-applications. I previously worked as a music producer, content creator for
-[Neura Pod], then pivoted into AI Engineering and Developer Advocate, building
-AI-powered products like [Kilo Code] coding agent, [Emergent Mind] RAG systems
-for CS research, and scalable web applications for various startups. I'm
-currently available for hiring, consulting, or collaboration.
+I'm a Software Engineer with a passion for Artificial Intelligence (AI) and Machine Learning (ML) who likes to turn complex ideas into practical applications. I previously worked as a music producer, content creator for [Neura Pod], then pivoted into AI Engineering and Developer Advocate, building AI-powered products like [Kilo Code] coding agent, [Emergent Mind] RAG systems for CS research, and scalable web applications for various startups. I'm currently available for hiring, consulting, or collaboration.
 
 ## What I Do
 
@@ -22,13 +16,11 @@ currently available for hiring, consulting, or collaboration.
 3. _Create technical content from internal docs to videos_
 4. _Independent research in AI, neuroscience, and machine learning_
 
-I also enjoy [making music], contributing to [open-source] projects, learning
-Mandarin (你好), and exploring new places around the world.
+I also enjoy [making music], contributing to [open-source] projects, learning Mandarin (你好), and exploring new places around the world.
 
 ## Let's Connect
 
-Reach out via [X], [LinkedIn], or [omar@olivares.cl] to discuss your next
-project or just to chat about technology.
+Reach out via [X], [LinkedIn], or [omar@olivares.cl] to discuss your next project or just to chat about technology.
 
 [Emergent Mind]: https://www.emergentmind.com
 [Kilo Code]: https://kilocode.ai
@@ -39,4 +31,4 @@ project or just to chat about technology.
 [open-source]: https://github.com/ofou
 [X]: https://twitter.com/omarnomad
 [LinkedIn]: https://www.linkedin.com/in/ofou
-[omar@olivares.cl]: mailto:omar@olivares.cl 
+[omar@olivares.cl]: mailto:omar@olivares.cl
