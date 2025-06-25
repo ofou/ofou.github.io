@@ -993,23 +993,14 @@
 
 <h1 id="textube-youtube-to-chatgpt-api">Textube: YouTube-to-ChatGPT API<a class="headerlink" href="#textube-youtube-to-chatgpt-api" title="Permanent link">&para;</a></h1>
 <p><strong>Built before Google integrated YouTube into Gemini natively</strong> :)</p>
-<p><em>Featured on <a href="https://news.ycombinator.com/item?id=41571706">Hacker News</a>,
-currently live at <a href="https://textube.olivares.cl">textube</a>,
-<a href="https://chatgpt.com/g/g-2KencLm4f-textube">ChatGPT Plugin</a> or
-<a href="https://github.com/ofou/texttube">GitHub</a></em></p>
+<p><em>Featured on <a href="https://news.ycombinator.com/item?id=41571706">Hacker News</a>, currently live at <a href="https://textube.olivares.cl">textube</a>, <a href="https://chatgpt.com/g/g-2KencLm4f-textube">ChatGPT Plugin</a> or <a href="https://github.com/ofou/texttube">GitHub</a></em></p>
 <h2 id="the-problem-i-solved">The Problem I Solved<a class="headerlink" href="#the-problem-i-solved" title="Permanent link">&para;</a></h2>
-<p>Before Google built YouTube integration directly into Gemini, there was no clean
-way to analyze YouTube videos with LLMs. You could copy-paste transcripts
-manually, but that was tedious and broke for long-form content. I built Textube
-to bridge this gap - a clean API that lets ChatGPT analyze any YouTube video or
-entire playlists.</p>
+<p>Before Google built YouTube integration directly into Gemini, there was no clean way to analyze YouTube videos with LLMs. You could copy-paste transcripts manually, but that was tedious and broke for long-form content. I built Textube to bridge this gap - a clean API that lets ChatGPT analyze any YouTube video or entire playlists.</p>
 <h2 id="technical-architecture">Technical Architecture<a class="headerlink" href="#technical-architecture" title="Permanent link">&para;</a></h2>
 <p><strong>FastAPI backend</strong> with two main endpoints:</p>
 <ul>
-<li><code>/watch?v={video_id}&amp;format={json|txt}</code> - Individual video transcripts
-  mirroring the YouTube API</li>
-<li><code>/playlist?list={playlist_id}</code> - Process entire playlists with metadata
-  mirroring the YouTube API</li>
+<li><code>/watch?v={video_id}&amp;format={json|txt}</code> - Individual video transcripts mirroring the YouTube API</li>
+<li><code>/playlist?list={playlist_id}</code> - Process entire playlists with metadata mirroring the YouTube API</li>
 </ul>
 <p><strong>Core Components:</strong></p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Captions</span><span class="p">:</span>
@@ -1033,29 +1024,25 @@ entire playlists.</p>
 <li>Serve as JSON/TXT or integrate with ChatGPT plugin</li>
 </ol>
 <h2 id="key-technical-decisions">Key Technical Decisions<a class="headerlink" href="#key-technical-decisions" title="Permanent link">&para;</a></h2>
-<p><strong>Caching Strategy</strong>: Started with local JSON files, migrated to Firestore as
-usage scaled</p>
+<p><strong>Caching Strategy</strong>: Started with local JSON files, migrated to Firestore as usage scaled</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Original approach - local caching</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">video_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">playlist_id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">video_id</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Scaled approach - Firestore with document references</span>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">video_ref</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">collection</span><span class="p">(</span><span class="s2">&quot;videos&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">document</span><span class="p">(</span><span class="n">video_id</span><span class="p">)</span>
 </span></code></pre></div>
-<p><strong>Token Counting</strong>: Used <code>tiktoken</code> to calculate exact token counts for ChatGPT
-context windows</p>
+<p><strong>Token Counting</strong>: Used <code>tiktoken</code> to calculate exact token counts for ChatGPT context windows</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">_count_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gpt-4&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">encoding</span> <span class="o">=</span> <span class="n">tiktoken</span><span class="o">.</span><span class="n">encoding_for_model</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">encoding</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
 </span></code></pre></div>
-<p><strong>Playlist Processing</strong>: Built to handle massive playlists (Lex Fridman's 250+
-videos, Dwarkesh's 72 videos = 1M+ words)</p>
+<p><strong>Playlist Processing</strong>: Built to handle massive playlists (Lex Fridman's 250+ videos, Dwarkesh's 72 videos = 1M+ words)</p>
 <ul>
 <li>Maintains video order through document references</li>
 <li>Calculates aggregate statistics (total tokens, characters, duration)</li>
 <li>Handles partial failures gracefully</li>
 </ul>
-<p><strong>ChatGPT Integration</strong>: Implemented as OpenAI plugin with proper API
-specification</p>
+<p><strong>ChatGPT Integration</strong>: Implemented as OpenAI plugin with proper API specification</p>
 <ul>
 <li>Exposes transcript data directly to ChatGPT's context</li>
 <li>Handles large transcripts through chunking strategies</li>
@@ -1085,25 +1072,16 @@ specification</p>
 <li>Graceful fallback to YouTube API when cache misses</li>
 </ul>
 <h2 id="open-source-proof-of-concept">Open Source Proof of Concept<a class="headerlink" href="#open-source-proof-of-concept" title="Permanent link">&para;</a></h2>
-<p><strong>Released as open source</strong> on GitHub to demonstrate the concept and let others
-build upon it. The goal was to validate demand for YouTube-LLM integration and
-show it was technically feasible.</p>
-<p><strong>Overwhelming demand</strong>: The service got so much usage that Google eventually
-banned it for exceeding API limits. This was actually validation - the demand
-was real enough that Google had to take action.</p>
-<p><strong>Strategic caching</strong>: Before the ban, I managed to cache thousands of popular
-videos and entire playlists (Karpathy's courses, 3Blue1Brown, Lex Fridman,
-etc.). These cached examples still work and demonstrate the concept.</p>
+<p><strong>Released as open source</strong> on GitHub to demonstrate the concept and let others build upon it. The goal was to validate demand for YouTube-LLM integration and show it was technically feasible.</p>
+<p><strong>Overwhelming demand</strong>: The service got so much usage that Google eventually banned it for exceeding API limits. This was actually validation - the demand was real enough that Google had to take action.</p>
+<p><strong>Strategic caching</strong>: Before the ban, I managed to cache thousands of popular videos and entire playlists (Karpathy's courses, 3Blue1Brown, Lex Fridman, etc.). These cached examples still work and demonstrate the concept.</p>
 <p><strong>Multiple interfaces</strong>:</p>
 <ul>
 <li><strong>Direct API access</strong> for developers: <code>GET /watch?v={video_id}&amp;format=json</code></li>
-<li><strong>ChatGPT plugin</strong> for conversational analysis: Integrated via OpenAI's plugin
-  system</li>
-<li><strong>Simple web interface</strong> for quick access: Clean HTML form with real-time
-  results</li>
+<li><strong>ChatGPT plugin</strong> for conversational analysis: Integrated via OpenAI's plugin system</li>
+<li><strong>Simple web interface</strong> for quick access: Clean HTML form with real-time results</li>
 </ul>
-<p>Check the <a href="https://textube.olivares.cl/docs">API docs</a> for more details. Here
-are some examples:</p>
+<p>Check the <a href="https://textube.olivares.cl/docs">API docs</a> for more details. Here are some examples:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>curl https://textube.olivares.cl/watch?v=bZQun8Y4L2A&amp;format=json | jq # State of GPT by Andrej Karpathy
 </span></code></pre></div>
 <p>Response:</p>
@@ -1168,47 +1146,29 @@ are some examples:</p>
 </span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="p">}</span>
 </span></code></pre></div>
 <h2 id="why-it-hit-hacker-news-frontpage">Why It Hit Hacker News Frontpage<a class="headerlink" href="#why-it-hit-hacker-news-frontpage" title="Permanent link">&para;</a></h2>
-<p><strong>Timing</strong>: Built this before major LLM providers integrated YouTube natively.
-Solved a real pain point that thousands of developers/researchers had.</p>
-<p><strong>Immediate utility</strong>: People could paste any YouTube URL and start analyzing
-the content with ChatGPT within seconds. No complex setup, no API keys.</p>
-<p><strong>Scale</strong>: Handled viral traffic from HN without breaking. The Firestore caching
-strategy paid off when hundreds of users started processing large playlists.</p>
-<p><strong>Community validation</strong>: HN commenters immediately understood the value and
-started sharing their own use cases - research, content analysis, learning from
-technical talks.</p>
+<p><strong>Timing</strong>: Built this before major LLM providers integrated YouTube natively. Solved a real pain point that thousands of developers/researchers had.</p>
+<p><strong>Immediate utility</strong>: People could paste any YouTube URL and start analyzing the content with ChatGPT within seconds. No complex setup, no API keys.</p>
+<p><strong>Scale</strong>: Handled viral traffic from HN without breaking. The Firestore caching strategy paid off when hundreds of users started processing large playlists.</p>
+<p><strong>Community validation</strong>: HN commenters immediately understood the value and started sharing their own use cases - research, content analysis, learning from technical talks.</p>
 <h2 id="technical-impact">Technical Impact<a class="headerlink" href="#technical-impact" title="Permanent link">&para;</a></h2>
-<p>This project validated several architectural patterns I've used in subsequent
-projects:</p>
-<p><strong>API-first design</strong>: Clean separation between data processing (captions.py) and
-API layer (app.py)</p>
-<p><strong>Progressive enhancement</strong>: Started simple (single videos) then expanded to
-complex use cases (playlists, bulk processing)</p>
-<p><strong>Caching as a first-class concern</strong>: Moved from local files to cloud database
-as usage patterns became clear</p>
-<p><strong>LLM integration patterns</strong>: Token counting, context window management, and
-plugin architectures that became standard later</p>
+<p>This project validated several architectural patterns I've used in subsequent projects:</p>
+<p><strong>API-first design</strong>: Clean separation between data processing (captions.py) and API layer (app.py)</p>
+<p><strong>Progressive enhancement</strong>: Started simple (single videos) then expanded to complex use cases (playlists, bulk processing)</p>
+<p><strong>Caching as a first-class concern</strong>: Moved from local files to cloud database as usage patterns became clear</p>
+<p><strong>LLM integration patterns</strong>: Token counting, context window management, and plugin architectures that became standard later</p>
 <h2 id="from-banned-to-built-in">From Banned to Built-in<a class="headerlink" href="#from-banned-to-built-in" title="Permanent link">&para;</a></h2>
-<p>The trajectory tells the story: Google banned the service due to demand, then
-months later built similar functionality directly into Gemini. Classic pattern
-of successful proof-of-concepts getting killed then rebuilt natively.</p>
-<p><strong>Open source legacy</strong>: The code remains available as a reference
-implementation. Shows how to:</p>
+<p>The trajectory tells the story: Google banned the service due to demand, then months later built similar functionality directly into Gemini. Classic pattern of successful proof-of-concepts getting killed then rebuilt natively.</p>
+<p><strong>Open source legacy</strong>: The code remains available as a reference implementation. Shows how to:</p>
 <ul>
 <li>Build LLM integrations before official APIs exist</li>
 <li>Handle scale with smart caching strategies</li>
 <li>Design APIs that work with both humans and AI systems</li>
 <li>Process large-scale content for AI consumption</li>
 </ul>
-<p><strong>Validation through prohibition</strong>: Sometimes getting banned is the strongest
-product-market fit signal. The demand was real enough that Google had to
-intervene.</p>
-<p>The lesson: build proof-of-concepts that push boundaries. Even if they get shut
-down, they demonstrate market demand and technical feasibility that larger
-companies eventually adopt.</p>
+<p><strong>Validation through prohibition</strong>: Sometimes getting banned is the strongest product-market fit signal. The demand was real enough that Google had to intervene.</p>
+<p>The lesson: build proof-of-concepts that push boundaries. Even if they get shut down, they demonstrate market demand and technical feasibility that larger companies eventually adopt.</p>
 <hr />
-<p><em>Open source on GitHub. Cached examples still work. Can be used via direct API
-calls or ChatGPT integration.</em></p>
+<p><em>Open source on GitHub. Cached examples still work. Can be used via direct API calls or ChatGPT integration.</em></p>
 
 
 
@@ -1231,7 +1191,7 @@ calls or ChatGPT integration.</em></p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="June 18, 2025 19:07:28 -04"><span class="timeago" datetime="2025-06-18T19:07:28-04:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="June 18, 2025 19:07:28 -04">2025-06-18</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="June 25, 2025 19:35:27 -04"><span class="timeago" datetime="2025-06-25T19:35:27-04:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="June 25, 2025 19:35:27 -04">2025-06-25</span>
   </span>
 
     
