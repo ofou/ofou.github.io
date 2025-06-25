@@ -1,14 +1,7 @@
 site_name: Omar Olivares Urrutia
 site_url: https://olivares.cl
 site_author: Omar Olivares Urrutia
-site_description:
-  "I'm a Software Engineer with a strong background in Artificial Intelligence
-  (AI) and Machine Learning (ML) who loves turning complex ideas into practical
-  solutions. I've worked as an AI Engineer, Developer Relations Engineer, and
-  freelance content creator, crafting engaging AI-focused content. I've helped
-  build AI-powered products such as Kilo Code (an autonomous coding agent),
-  Emergent Mind (a RAG system for CS research), and a range of scalable web
-  applications for early-stage startups."
+site_description: "I'm a Software Engineer with a strong background in Artificial Intelligence (AI) and Machine Learning (ML) who loves turning complex ideas into practical solutions. I've worked as an AI Engineer, Developer Relations Engineer, and freelance content creator, crafting engaging AI-focused content. I've helped build AI-powered products such as Kilo Code (an autonomous coding agent), Emergent Mind (a RAG system for CS research), and a range of scalable web applications for early-stage startups."
 
 repo_name: olivares.cl
 repo_url: https://github.com/ofou/ofou.github.io
@@ -76,8 +69,8 @@ theme:
     text: Noto Serif SC
     code: JetBrains Mono
 
-  favicon: src/favicon.ico
-  logo: https://pbs.twimg.com/profile_images/1917419648938577920/GkcGw0mb_400x400.jpg
+  favicon: favicon.ico
+  logo: static/images/profile.png
 
 plugins:
   - blog:
@@ -128,7 +121,6 @@ extra:
       link: https://www.instagram.com/omarnomad/
     - icon: fontawesome/solid/calendar-days
       link: https://calendar.app.google/kcbfemxAYBoNPXbS8
-  favicon: favicon.ico
   generator: false
 
 extra_css:
