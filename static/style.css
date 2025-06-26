@@ -93,10 +93,8 @@ html {
   font-size: 13px;
   line-height: 1.2;
   font-variant-ligatures: contextual common-ligatures;
-  font-variant-ligatures: contextual common-ligatures;
   font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
   text-rendering: optimizeLegibility;
-  line-height: 1.2;
   padding: 0.2rem 0.5rem;
   border-radius: 0.2rem;
 }
@@ -198,4 +196,10 @@ blockquote {
 
 .md-source-file {
   font-family: var(--font-noto-sans);
+}
+
+.md-nav {
+  font-family: var(--font-noto-sans);
+  font-variant-east-asian: full-width;
+  font-feature-settings: "fwid" 1;
 }
