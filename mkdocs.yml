@@ -66,7 +66,7 @@ theme:
         icon: material/brightness-4
         name: Switch to system preference
   font:
-    text: Noto Serif SC
+    text: Noto Sans SC
     code: JetBrains Mono
 
   favicon: favicon.ico
@@ -76,6 +76,8 @@ plugins:
   - blog:
       archive: true
       categories: true
+      blog_toc: true
+      categories_toc: true
   - search:
       separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
   - bibtex:
