@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Andada+Pro:ital,wght@0,400..840;1,400..840&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Andada+Pro:ital,wght@0,400..840;1,400..840&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
 
 :root {
   /* Colors */
@@ -13,8 +13,43 @@
   /* Fonts */
   --font-jetbrains: "JetBrains Mono", monospace;
   --font-noto-sans: "Noto Sans SC", sans-serif;
-  --font-andada: "Andada Pro", serif;
+  --font-source-serif: "Source Serif 4", serif;
   --font-size-base: calc(18px + 0.1vw);
+}
+
+.md-header {
+  font-family: var(--font-noto-sans);
+}
+
+.md-header__source {
+  font-family: var(--font-jetbrains);
+}
+
+.md-tabs {
+  font-family: var(--font-noto-sans);
+}
+
+.md-post__content .md-typeset {
+  min-width: 700px;
+}
+
+article.md-post--excerpt p,
+article.md-post--excerpt nav {
+  display: none;
+}
+
+.md-post--excerpt {
+  margin-bottom: 0;
+}
+
+.md-post--excerpt .md-post__header {
+  min-height: 0;
+  font-family: var(--font-noto-sans);
+}
+
+a {
+  color: var(--black);
+  text-decoration: none;
 }
 
 h1,
@@ -26,12 +61,19 @@ h6 {
   font-family: var(--font-noto-sans);
 }
 
+h1,
+h2 {
+  font-style: italic;
+  font-family: var(--font-source-serif);
+}
+
 .md-sidebar__inner {
   font-family: var(--font-noto-sans);
 }
 
 .md-typeset {
-  font-family: var(--font-jetbrains);
+  font-family: var(--font-source-serif);
+  font-size: 1rem;
 }
 
 .md-search {
@@ -168,7 +210,7 @@ body::after {
 
 blockquote {
   font-style: italic;
-  font-family: var(--font-andada);
+  font-family: var(--font-source-serif);
   font-size: 1rem;
   color: var(--black);
 }
@@ -226,4 +268,8 @@ blockquote {
   font-size: 1rem;
   vertical-align: middle;
   margin-left: 0em;
+}
+
+.footnote {
+  font-family: var(--font-noto-sans);
 }
