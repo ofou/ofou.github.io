@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Andada+Pro:ital,wght@0,400..840;1,400..840&display=swap");
+
 :root {
   /* Colors */
   --timberwolf: #d6d6d6;
@@ -11,6 +13,7 @@
   /* Fonts */
   --font-jetbrains: "JetBrains Mono", monospace;
   --font-noto-sans: "Noto Sans SC", sans-serif;
+  --font-andada: "Andada Pro", serif;
   --font-size-base: calc(18px + 0.1vw);
 }
 
@@ -165,6 +168,9 @@ body::after {
 
 blockquote {
   font-style: italic;
+  font-family: var(--font-andada);
+  font-size: 1rem;
+  color: var(--black);
 }
 
 /* Book grid layout */
@@ -202,4 +208,22 @@ blockquote {
   font-family: var(--font-noto-sans);
   font-variant-east-asian: full-width;
   font-feature-settings: "fwid" 1;
+}
+
+.md-post__action {
+  font-family: var(--font-noto-sans);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.md-post__action::after {
+  content: " ⤺";
+  color: var(--md-typeset-a-color);
+  display: inline-block;
+  transform: rotate(45deg);
+  transform-origin: center;
+  font-family: var(--font-jetbrains);
+  font-size: 1rem;
+  vertical-align: middle;
+  margin-left: 0em;
 }
