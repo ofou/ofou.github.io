@@ -1,34 +1,34 @@
 ---
 title: Home
-subtitle: A brief biography about myself
+subtitle: A brief bio about myself
 author: ofou
 date: 2025-12-21
 ---
 
 # Hello, I'm Omar
 
-I'm a Software Engineer with a passion for Artificial Intelligence (AI) and Machine Learning (ML) who likes to turn complex ideas into practical applications. I previously worked as a music producer, content creator for [Neura Pod], then pivoted into AI Engineering and Developer Advocate, building AI-powered products like [Kilo Code] coding agent, [Emergent Mind] RAG systems for CS research, and scalable web applications for various startups. I'm currently available for hiring, consulting, or collaboration.
+<img src="static/images/E1031983-712A-4347-AFF4-D3F293CA39D9_1_201_a.jpeg" alt="Portrait of Omar Olivares, AI engineer, smiling in London" class="avatar">
 
-## What I Do
+I’m a software engineer (AI/ML) focused on interpretability, alignment, and cognition. I build AI-based products, dive deep into how digital and biological brains work, and help startups find product-market fit. Open to long-term moonshots and selective consulting engagements.
 
-1. _Build production-ready AI/ML products_
-2. _Consulting and training in AI/ML for startups and enterprises_
-3. _Create technical content from internal docs to videos_
-4. _Independent research in AI, neuroscience, and machine learning_
+## What I work on
 
-I also enjoy [making music], contributing to [open-source] projects, learning Mandarin (你好), and exploring new places around the world.
+1. _Building production-ready AI/ML systems (Agents, RAG, Evals, etc.)_
+2. _Consulting and training in AI/ML for startups_
+3. _Creating technical content and developer docs_
+4. _Conducting domain-specific research_
+
+Fun fact: I once worked as a [music] [producer] and YouTube [content] [creator]. In my free time you can find me making beats, learning Mandarin (你好), or exploring new places around the world.
 
 ## Let's Connect
 
-Reach out via [X], [LinkedIn], or [omar@olivares.cl] to discuss your next project or just to chat about technology.
+Reach out via [X], [LinkedIn], or [omar@olivares.cl] to discuss your next project or just to chat about tech.
 
-[Emergent Mind]: https://www.emergentmind.com
 [Kilo Code]: https://kilocode.ai
-[Neura Pod]: https://www.youtube.com/@NeuraPod
 [content]: https://www.youtube.com/watch?v=kFlLzFuslfQ
-[creation]: https://www.youtube.com/watch?v=ISa10TrJK7w
-[making music]: https://open.spotify.com/artist/5e6x7QJXOGbkDEPpEOWm1w
-[open-source]: https://github.com/ofou
+[creator]: https://www.youtube.com/watch?v=ISa10TrJK7w
+[music]: https://open.spotify.com/artist/5e6x7QJXOGbkDEPpEOWm1w
+[producer]: https://music.apple.com/us/artist/1600939432
 [X]: https://twitter.com/omarnomad
 [LinkedIn]: https://www.linkedin.com/in/ofou
 [omar@olivares.cl]: mailto:omar@olivares.cl
