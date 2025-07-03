@@ -18,17 +18,12 @@ I’m a software engineer (AI/ML) focused on interpretability, alignment, and co
 3. _Creating technical content and developer docs_
 4. _Conducting domain-specific research_
 
-Fun fact: I once worked as a [music] [producer] and YouTube [content] [creator]. In my free time you can find me making beats, learning Mandarin (你好), or exploring new places around the world.
+Fun fact: I once worked as a [music](https://open.spotify.com/artist/5e6x7QJXOGbkDEPpEOWm1w) [producer](https://music.apple.com/us/artist/1600939432) and YouTube [content](https://www.youtube.com/watch?v=kFlLzFuslfQ) [creator](https://www.youtube.com/watch?v=ISa10TrJK7w). In my free time you can find me making beats, learning Mandarin (你好), or exploring new places around the world.
 
 ## Let's Connect
 
 Reach out via [X], [LinkedIn], or [omar@olivares.cl] to discuss your next project or just to chat about tech.
 
-[Kilo Code]: https://kilocode.ai
-[content]: https://www.youtube.com/watch?v=kFlLzFuslfQ
-[creator]: https://www.youtube.com/watch?v=ISa10TrJK7w
-[music]: https://open.spotify.com/artist/5e6x7QJXOGbkDEPpEOWm1w
-[producer]: https://music.apple.com/us/artist/1600939432
 [X]: https://twitter.com/omarnomad
 [LinkedIn]: https://www.linkedin.com/in/ofou
 [omar@olivares.cl]: mailto:omar@olivares.cl
