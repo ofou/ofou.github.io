@@ -66,7 +66,7 @@ theme:
         icon: material/brightness-4
         name: Switch to system preference
   font:
-    text: Noto Sans SC
+    text: Source Serif 4
     code: JetBrains Mono
 
   favicon: favicon.ico
@@ -124,6 +124,9 @@ extra:
     - icon: fontawesome/solid/calendar-days
       link: https://calendar.app.google/kcbfemxAYBoNPXbS8
   generator: false
+  cards_layout_options:
+    background_image: static/images/E1031983-712A-4347-AFF4-D3F293CA39D9_1_201_a.jpeg
+    background_color: #2e3436
 
 extra_css:
   - static/style.css
