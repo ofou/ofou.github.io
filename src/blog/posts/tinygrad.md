@@ -256,7 +256,9 @@ For the function $y = x^2 + 3x + 1$, the derivative is:
 
 $$\frac{dy}{dx} = 2x + 3$$
 
-At our input value $x = 2$: $$\frac{dy}{dx}\bigg|_{x=2} = 2(2) + 3 = 7$$
+At our input value $x = 2$:
+
+$$\frac{dy}{dx}\bigg|_{x=2} = 2(2) + 3 = 7$$
 
 Now let's compute the gradient using Tinygrad's automatic differentiation:
 
