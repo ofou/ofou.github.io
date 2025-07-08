@@ -2,8 +2,6 @@
 title: "Things you should be reading about AI in 2025"
 date: 2025-01-01
 bibliography: ../../references.bib
-authors:
-  - ofou
 categories:
   - Books
 description: >
@@ -16,7 +14,7 @@ This year, my focus is on exploring the intersection of AI, Machine Learning, an
 
 <!-- more -->
 
-I'm thinking about pursuing a Master's in AI/Neuroscience but haven't settled yet. So, I compiled the [most cited](https://analytics.opensyllabus.org/singleton/fields?id=15) books and textbooks from top UK/US schools to see if I can get a sense of what I should be learning in a Master's program and meaningfully try to contribute to the field.
+I compiled the [most cited](https://analytics.opensyllabus.org/singleton/fields?id=15) books and textbooks from top UK/US schools to see if I can get a sense of what I should be learning in a Master's program and meaningfully try to contribute to the field.
 
 It's pretty easy to get lost in the [countless number of papers](https://www.latent.space/p/2025-papers) you have to read to catch up with the latest research/engineering in AI right now. I default to the basics instead and I'm reading textbooks over papers lately. If you really want to be up to date with the latest research, it should be something you personally care about, you might want to head to [Emergent Mind](https://www.emergentmind.com/papers) and check out all the papers that people are sharing right now (on X, Reddit, HN, etc.) because the space is moving so fast that as of today, [this text might be deprecated too](https://x.com/karpathy/status/1935077692258558443). But I won't advise people to start reading papers, because it's a lot of work and you'll probably get lost in a sea of noise.
 
