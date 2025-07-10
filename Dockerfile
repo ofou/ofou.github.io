@@ -18,7 +18,7 @@ COPY . .
 
 RUN if [ -f .git/shallow ]; then git fetch --unshallow; fi
 
-RUN mkdocs build
+RUN mkdocs build --clean
 
 FROM nginx:alpine
 COPY --from=builder /app/docs /usr/share/nginx/html
