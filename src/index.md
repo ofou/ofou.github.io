@@ -9,7 +9,7 @@ date: 2025-12-21
 
 <img src="static/images/E1031983-712A-4347-AFF4-D3F293CA39D9_1_201_a.jpeg" alt="Portrait of Omar Olivares, AI engineer, smiling in London" class="avatar">
 
-I’m a software engineer (AI/ML) focused on interpretability, alignment, and cognition. I build AI-based products, dive deep into how digital and biological brains work, and help startups find product-market fit. Open to long-term moonshots and selective consulting engagements.
+I’m a software engineer (AI/ML) interested in interpretability, alignment, and cognition itself. I like to build AI-based products, dive deep into how digital and biological brains work, and help startups get product-market fit. Open to long-term projects and selective consulting engagements.
 
 ## What I work on
 
@@ -17,6 +17,7 @@ I’m a software engineer (AI/ML) focused on interpretability, alignment, and co
 2. _Consulting and training in AI/ML for startups_
 3. _Creating technical content and developer docs_
 4. _Conducting domain-specific research_
+5. _I'm building my own [EDU startup]((https://kimel.cl)) for leveling up humans!_
 
 Fun fact: I once worked as a [music](https://open.spotify.com/artist/5e6x7QJXOGbkDEPpEOWm1w) [producer](https://music.apple.com/us/artist/1600939432) and YouTube [content](https://www.youtube.com/watch?v=kFlLzFuslfQ) [creator](https://www.youtube.com/watch?v=ISa10TrJK7w). In my free time you can find me making beats, learning Mandarin (你好), or exploring new places around the world.
 
