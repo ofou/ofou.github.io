@@ -9,7 +9,7 @@ date: 2025-12-21
 
 <img src="static/images/E1031983-712A-4347-AFF4-D3F293CA39D9_1_201_a.jpeg" alt="Portrait of Omar Olivares, AI engineer, smiling in London" class="avatar">
 
-I’m a software engineer (AI/ML) interested in interpretability, alignment, and cognition itself. I like to build AI-based products, dive deep into how digital and biological brains work, and help startups get product-market fit. Open to long-term projects and selective consulting engagements.
+I’m a software engineer (AI/ML) interested in interpretability, alignment, and cognition itself. I like to build AI-based products, dive deep into how digital and biological brains work, and help startups get product-market fit. I'm currently open to long-term projects and selective consulting engagements.
 
 ## What I work on
 
