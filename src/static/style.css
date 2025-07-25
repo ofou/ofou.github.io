@@ -121,6 +121,7 @@ h1,
 h2 {
   font-family: var(--font-ml-modern-mono);
   hyphens: none;
+  word-spacing: -0.2em;
 }
 
 .md-typeset h2 {
