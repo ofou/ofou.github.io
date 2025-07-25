@@ -145,6 +145,10 @@ h2 {
   
 }
 
+.md-typeset strong {
+  font-family: var(--font-ml-modern-mono);
+}
+
 /* KaTeX Math Font Integration with MLModern */
 .katex {
   font-family: var(--font-ml-modern-math) !important;
