@@ -1,24 +1,56 @@
-/* ML Modern Font Face Declarations */
+/* MLModern Font Face Declarations
+ * Based on CTAN MLModern package: https://www.ctan.org/tex-archive/fonts/mlmodern/
+ * All rights correspond to the original author, see https://www.ctan.org/tex-archive/fonts/mlmodern/
+ */
+
 @font-face {
-  font-family: "ML Modern";
-  src: url("fonts/mlmodern-regular.woff2") format("woff2");
-  font-weight: normal;
+  font-family: "MLModern";
+  src: url('./fonts/mlmr12.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
+/* MLModern Bold Extended */
 @font-face {
-  font-family: "ML Modern";
-  src: url("fonts/mlmodern-italic.woff2") format("woff2");
-  font-weight: normal;
+  font-family: "MLModern";
+  src: url('./fonts/mlmbx12.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* MLModern Roman Italic */
+@font-face {
+  font-family: "MLModern";
+  src: url('./fonts/mlmri12.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* MLModern Roman Outline (lighter weight variant) */
+@font-face {
+  font-family: "MLModern";
+  src: url('./fonts/mlmro12.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* MLModern Math Italic (for mathematical expressions) */
+@font-face {
+  font-family: "MLModernMath";
+  src: url('./fonts/mlmmi12.ttf') format('truetype');
+  font-weight: 400;
   font-style: italic;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "ML Modern";
-  src: url("fonts/mlmodern-bold.woff2") format("woff2");
-  font-weight: bold;
+  font-family: "MLModernMono";
+  src: url('./fonts/mlmtt12.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -35,8 +67,10 @@
   --font-jetbrains: "JetBrains Mono", monospace;
   --font-noto-sans: "Helvetica", "Helvetica Neue", "Arial", sans-serif;
   --font-source-serif: "Source Serif 4", serif;
-  --font-ml-modern: "ML Modern", serif;
-  --font-size-base: calc(18px + 0.2vw);
+  --font-ml-modern: "MLModern", "Computer Modern", serif;
+  --font-ml-modern-math: "MLModernMath", "Computer Modern", serif;
+  --font-ml-modern-mono: "MLModernMono", "JetBrains Mono", monospace;
+  --font-size-base: calc(16px + 0.1vw);
 }
 
 a {
@@ -80,12 +114,13 @@ h4,
 h5,
 h6 {
   font-family: var(--font-noto-sans);
+  text-align: left;
 }
 
 h1,
 h2 {
-  font-style: italic;
-  font-family: var(--font-ml-modern);
+  font-family: var(--font-ml-modern-mono);
+  hyphens: none;
 }
 
 .md-typeset h2 {
@@ -98,8 +133,51 @@ h2 {
 
 .md-typeset {
   font-family: var(--font-ml-modern);
-  font-size: 1rem;
-  max-width: 52ch;
+  font-size: 14pt;
+  line-height: 1.2;
+  font-variant-ligatures: contextual common-ligatures;
+  font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
+  letter-spacing: -0.01em;
+  text-align: justify;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  
+}
+
+/* KaTeX Math Font Integration with MLModern */
+.katex {
+  font-family: var(--font-ml-modern-math) !important;
+  font-size: inherit !important;
+}
+
+.katex .main {
+  font-family: var(--font-ml-modern-math) !important;
+}
+
+.katex .mathit,
+.katex .mathnormal {
+  font-family: var(--font-ml-modern-math) !important;
+  font-style: italic !important;
+}
+
+.katex .mathbf {
+  font-family: var(--font-ml-modern) !important;
+  font-weight: 700 !important;
+}
+
+.katex .mathrm,
+.katex .text {
+  font-family: var(--font-ml-modern) !important;
+  font-style: normal !important;
+}
+
+.katex .mathtt {
+  font-family: var(--font-ml-modern-mono) !important;
+}
+
+.katex .mathsf {
+  font-family: var(--font-ml-modern-sans) !important;
 }
 
 .md-search {
@@ -113,15 +191,6 @@ h2 {
 .md-typeset h1,
 .md-typeset h2 {
   font-weight: 700;
-}
-
-@keyframes full-rotate-1 {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 html {
@@ -172,61 +241,7 @@ html {
 }
 
 body {
-  font-family: var(--font-jetbrains);
-  line-height: 1.2;
-}
-
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  pointer-events: none;
-  opacity: 0.1;
-  z-index: 1;
-  transform-origin: center center;
-}
-
-body::before {
-  background-image: repeating-linear-gradient(
-      0deg,
-      var(--dark-cyan) 0px,
-      var(--dark-cyan) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      var(--dark-cyan) 0px,
-      var(--dark-cyan) 1px,
-      transparent 1px,
-      transparent 2px
-    );
-  animation: full-rotate-1 10s linear infinite;
-  will-change: transform;
-}
-
-body::after {
-  background-image: repeating-linear-gradient(
-      0deg,
-      var(--lapis-lazuli) 0px,
-      var(--lapis-lazuli) 1px,
-      transparent 1px,
-      transparent 3px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      var(--lapis-lazuli) 0px,
-      var(--lapis-lazuli) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-  animation: full-rotate-2 87s linear infinite;
-  will-change: transform;
-  mix-blend-mode: screen;
+  font-family: "MLModern", sans-serif;
 }
 
 blockquote {
