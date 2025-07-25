@@ -36,7 +36,7 @@
   --font-noto-sans: "Helvetica", "Helvetica Neue", "Arial", sans-serif;
   --font-source-serif: "Source Serif 4", serif;
   --font-ml-modern: "ML Modern", serif;
-  --font-size-base: 20px;
+  --font-size-base: calc(18px + 0.2vw);
 }
 
 a {
