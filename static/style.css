@@ -79,6 +79,7 @@ a {
 
 .md-header {
   font-family: var(--font-noto-sans);
+  font-weight: 700;
 }
 
 .md-header__source {
@@ -114,14 +115,15 @@ h4,
 h5,
 h6 {
   font-family: var(--font-noto-sans);
+  font-weight: 700;
   text-align: left;
 }
 
 h1,
 h2 {
-  font-family: var(--font-ml-modern-mono);
+  font-family: var(--font-noto-sans);
+  font-weight: 700;
   hyphens: none;
-  word-spacing: -0.2em;
 }
 
 .md-typeset h2 {
@@ -147,7 +149,7 @@ h2 {
 }
 
 .md-typeset strong {
-  font-family: var(--font-ml-modern-mono);
+  font-family: var(--font-ml-modern-math);
 }
 
 /* KaTeX Math Font Integration with MLModern */
@@ -195,6 +197,7 @@ h2 {
 
 .md-typeset h1,
 .md-typeset h2 {
+  font-family: var(--font-noto-sans);
   font-weight: 700;
 }
 
@@ -319,4 +322,22 @@ blockquote {
 
 .avatar:hover {
   filter: grayscale(0%);
+}
+/* Mode-specific colors for headings */
+[data-md-color-scheme="default"] .md-typeset h1,
+[data-md-color-scheme="default"] .md-typeset h2,
+[data-md-color-scheme="default"] .md-typeset h3,
+[data-md-color-scheme="default"] .md-typeset h4,
+[data-md-color-scheme="default"] .md-typeset h5,
+[data-md-color-scheme="default"] .md-typeset h6 {
+  color: var(--black);
+}
+
+[data-md-color-scheme="slate"] .md-typeset h1,
+[data-md-color-scheme="slate"] .md-typeset h2,
+[data-md-color-scheme="slate"] .md-typeset h3,
+[data-md-color-scheme="slate"] .md-typeset h4,
+[data-md-color-scheme="slate"] .md-typeset h5,
+[data-md-color-scheme="slate"] .md-typeset h6 {
+  color: var(--white);
 }
