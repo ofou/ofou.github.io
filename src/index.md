@@ -9,7 +9,7 @@ date: 2025-12-21
 
 <img src="static/images/E1031983-712A-4347-AFF4-D3F293CA39D9_1_201_a.jpeg" alt="Portrait of Omar Olivares, AI engineer, smiling in London" class="avatar">
 
-I’m a software engineer (AI/ML) focused on interpretability, alignment, and cognition. I build AI-based products, dive deep into how digital and biological brains work, and help startups find product-market fit. Open to long-term moonshots and selective consulting engagements.
+ I’m a software engineer specializing in artificial intelligence and machine learning, with strong interests in interpretability, alignment, and agentic systems. I build AI-powered products, explore how digital and biological brains work, and help startups find product–market fit. Open to long-term moonshots and selective consulting engagements.
 
 ## What I work on
 
