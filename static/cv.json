@@ -72,12 +72,24 @@
   ],
   "work": [
     {
+      "name": "Universidad de Talca",
+      "position": "Artificial Intelligence Engineer",
+      "url": "https://www.utalca.cl",
+      "startDate": "2025-09-01",
+      "summary": "Developing an AI-powered educational platform for SQL database learning using Large Language Models. The system aims to leverage multiple LLM agents to provide real-time feedback on SQL queries, addressing limitations in traditional database education.",
+      "highlights": [
+        "Evaluating and benchmarking LLM agents (Grok, GPT-5, Claude, Gemini, DeepSeek) for SQL education tasks",
+        "Building web-based platform with automated query evaluation and error analysis",
+        "Implementing agentic capabilities for comprehensive SQL feedback (syntax, semantic, logical errors)",
+        "Conducting research validation at University of Talca"
+      ]
+    },
+    {
       "name": "Kilo Code",
       "position": "Artificial Intelligence Engineer, Developer Relations",
       "url": "https://kilocode.ai",
       "startDate": "2025-03-01",
       "summary": "I travelled from Chile to Amsterdam to spearhead the development of Kilo Code, a clone of the leading open-source Coding Agents, as a Developer Advocate, joining a team of 12 engineers from project inception to founder mode",
-      "highlights": [],
       "endDate": "2025-05-01"
     },
     {
@@ -307,7 +319,14 @@
       "reference": "Upon request"
     }
   ],
-  "awards": [],
+  "awards": [
+    {
+      "title": "2nd Place at Computer Vision Hackathon",
+      "date": "2025-09-01",
+      "awarder": "Pais Digital | EY | Municipalidad de Las Condes",
+      "summary": "Won 2nd place at Fundación País Digital Computer Vision Hackathon, one of Chile's most important technology and AI events. Built a traffic monitoring system that detects congestion and anomalies using CCTV streams, scalable to thousands of cameras with low-cost online inference."
+    }
+  ],
   "volunteer": [
     {
       "organization": "Neuromatch Academy",
