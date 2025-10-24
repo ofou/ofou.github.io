@@ -10,8 +10,9 @@ Machine Learning (ML) who likes to turn complex ideas into practical
 applications. I previously worked as a music producer, content creator for
 [Neura Pod], then pivoted into AI Engineering and Developer Advocate, building
 AI-powered products like [Kilo Code] coding agent, [Emergent Mind] RAG systems
-for CS research, and scalable web applications for various startups. I'm
-currently available for hiring, consulting, or collaboration.
+for CS research, and scalable web applications for various startups. Currently, I'm developing LLM agents for SQL learning at [University of Talca].
+
+I'm currently available for hiring, consulting, or collaboration.
 
 ## What I Do
 
@@ -38,3 +39,4 @@ project or just to chat about technology.
 [X]: https://twitter.com/omarnomad
 [LinkedIn]: https://www.linkedin.com/in/ofou
 [omar@olivares.cl]: mailto:omar@olivares.cl 
+[University of Talca]: https://www.utalca.cl/en/
