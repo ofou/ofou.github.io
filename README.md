@@ -5,19 +5,14 @@ description: Software Engineer (AI/ML)
 
 # Hello, I'm Omar
 
-I'm a Software Engineer with a passion for Artificial Intelligence (AI) and
-Machine Learning (ML) who likes to turn complex ideas into practical
-applications. I previously worked as a music producer, content creator for
-[Neura Pod], then pivoted into AI Engineering and Developer Advocate, building
-AI-powered products like [Kilo Code] coding agent, [Emergent Mind] RAG systems
-for CS research, and scalable web applications for various startups. Currently, I'm developing LLM agents for SQL learning at [University of Talca].
+I'm a Software Engineer with a passion for AI/ML. I previously worked as a music producer, content creator for [Neura Pod], then pivoted into AI Engineering and Developer Advocate, building AI-powered products like [Kilo Code] coding agent, [Emergent Mind] RAG systems for CS research, and scalable web applications for various startups. Currently, I'm developing LLM agents for SQL learning at [University of Talca].
 
-I'm currently available for hiring, consulting, or collaboration.
+Available for hiring, consulting, or collaboration.
 
 ## What I Do
 
 1. _Build production-ready AI/ML products_
-2. _Consulting and training in AI/ML for startups and enterprises_
+2. _Community building in LLMs/AI/ML space_
 3. _Create technical content from internal docs to videos_
 4. _Independent research in AI, neuroscience, and machine learning_
 
@@ -38,5 +33,5 @@ project or just to chat about technology.
 [open-source]: https://github.com/ofou
 [X]: https://twitter.com/omarnomad
 [LinkedIn]: https://www.linkedin.com/in/ofou
-[omar@olivares.cl]: mailto:omar@olivares.cl 
+[omar@olivares.cl]: mailto:omar@olivares.cl
 [University of Talca]: https://www.utalca.cl/en/
