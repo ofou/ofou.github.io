@@ -170,7 +170,7 @@ h2 {
 
 .md-typeset ol li,
 .md-typeset ul li {
-  /* margin-bottom: .5em; */
+  margin-bottom: 0;
 }
 
 /* KaTeX Math Font Integration with MLModern */
