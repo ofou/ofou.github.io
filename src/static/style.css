@@ -168,6 +168,11 @@ h2 {
   margin-bottom: 1.333rem;
 }
 
+.md-typeset ol li,
+.md-typeset ul li {
+  /* margin-bottom: .5em; */
+}
+
 /* KaTeX Math Font Integration with MLModern */
 .katex {
   font-family: var(--font-ml-modern-math) !important;
