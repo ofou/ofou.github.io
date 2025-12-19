@@ -136,20 +136,36 @@ h2 {
 
 .md-typeset {
   font-family: var(--font-ml-modern);
-  font-size: 14pt;
-  line-height: 1.2;
+  font-size: 13pt;
+  line-height: 1.618;
   font-variant-ligatures: contextual common-ligatures;
   font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
-  letter-spacing: -0.01em;
-  text-align: justify;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-  
+  /* letter-spacing: -0.01em; */
+  /* text-align: justify; */
+  /* overflow-wrap: break-word; */
+  /* word-break: break-word; */
+  /* hyphens: auto; */
 }
 
 .md-typeset strong {
   font-family: var(--font-ml-modern-math);
+}
+
+.content blockquote,
+.content div,
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6,
+.content p,
+.content pre,
+.content table,
+.content dl,
+.content video {
+  margin-top: 0rem;
+  margin-bottom: 1.333rem;
 }
 
 /* KaTeX Math Font Integration with MLModern */
@@ -323,6 +339,7 @@ blockquote {
 .avatar:hover {
   filter: grayscale(0%);
 }
+
 /* Mode-specific colors for headings */
 [data-md-color-scheme="default"] .md-typeset h1,
 [data-md-color-scheme="default"] .md-typeset h2,
