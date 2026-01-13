@@ -1,14 +1,13 @@
 {
   "basics": {
     "name": "Omar Olivares Urrutia",
-    "label": "Artificial Intelligence Engineer",
+    "label": "AI / Machine Learning Engineer — LLM Agents, Evaluation & RAG Systems",
     "image": "https://olivares.cl/static/images/E1031983-712A-4347-AFF4-D3F293CA39D9_1_201_a.jpeg",
     "email": "omar@olivares.cl",
     "phone": "+56983810103",
     "url": "https://olivares.cl",
-    "summary": "I'm a Software Engineer with a strong background in Artificial Intelligence (AI) and Machine Learning (ML) who loves turning complex ideas into practical solutions. I've worked as an AI Engineer, Developer Relations Engineer, and freelance content creator, crafting engaging AI-focused content. I've helped build AI-powered products such as Kilo Code (an autonomous coding agent), Emergent Mind (a RAG system for CS research), and a range of scalable web applications for early-stage startups.",
+    "summary": "ML Engineer specializing in intelligent agents, LLM evaluation, and production RAG systems. Bridging research rigor with engineering excellence, from benchmarking 19 LLMs on SQL error detection (DataEd'26) to building high-growth open-source coding agents. Experienced in end-to-end ML lifecycles—data collection, fine-tuning, and scalable serving—with a focus on high-impact, user-facing AI products.",
     "location": {
-      "address": "Holanda 50",
       "postalCode": "7510043",
       "city": "Providencia",
       "countryCode": "CL",
@@ -16,13 +15,13 @@
     },
     "profiles": [
       {
-        "network": "LinkedIn",
-        "url": "https://www.linkedin.com/in/ofou/",
+        "network": "GitHub",
+        "url": "https://github.com/ofou",
         "username": "ofou"
       },
       {
-        "network": "GitHub",
-        "url": "https://github.com/ofou",
+        "network": "LinkedIn",
+        "url": "https://www.linkedin.com/in/ofou/",
         "username": "ofou"
       },
       {
@@ -32,224 +31,220 @@
       }
     ]
   },
+  "work": [
+    {
+      "name": "Universidad de Talca",
+      "position": "AI Engineer",
+      "url": "https://www.utalca.cl",
+      "startDate": "2025-09-01",
+      "endDate": "",
+      "summary": "Developing an AI-powered educational platform for SQL database learning using multi-agent LLM systems. Addressing limitations in traditional database education through real-time, granular feedback.",
+      "highlights": [
+        "Architecting a multi-agent system to provide real-time syntactic, semantic, and logical feedback on SQL queries",
+        "Evaluating and benchmarking LLM agents (Grok, GPT-4o, Claude 3.5, Gemini, DeepSeek) for educational tasks",
+        "Built evaluation suite benchmarking 19 LLMs on 300 SQL cases using LLM-as-a-Judge + human-annotated ground truth",
+        "Co-authored peer-reviewed paper accepted at DataEd'26 validating the system's pedagogical impact"
+      ]
+    },
+    {
+      "name": "Kilo Code",
+      "position": "AI Engineer & Developer Relations",
+      "url": "https://kilocode.ai",
+      "startDate": "2025-03-01",
+      "endDate": "2025-05-01",
+      "location": "San Francisco, CA / Amsterdam",
+      "summary": "Early team member (12-person founding team) of Kilo Code, a high-growth fork of the Cline/Roo-Code open-source coding agent. Joined from project inception to scaling phase.",
+      "highlights": [
+        "Collaborated with the founding team to launch one of the fastest-growing open-source coding agents",
+        "Built OpenRouter integrations and technical documentation contributing to #1 model ranking on OpenRouter",
+        "Developed integration guides and reference implementations for developer onboarding; project grew to ~10K GitHub stars",
+        "Worked directly on technical architecture and strategy with leadership (GitLab founder Sid Sijbrandij's team)"
+      ]
+    },
+    {
+      "name": "Emergent Mind",
+      "position": "AI Engineer",
+      "url": "https://www.emergentmind.com",
+      "startDate": "2024-02-01",
+      "endDate": "2025-02-01",
+      "location": "North Carolina, US (Remote)",
+      "summary": "Led AI development for an innovative arXiv research discovery platform, building production RAG systems to improve scientific search and analysis.",
+      "highlights": [
+        "Redesigned RAG pipeline (chunking + hybrid retrieval + reranking) improving search relevance for 200K+ indexed papers",
+        "Built ingestion and indexing pipelines processing daily arXiv submissions; implemented evaluation harness with Weights & Biases",
+        "Deployed FastAPI services with Docker; added tracing and reliability tests for production serving",
+        "Conducted experiments to improve model performance and accuracy; oversaw QA processes for AI-driven features"
+      ]
+    },
+    {
+      "name": "Neura Pod",
+      "position": "Content Developer",
+      "startDate": "2021-09-01",
+      "endDate": "2025-01-01",
+      "location": "San Diego, CA (Remote)",
+      "summary": "Led content creation for a popular series exploring neurotechnology and AI, translating complex scientific concepts for a broad audience.",
+      "highlights": [
+        "Translated advanced research into engaging content, contributing to channel growth exceeding 80,000 YouTube subscribers",
+        "Produced multiple viral videos surpassing 200,000 views each, fostering public understanding of BCIs and AI",
+        "Managed end-to-end production: research, scripting, and distribution across major social media platforms"
+      ]
+    },
+    {
+      "name": "Centro Nacional de Inteligencia Artificial",
+      "position": "AI Evaluation Contractor",
+      "url": "https://cenia.cl",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-30",
+      "location": "Santiago, Chile",
+      "summary": "Participated in rigorous AI model evaluation tasks for LATAM Spanish language models."
+    },
+    {
+      "name": "clicOH",
+      "position": "Software Engineer",
+      "startDate": "2021-07-01",
+      "endDate": "2021-12-01",
+      "location": "Remote",
+      "summary": "Software Engineer at a logistics startup (originally RayoApp, acquired by clicOH).",
+      "highlights": [
+        "Contributed to backend development and system integration post-acquisition",
+        " Maintained legacy systems while migrating features to new architecture"
+      ]
+    },
+    {
+      "name": "Suncast",
+      "position": "Software Engineering Intern",
+      "startDate": "2020-01-01",
+      "endDate": "2020-04-01",
+      "location": "Las Condes, Chile",
+      "summary": "Summer internship during Computer Science studies. Helped rebuild the platform into a scalable microservices-based architecture.",
+      "highlights": [
+        "Refactored monolithic application into microservices to improve scalability and maintainability",
+        "Implemented API endpoints and optimized database queries for renewable energy forecasting platform"
+      ]
+    },
+    {
+      "name": "Universidad de Talca",
+      "position": "Information Technology Support Assistant",
+      "startDate": "2016-01-01",
+      "endDate": "2018-12-01",
+      "location": "Curicó, Chile",
+      "summary": "Responsible for network resolution, technical support, and IT infrastructure deployment.",
+      "highlights": [
+        "Solved network issues and deployed IT infrastructure alongside the technical team"
+      ]
+    },
+    {
+      "name": "Ableton",
+      "position": "Music Producer",
+      "startDate": "2008-01-01",
+      "endDate": "2013-12-01",
+      "location": "Valencia, Spain",
+      "summary": "Composed, produced, and engineered tracks for artists."
+    }
+  ],
   "education": [
+    {
+      "institution": "Centro Nacional de Inteligencia Artificial (CENIA)",
+      "url": "https://diplomado.cenia.cl",
+      "area": "Generative AI and Large Language Models",
+      "studyType": "Postgraduate Diploma (Feb 2026)",
+      "startDate": "2025-08-18",
+      "endDate": "2026-02-01",
+      "courses": [
+        "LLM Fine-tuning (LoRA, QLoRA, PEFT)",
+        "Production ML (PyTorch, MLflow, W&B)",
+        "Multimodal Models & RAG Systems",
+        "Ethical AI & Bias Management"
+      ]
+    },
     {
       "institution": "Universidad Católica del Maule",
       "url": "https://portal.ucm.cl",
       "area": "Computer Science",
       "studyType": "Engineer's degree",
       "startDate": "2018-03-01",
-      "endDate": "2024-01-01",
-      "score": "",
+      "endDate": "2023-12-01",
+      "score": "5.71/7",
       "courses": [
-        "Natural Language Processing",
-        "Machine Learning",
-        "Deep Learning"
+        "Thesis: Fine-tuned GPT-3.5 for Chile's PAES math exam — improved accuracy from 0.78 to 0.94 (+20%)",
+        "Data Structures & Algorithms, Database Systems, Distributed Systems, AI/ML"
       ]
     },
     {
       "institution": "Universidad de Talca",
-      "url": "https://www.utalca.cl",
       "area": "Computer Engineering",
       "studyType": "Engineer's degree",
       "startDate": "2015-03-01",
-      "endDate": "2018-12-01",
-      "courses": [
-        "Computer Architecture",
-        "Data Structures and Algorithms",
-        "Software Development"
-      ]
+      "endDate": "2017-12-01"
     }
   ],
   "publications": [
     {
-      "name": "Bachelor Thesis",
+      "name": "Assessing the Ability of Large Language Models to Identify and Explain Errors in SQL Queries",
+      "publisher": "DataEd'26: International Workshop on Data Systems Education",
+      "releaseDate": "2026-03-24",
+      "url": "https://dataedinitiative.github.io/DataEd26/index.html",
+      "summary": "Empirical evaluation of 19 LLMs on SQL error detection. Used LLM-as-a-Judge paradigm (300 test cases) and human-annotated ground truth. Findings highlight LLM potential for automated tutoring systems."
+    },
+    {
+      "name": "Optimization of Language Models for Chile's Mathematics Higher Education Admission Test (PAES)",
       "publisher": "Universidad Católica del Maule",
       "releaseDate": "2024-02-03",
       "url": "https://olivares.cl/thesis.pdf",
-      "summary": "Optimization of Language Models for Chile’s Mathematics Higher Education Admission Test (PAES): A Proof of Concept"
-    }
-  ],
-  "work": [
-    {
-      "name": "Universidad de Talca",
-      "position": "Artificial Intelligence Engineer",
-      "url": "https://www.utalca.cl",
-      "startDate": "2025-09-01",
-      "summary": "Developing an AI-powered educational platform for SQL database learning using Large Language Models. The system aims to leverage multiple LLM agents to provide real-time feedback on SQL queries, addressing limitations in traditional database education.",
-      "highlights": [
-        "Evaluating and benchmarking LLM agents (Grok, GPT-5, Claude, Gemini, DeepSeek) for SQL education tasks",
-        "Building web-based platform with automated query evaluation and error analysis",
-        "Implementing agentic capabilities for comprehensive SQL feedback (syntax, semantic, logical errors)",
-        "Conducting research validation at University of Talca"
-      ]
-    },
-    {
-      "name": "Kilo Code",
-      "position": "Artificial Intelligence Engineer, Developer Relations",
-      "url": "https://kilocode.ai",
-      "startDate": "2025-03-01",
-      "summary": "I travelled from Chile to Amsterdam to spearhead the development of Kilo Code, a clone of the leading open-source Coding Agents, as a Developer Advocate, joining a team of 12 engineers from project inception to founder mode",
-      "endDate": "2025-05-01"
-    },
-    {
-      "name": "Emergent Mind",
-      "position": "Artificial Intelligence Engineer",
-      "url": "https://www.emergentmind.com",
-      "startDate": "2024-02-01",
-      "summary": "Leading AI development for Emergent Mind's innovative arXiv research discovery and learning platform. As part of a small, high-impact team, I'm helping build the next generation of AI assistants for learning and computer science research.",
-      "highlights": [
-        "Collaborate closely with the founder on product strategy and product development",
-        "Implement and fine-tune deep learning models for research discovery and analysis",
-        "Design pipelines with RAG to improve search result quality and relevance",
-        "Conduct experiments to improve model performance and accuracy",
-        "Oversee QA processes for AI-driven features",
-        "Create tools for providing research-backed answers efficiently",
-        "Conceptualize and prototype innovative AI features to drive platform growth"
-      ]
-    },
-    {
-      "name": "Neura Pod",
-      "position": "Content Developer",
-      "url": "https://www.neurapod.com",
-      "startDate": "2021-09-01",
-      "endDate": "2025-01-01",
-      "summary": "I lead content creation for Neura Pod, a popular series exploring cutting-edge neurotechnology topics including brain-machine interfaces, neurological conditions, and artificial intelligence. As a full-stack content producer, I translate complex scientific concepts into engaging, accessible content for a broad audience.",
-      "highlights": [
-        "Translated complex scientific concepts into engaging, accessible content for a broad audience",
-        "Managed end-to-end production from ideation to publication",
-        "Developed concepts, wrote scripts, recorded voiceovers, edited videos, and oversaw distribution",
-        "Contributed to channel growth exceeding 80,000 YouTube subscribers",
-        "Produced multiple viral videos surpassing 200,000 views each",
-        "Expanded Neura Pod's presence across major social media platforms"
-      ]
-    },
-    {
-      "name": "Neura Pod",
-      "position": "Intern",
-      "url": "https://www.neurapod.com",
-      "startDate": "2021-07-01",
-      "endDate": "2021-09-01",
-      "summary": "Started my career in technical content creation, learning the basics of audiovisual production and scientific communication."
-    },
-    {
-      "name": "Rayo",
-      "position": "Software Engineer",
-      "url": "https://www.rayo.com",
-      "startDate": "2021-07-01",
-      "endDate": "2021-12-01",
-      "summary": "Optimized MongoDB and SQL usage to reduce costs."
-    },
-    {
-      "name": "Suncast",
-      "position": "Software Engineer",
-      "url": "https://www.suncast.cl",
-      "startDate": "2020-01-01",
-      "endDate": "2020-04-01",
-      "summary": "Help to rebuild the platform into a microservices-based architecture."
-    },
-    {
-      "name": "University of Talca",
-      "position": "IT Support Assistant",
-      "url": "https://www.utalca.cl",
-      "startDate": "2016-01-01",
-      "endDate": "2018-12-01",
-      "summary": "Resolved network issues and provided technical support to students, improving the efficiency of the IT team."
-    },
-    {
-      "name": "Music Production",
-      "position": "Music Producer",
-      "startDate": "2008-01-01",
-      "endDate": "2015-01-01",
-      "summary": "Composing, producing, recording, mixing, and mastering tracks for Artists in Valencia, Spain."
-    }
-  ],
-  "certificates": [
-    {
-      "name": "IELTS Academic - Overall Band Score 7.5 (C1 Level)",
-      "date": "2025-07-01",
-      "issuer": "Cambridge English"
+      "summary": "Fine-tuned GPT-3.5 for Chile's PAES mathematics exam. Improved accuracy from 0.78 to 0.94 (+20%) through targeted optimization techniques and OCR/transcription pipelines."
     }
   ],
   "skills": [
     {
-      "name": "Core Technologies",
-      "level": "Expert",
+      "name": "ML/AI Specializations",
       "keywords": [
-        "Python",
-        "SQL",
-        "JavaScript"
+        "Intelligent Agents",
+        "LLM Evaluation (LLM-as-a-Judge)",
+        "RAG Systems",
+        "Fine-tuning (LoRA/QLoRA)",
+        "Agentic Workflows",
+        "Open-Source Development"
       ]
     },
     {
-      "name": "AI/ML Frameworks",
-      "level": "Advanced",
+      "name": "Frameworks & Tools",
       "keywords": [
         "PyTorch",
         "Hugging Face",
-        "Streamlit"
+        "LangChain",
+        "OpenAI/Anthropic APIs",
+        "Weights & Biases",
+        "MLX"
       ]
     },
     {
-      "name": "AI/ML Specializations",
-      "level": "Expert",
+      "name": "Infrastructure & Serving",
       "keywords": [
-        "Large Language Models",
-        "RAG",
-        "NLP",
-        "Agents"
-      ]
-    },
-    {
-      "name": "Advanced AI/ML",
-      "level": "Advanced",
-      "keywords": [
-        "Machine Learning",
-        "MLX",
-        "Langchain"
-      ]
-    },
-    {
-      "name": "Cloud Platforms",
-      "level": "Advanced",
-      "keywords": [
-        "AWS",
-        "GCP",
-        "Azure"
-      ]
-    },
-    {
-      "name": "Databases",
-      "level": "Advanced",
-      "keywords": [
-        "MongoDB",
-        "PostgreSQL",
-        "SQL"
-      ]
-    },
-    {
-      "name": "DevOps & Tools",
-      "level": "Proficient",
-      "keywords": [
+        "FastAPI",
         "Docker",
-        "Git",
-        "CI/CD",
-        "Linux"
+        "Microservices",
+        "PostgreSQL",
+        "Vector DBs (Pinecone/ChromaDB)",
+        "AWS/GCP"
+      ]
+    },
+    {
+      "name": "Programming Languages",
+      "keywords": [
+        "Python (expert)",
+        "SQL",
+        "TypeScript"
       ]
     }
   ],
   "languages": [
     {
       "language": "Spanish",
-      "fluency": "Native or Bilingual"
+      "fluency": "Native"
     },
     {
       "language": "English",
-      "fluency": "Full Professional"
-    },
-    {
-      "language": "Chinese Mandarin",
-      "fluency": "Basic"
+      "fluency": "Full Professional (IELTS C1 7.5)"
     }
   ],
   "interests": [
@@ -265,7 +260,7 @@
       "name": "Art",
       "keywords": [
         "Music production",
-        "Filmaking",
+        "Film making",
         "Technical writing"
       ]
     },
@@ -287,44 +282,45 @@
   "projects": [
     {
       "name": "Graham Essays",
-      "description": "Developed a program that helps create an electronic book (EPUB) from a website in an automated way.",
+      "description": "Automated EPUB generator for Paul Graham's essays — reached #1 on Hacker News, 800+ GitHub stars",
       "highlights": [
-        "Reached the frontpage of Hacker News at its launch (https://news.ycombinator.com/item?id=32465435)",
-        "Built with Python and web scraping technologies",
-        "Open-source project with active community contributions"
+        "Reached #1 on Hacker News frontpage",
+        "Built automated pipeline processing 200+ essays into EPUB format",
+        "800+ GitHub stars; demonstrates open-source community engagement"
       ],
       "keywords": [
         "Python",
-        "EPUB",
         "Web Scraping",
         "Open Source"
       ],
-      "startDate": "2023-01-01",
-      "endDate": "2023-03-01",
+      "startDate": "2022-07-01",
       "url": "https://github.com/ofou/graham-essays",
-      "type": "application",
-      "roles": [
-        "Creator"
-      ],
-      "entity": "Personal Project"
-    }
-  ],
-  "references": [
-    {
-      "name": "Matt Mazur",
-      "reference": "Upon request"
+      "type": "application"
     },
     {
-      "name": "Ryan Tanaka",
-      "reference": "Upon request"
+      "name": "Lucas — AI Finance Agent",
+      "description": "Agentic AI personal finance assistant with real-time bank API integration",
+      "highlights": [
+        "Built AI-powered finance agent connecting to bank accounts via Fintoc API",
+        "Developed within 36-hour hackathon using Anthropic Claude API + FastAPI backend"
+      ],
+      "keywords": [
+        "Anthropic API",
+        "Agents",
+        "FastAPI"
+      ],
+      "startDate": "2025-11-21",
+      "url": "https://github.com/platanus-hack/platanus-hack-25-team-29",
+      "type": "application"
     }
   ],
   "awards": [
     {
-      "title": "2nd Place at Computer Vision Hackathon",
+      "title": "2nd Place — Computer Vision Hackathon",
       "date": "2025-09-01",
-      "awarder": "Pais Digital | EY | Municipalidad de Las Condes",
-      "summary": "Won 2nd place at Fundación País Digital Computer Vision Hackathon, one of Chile's most important technology and AI events. Built a traffic monitoring system that detects congestion and anomalies using CCTV streams, scalable to thousands of cameras with low-cost online inference."
+      "awarder": "Fundación País Digital | EY",
+      "summary": "Built traffic monitoring system detecting congestion and anomalies from CCTV streams, scalable to thousands of cameras.",
+      "url": "https://www.linkedin.com/posts/activity-7379173484196700160-mUMM"
     }
   ],
   "volunteer": [
@@ -338,10 +334,27 @@
       "highlights": []
     }
   ],
+  "certificates": [
+    {
+      "name": "IELTS Academic - Overall Band Score 7.5 (C1 Level)",
+      "date": "2025-07-01",
+      "issuer": "Cambridge English"
+    }
+  ],
+  "references": [
+    {
+      "name": "Matt Mazur",
+      "reference": "Co-founder, Kilo Code"
+    },
+    {
+      "name": "Ryan Tanaka",
+      "reference": "Founder, Emergent Mind"
+    }
+  ],
   "meta": {
-    "canonical": "https://olivares.cl/resume.json",
-    "version": "v1.0.0",
-    "lastModified": "2025-08-11T00:00:00Z",
+    "canonical": "https://olivares.cl/cv.json",
+    "version": "v2.1.0",
+    "lastModified": "2026-01-02T00:00:00Z",
     "theme": "stackoverflow"
   }
 }
