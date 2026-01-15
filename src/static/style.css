@@ -434,13 +434,17 @@ blockquote {
     transition: opacity 0.2s ease-in-out;
   }
   
-  /* Keep sidebars visible on projects pages (no autohide) */
-  /* This class will be added by JavaScript when on projects pages */
+  /* Keep navigation sidebar visible on projects/blog pages (no autohide) */
+  /* This class will be added by JavaScript when on projects/blog pages */
   body.projects-page .md-sidebar--primary,
-  body.projects-page .md-sidebar--secondary,
-  body.projects-page [data-md-component="navigation"],
-  body.projects-page [data-md-component="toc"] {
+  body.projects-page [data-md-component="navigation"] {
     opacity: 1 !important;
+  }
+
+  /* Hide TOC sidebar on projects/blog pages */
+  body.projects-page .md-sidebar--secondary,
+  body.projects-page [data-md-component="toc"] {
+    opacity: 0 !important;
   }
   
   /* Show sidebars when hovering over the sidebar container */
@@ -473,37 +477,7 @@ blockquote {
     position: relative !important;
   }
   
-  /* Hide blog post metadata by default, show only when at top of page */
-  .md-post__meta,
-  .md-post__header .md-post__meta,
-  article .md-post__meta,
-  .md-post__date,
-  .md-post__authors,
-  .md-post__categories {
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-  }
   
-  /* Show metadata when hovering over post header or when at top */
-  article:hover .md-post__meta,
-  .md-post__header:hover .md-post__meta,
-  article:hover .md-post__header .md-post__meta,
-  article:hover .md-post__date,
-  article:hover .md-post__authors,
-  article:hover .md-post__categories,
-  .md-post__header:hover .md-post__date,
-  .md-post__header:hover .md-post__authors,
-  .md-post__header:hover .md-post__categories {
-    opacity: 1;
-  }
-  
-  /* Show metadata when directly hovering over it */
-  .md-post__meta:hover,
-  .md-post__date:hover,
-  .md-post__authors:hover,
-  .md-post__categories:hover {
-    opacity: 1;
-  }
   
   /* Keep title visible at all times */
   .md-post__title {
