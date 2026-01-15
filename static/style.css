@@ -423,10 +423,83 @@ blockquote {
   padding-right: 1rem;
 }
 
+/* Autohide Sidebars and Header - Hide by default, show on hover */
+@media (min-width: 76.25em) {
+  /* Hide sidebars by default - works for both regular pages and blog posts */
+  .md-sidebar--primary,
+  .md-sidebar--secondary,
+  .md-sidebar[data-md-component="navigation"],
+  .md-sidebar[data-md-component="toc"] {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  
+  /* Keep navigation sidebar visible on projects/blog pages (no autohide) */
+  /* This class will be added by JavaScript when on projects/blog pages */
+  body.projects-page .md-sidebar--primary,
+  body.projects-page [data-md-component="navigation"] {
+    opacity: 1 !important;
+  }
+
+  /* Hide TOC sidebar on projects/blog pages */
+  body.projects-page .md-sidebar--secondary,
+  body.projects-page [data-md-component="toc"] {
+    opacity: 0 !important;
+  }
+  
+  /* Show sidebars when hovering over the sidebar container */
+  .md-sidebar--primary:hover,
+  .md-sidebar--secondary:hover,
+  .md-sidebar[data-md-component="navigation"]:hover,
+  .md-sidebar[data-md-component="toc"]:hover {
+    opacity: 1;
+  }
+  
+  /* Also handle direct data attribute selectors for blog pages */
+  [data-md-component="navigation"]:hover,
+  [data-md-component="toc"]:hover {
+    opacity: 1;
+  }
+  
+  /* Make header non-sticky (scrollable) instead of fixed/sticky */
+  .md-header {
+    position: relative !important;
+    transform: none !important;
+  }
+  
+  /* Ensure header scrolls with page content */
+  .md-header--shadow {
+    position: relative !important;
+  }
+  
+  /* Make navigation tabs non-sticky as well */
+  .md-tabs {
+    position: relative !important;
+  }
+  
+  
+  
+  /* Keep title visible at all times */
+  .md-post__title {
+    opacity: 1 !important;
+  }
+  
+  /* Hide "Back to index" button */
+  .md-post__action {
+    display: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   .md-footer-meta__inner.md-grid {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+  }
+  
+  /* Disable autohide on mobile - let Material theme handle it */
+  .md-sidebar {
+    opacity: 1;
+    pointer-events: auto;
   }
 }
