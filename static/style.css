@@ -73,6 +73,10 @@
   --font-size-base: calc(19px);
 }
 
+/* Text selection highlighting */
+::selection {
+  background-color: #FFFF0080;
+}
 a {
   text-decoration: none;
 }
