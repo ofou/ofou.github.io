@@ -1,59 +1,5 @@
-/* MLModern Font Face Declarations
- * Based on CTAN MLModern package: https://www.ctan.org/tex-archive/fonts/mlmodern/
- * All rights correspond to the original author, see https://www.ctan.org/tex-archive/fonts/mlmodern/
- */
-
-@font-face {
-  font-family: "MLModern";
-  src: url('./fonts/mlmr12.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* MLModern Bold Extended */
-@font-face {
-  font-family: "MLModern";
-  src: url('./fonts/mlmbx12.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* MLModern Roman Italic */
-@font-face {
-  font-family: "MLModern";
-  src: url('./fonts/mlmri12.ttf') format('truetype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-/* MLModern Roman Outline (lighter weight variant) */
-@font-face {
-  font-family: "MLModern";
-  src: url('./fonts/mlmro12.ttf') format('truetype');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* MLModern Math Italic (for mathematical expressions) */
-@font-face {
-  font-family: "MLModernMath";
-  src: url('./fonts/mlmmi12.ttf') format('truetype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "MLModernMono";
-  src: url('./fonts/mlmtt12.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+/* Google Fonts: STIX Two Text */
+@import url('https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap');
 
 :root {
   --timberwolf: #d6d6d6;
@@ -65,11 +11,11 @@
   --white: #ffffff;
 
   --font-jetbrains: "JetBrains Mono", monospace;
-  --font-noto-sans: "Helvetica", "Helvetica Neue", "Arial", sans-serif;
+  --font-sans: "Helvetica", "Helvetica Neue", "Arial", sans-serif;
   --font-source-serif: "Source Serif 4", serif;
-  --font-ml-modern: "MLModern", "Computer Modern", serif;
-  --font-ml-modern-math: "MLModernMath", "Computer Modern", serif;
-  --font-ml-modern-mono: "MLModernMono", "JetBrains Mono", monospace;
+  --font-stix: "STIX Two Text", serif;
+  --font-stix-math: "STIX Two Text", serif;
+  --font-mono: "JetBrains Mono", monospace;
   --font-size-base: calc(19px);
 }
 
@@ -77,12 +23,13 @@
 ::selection {
   background-color: #FFFF0080;
 }
+
 a {
   text-decoration: none;
 }
 
 .md-header {
-  font-family: var(--font-noto-sans);
+  font-family: var(--font-sans);
   font-weight: 700;
 }
 
@@ -91,7 +38,7 @@ a {
 }
 
 .md-tabs {
-  font-family: var(--font-noto-sans);
+  font-family: var(--font-sans);
 }
 
 .md-content__inner {
@@ -99,9 +46,10 @@ a {
   /* Kept your width, made responsive for harmony on smaller screens */
   margin: 0 auto;
 }
+
 .md-post__content .md-typeset {
   min-width: min(700px, 100%);
-    /* Adjusted for responsiveness */
+  /* Adjusted for responsiveness */
 }
 
 article.md-post--excerpt p,
@@ -123,24 +71,24 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-ml-modern);
+  font-family: var(--font-stix);
   text-align: left;
 }
 
 h1,
 h2 {
   hyphens: none;
+  font-weight: 700;
 }
 
-
 .md-sidebar__inner {
-  font-family: var(--font-ml-modern);
+  font-family: var(--font-stix);
 }
 
 .md-typeset {
-  font-family: var(--font-ml-modern);
+  font-family: var(--font-stix);
   font-size: 1rem;
-    line-height: 1.618rem;
+  line-height: 1.618rem;
   font-variant-ligatures: contextual common-ligatures;
   font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
   /* letter-spacing: -0.01em; */
@@ -149,16 +97,17 @@ h2 {
   /* word-break: break-word; */
   /* hyphens: auto; */
   max-width: min(768px, 90vw);
-    margin: 0 auto;
-  }
-  
-  .content__inner {
-    max-width: 768px;
-    margin: 0 auto;
+  margin: 0 auto;
+}
+
+
+.content__inner {
+  max-width: 768px;
+  margin: 0 auto;
 }
 
 .md-typeset strong {
-  font-family: var(--font-ml-modern-math);
+  font-family: var(--font-stix-math);
 }
 
 .content blockquote,
@@ -183,9 +132,9 @@ h2 {
   margin-bottom: 0;
 }
 
-/* KaTeX Math Font Integration with MLModern */
+/* KaTeX Math Font Integration with STIX Two Text */
 .katex {
-  font-family: var(--font-ml-modern-math) !important;
+  font-family: var(--font-stix-math) !important;
   font-size: inherit !important;
 }
 
@@ -196,29 +145,30 @@ h2 {
 .katex-display>.katex {
   margin: 0 !important;
 }
+
 .katex .main {
-  font-family: var(--font-ml-modern-math) !important;
+  font-family: var(--font-stix-math) !important;
 }
 
 .katex .mathit,
 .katex .mathnormal {
-  font-family: var(--font-ml-modern-math) !important;
+  font-family: var(--font-stix-math) !important;
   font-style: italic !important;
 }
 
 .katex .mathbf {
-  font-family: var(--font-ml-modern) !important;
+  font-family: var(--font-stix) !important;
   font-weight: 700 !important;
 }
 
 .katex .mathrm,
 .katex .text {
-  font-family: var(--font-ml-modern) !important;
+  font-family: var(--font-stix) !important;
   font-style: normal !important;
 }
 
 .katex .mathtt {
-  font-family: var(--font-ml-modern-mono) !important;
+  font-family: var(--font-mono) !important;
 }
 
 .katex .mathsf {
@@ -226,11 +176,11 @@ h2 {
 }
 
 .md-search {
-  font-family: var(--font-noto-sans);
+  font-family: var(--font-sans);
 }
 
 .md-search__input {
-  font-family: var(--font-noto-sans);
+  font-family: var(--font-sans);
 }
 
 .md-typeset h1 {
@@ -239,36 +189,37 @@ h2 {
   line-height: 1.618;
   margin-bottom: 1.618rem;
 }
+
 .md-typeset h2 {
   font-size: 1.515rem;
-    /* font-weight: 700; */
-      line-height: 1.618;
-    margin-top: 0;
-      /* margin-bottom: 1.618rem; */
-  }
-  
-  .md-typeset h3 {
-    font-size: 1.366rem;
-    line-height: 1.618;
-    margin-bottom: 1.618rem;
-  }
-  
-  .md-typeset h4 {
-    font-size: 1.232rem;
-    line-height: 1.618;
-    margin-bottom: 1.618rem;
-  }
-  
-  .md-typeset h5 {
-    font-size: 1.111rem;
-    line-height: 1.618;
-    margin-bottom: 1.618rem;
-  }
-  
-  .md-typeset h6 {
-    font-size: 1rem;
-    line-height: 1.618;
-    margin-bottom: 1.618rem;
+  font-weight: 700;
+  line-height: 1.618;
+  margin-top: 0;
+  /* margin-bottom: 1.618rem; */
+}
+
+.md-typeset h3 {
+  font-size: 1.366rem;
+  line-height: 1.618;
+  margin-bottom: 1.618rem;
+}
+
+.md-typeset h4 {
+  font-size: 1.232rem;
+  line-height: 1.618;
+  margin-bottom: 1.618rem;
+}
+
+.md-typeset h5 {
+  font-size: 1.111rem;
+  line-height: 1.618;
+  margin-bottom: 1.618rem;
+}
+
+.md-typeset h6 {
+  font-size: 1rem;
+  line-height: 1.618;
+  margin-bottom: 1.618rem;
 }
 
 html {
@@ -298,7 +249,7 @@ html {
 
 .md-typeset pre {
   padding: 0.618em;
-    /* Golden padding */
+  /* Golden padding */
   border: 1px solid var(--timberwolf-2);
   border-radius: 0.618rem;
 }
@@ -306,7 +257,7 @@ html {
 .md-typeset code {
   font-family: var(--font-jetbrains);
   font-size: .75rem;
-    line-height: 1rem;
+  line-height: 1rem;
   font-variant-ligatures: contextual common-ligatures;
   font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
   text-rendering: optimizeLegibility;
@@ -320,12 +271,12 @@ html {
 }
 
 body {
-  font-family: "MLModern", sans-serif;
+  font-family: "STIX Two Text", serif;
 }
 
 blockquote {
   font-style: italic;
-  font-family: var(--font-ml-modern);
+  font-family: var(--font-stix);
   font-size: 1rem;
 }
 
@@ -333,12 +284,12 @@ blockquote {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
   gap: 0.618rem;
-    /* Golden gap */
+  /* Golden gap */
   justify-items: center;
   align-items: end;
   position: relative;
   margin: 1.618rem;
-    /* Golden margin */
+  /* Golden margin */
 }
 
 .book-grid img {
@@ -358,17 +309,17 @@ blockquote {
 }
 
 .md-source-file {
-  font-family: var(--font-noto-sans);
+  font-family: var(--font-sans);
 }
 
 .md-nav {
-  font-family: var(--font-noto-sans);
+  font-family: var(--font-sans);
   font-variant-east-asian: full-width;
   font-feature-settings: "fwid" 1;
 }
 
 .md-post__action {
-  font-family: var(--font-noto-sans);
+  font-family: var(--font-sans);
   font-weight: 700;
   text-decoration: none;
 }
@@ -386,8 +337,14 @@ blockquote {
 }
 
 .footnote {
-  font-family: var(--font-ml-modern);
-    line-height: 1rem;
+  font-family: var(--font-stix);
+  font-size: 0.9rem;
+  line-height: 1em;
+}
+
+.footnote-backref {
+  font-size: .3rem;
+  line-height: .3em;
 }
 
 .avatar {
@@ -416,6 +373,7 @@ blockquote {
 [data-md-color-scheme="slate"] .md-typeset h6 {
   color: var(--white);
 }
+
 /* Footer layout: copyright on left, social icons on right */
 .md-footer-meta__inner.md-grid {
   display: flex;
@@ -429,6 +387,7 @@ blockquote {
 
 /* Autohide Sidebars and Header - Hide by default, show on hover */
 @media (min-width: 76.25em) {
+
   /* Hide sidebars by default - works for both regular pages and blog posts */
   .md-sidebar--primary,
   .md-sidebar--secondary,
@@ -437,7 +396,7 @@ blockquote {
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
   }
-  
+
   /* Keep navigation sidebar visible on projects/blog pages (no autohide) */
   /* This class will be added by JavaScript when on projects/blog pages */
   body.projects-page .md-sidebar--primary,
@@ -450,7 +409,7 @@ blockquote {
   body.projects-page [data-md-component="toc"] {
     opacity: 0 !important;
   }
-  
+
   /* Show sidebars when hovering over the sidebar container */
   .md-sidebar--primary:hover,
   .md-sidebar--secondary:hover,
@@ -458,36 +417,34 @@ blockquote {
   .md-sidebar[data-md-component="toc"]:hover {
     opacity: 1;
   }
-  
+
   /* Also handle direct data attribute selectors for blog pages */
   [data-md-component="navigation"]:hover,
   [data-md-component="toc"]:hover {
     opacity: 1;
   }
-  
+
   /* Make header non-sticky (scrollable) instead of fixed/sticky */
   .md-header {
     position: relative !important;
     transform: none !important;
   }
-  
+
   /* Ensure header scrolls with page content */
   .md-header--shadow {
     position: relative !important;
   }
-  
+
   /* Make navigation tabs non-sticky as well */
   .md-tabs {
     position: relative !important;
   }
-  
-  
-  
+
   /* Keep title visible at all times */
   .md-post__title {
     opacity: 1 !important;
   }
-  
+
   /* Hide "Back to index" button */
   .md-post__action {
     display: none !important;
@@ -500,7 +457,7 @@ blockquote {
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   /* Disable autohide on mobile - let Material theme handle it */
   .md-sidebar {
     opacity: 1;
