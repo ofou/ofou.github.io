@@ -67,7 +67,7 @@ theme:
         icon: material/brightness-4
         name: Switch to system preference
   font:
-    text: ML Modern
+    text: STIX Two Text
     code: JetBrains Mono
 
   favicon: favicon.ico
