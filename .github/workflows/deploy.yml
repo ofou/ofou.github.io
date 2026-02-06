@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Install project (bibtex_chronological plugin)
+        run: pip install -e .
+
       - name: Install Pandoc
         run: |
           wget https://github.com/jgm/pandoc/releases/download/3.7.0.2/pandoc-3.7.0.2-1-amd64.deb

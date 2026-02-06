@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "olivares-cl"
+version = "0.0.1"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["plugins*"]
+
+[project.entry-points."mkdocs.plugins"]
+bibtex_chronological = "plugins.bibtex_chronological:BibtexChronologicalPlugin"

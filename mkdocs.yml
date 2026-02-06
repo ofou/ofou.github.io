@@ -84,7 +84,9 @@ plugins:
       separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
   - bibtex:
       bib_file: src/references.bib
-      csl_file: https://www.zotero.org/styles/ieee-with-url
+      csl_file: https://gist.githubusercontent.com/rmzelle/bc869c900549226483123c11b0a90cb9/raw/d1712c5385b4a1ba52b2f85442ad146ade7197c3/nature.csl
+  - bibtex_chronological:
+      bib_file: src/references.bib
   - rss:
       match_path: blog/posts/.*
       date_from_meta:

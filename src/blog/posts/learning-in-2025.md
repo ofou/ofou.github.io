@@ -23,41 +23,52 @@ It's pretty easy to get lost in the [countless number of papers](https://www.lat
 I'd advice you to start with the following books, which are a great starting point to fill your appetite for the field, and get a sense of the big picture, and where all we're going.
 
 <div class="book-grid">
-    <a href="https://www.goodreads.com/book/show/20527133-superintelligence" target="_blank">
+    <a href="#fn:bostrom2014paths">
+<!-- [@bostrom2014paths] -->
       <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1400884046i/20527133.jpg" alt="Superintelligence: Paths, Dangers, Strategies" title="Superintelligence: Paths, Dangers, Strategies" />
   </a>
-    <a href="https://www.goodreads.com/book/show/34274957-life-3-0" target="_blank">
+    <a href="#fn:tegmark2018life">
+<!-- [@tegmark2018life] -->
       <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1498857371i/34274957.jpg" alt="Life 3.0: Being Human in the Age of Artificial Intelligence" title="Life 3.0: Being Human in the Age of Artificial Intelligence" />
     </a>
-      <a href="https://www.goodreads.com/book/show/44767248-human-compatible" target="_blank">
+      <a href="#fn:russell2019human">
+<!-- [@russell2019human] -->
       <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1561637199i/44767248.jpg" alt="Human Compatible: AI and the Problem of Control" title="Human Compatible: AI and the Problem of Control" />
     </a>
-    <a href="https://www.goodreads.com/book/show/50489349-the-alignment-problem" target="_blank">
+    <a href="#fn:christian2021alignment">
+<!-- [@christian2021alignment] -->
       <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1598630749i/50489349.jpg" alt="The Alignment Problem: How Can Machines Learn Human Values?" title="The Alignment Problem: How Can Machines Learn Human Values?" />
     </a>
-    <a href="https://www.goodreads.com/book/show/144405196-the-worlds-i-see" target="_blank">
+    <a href="#fn:li2023worlds">
+<!-- [@li2023worlds] -->
       <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1682738725i/144405196.jpg" alt="The Worlds I See: Curiosity, Exploration, and Discovery at the Dawn of AI" title="The Worlds I See: Curiosity, Exploration, and Discovery at the Dawn of AI" />
     </a>
-    <a href="https://www.goodreads.com/book/show/45024007-the-singularity-is-nearer" target="_blank">
+    <a href="#fn:kurzweil2024singularity">
+<!-- [@kurzweil2024singularity] -->
       <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1711721717i/45024007.jpg" alt="The Singularity Is Nearer: When We Merge with AI" title="The Singularity Is Nearer: When We Merge with AI" />
     </a>
-    <a href="https://www.goodreads.com/book/show/27539.On_Intelligence" target="_blank">
+    <a href="#fn:hawkins2004intelligence">
+<!-- [@hawkins2004intelligence] -->
       <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1441230921i/27539.jpg" alt="On Intelligence: How a New Understanding of the Brain Will Lead to the Creation of Truly Intelligent Machines" title="On Intelligence: How a New Understanding of the Brain Will Lead to the Creation of Truly Intelligent Machines" />
     </a>
-    <a href="https://www.goodreads.com/book/show/220062738-the-scaling-era?ac=1&from_search=true&qid=Awhxyv8q7y&rank=1" target="_blank">
+    <a href="#fn:scaling2025era">
+<!-- [@scaling2025era] -->
       <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1729934727i/220062738.jpg" alt="The Scaling Era: An Oral History of AI, 2019–2025" title="The Scaling Era: An Oral History of AI, 2019–2025" />
     </a>
-    <a href="https://www.goodreads.com/book/show/236877599-ai-2027" target="_blank">
+    <a href="#fn:ai2027">
+<!-- [@ai2027] -->
       <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1750365514i/236877599.jpg" alt="AI 2027" title="AI 2027" />
     </a>
-  <a href="https://www.goodreads.com/book/show/46064083-how-we-learn" target="_blank">
+  <a href="#fn:dehaene2021we">
+<!-- [@dehaene2021we] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1562573168i/46064083.jpg" alt="How We Learn: Why Brains Learn Better Than Any Machine... for Now" title="How We Learn: Why Brains Learn Better Than Any Machine... for Now" />
   </a>
-  </a>
-  <a href="https://www.goodreads.com/book/show/217562.Metaphors_of_Mind" target="_blank"> 
+  <a href="#fn:lawrence1998metaphors">
+<!-- [@lawrence1998metaphors] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348518020i/217562.jpg" alt="Metaphors of Mind: Conceptions of the Nature of Intelligence" title="Metaphors of Mind: Conceptions of the Nature of Intelligence" />
   </a>
-  <a href="https://www.goodreads.com/book/show/56377201-ai-2041" target="_blank">
+  <a href="#fn:chen2021ai2041">
+<!-- [@chen2021ai2041] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1615899279i/56377201.jpg" alt="AI 2041: Ten Visions for Our Future" title="AI 2041: Ten Visions for Our Future" />
   </a>  
 </div>
@@ -67,16 +78,20 @@ I'd advice you to start with the following books, which are a great starting poi
 Once you have a grasp of the big picture, you might want to get a glimpse of the technical aspects. These books require minimal prerequisites and focus on concepts rather than heavy mathematics, and are also succinct, which makes them great for a quick read.
 
 <div class="book-grid">
-  <a href="https://www.goodreads.com/book/show/43190851-the-hundred-page-machine-learning-book" target="_blank">
+  <a href="#fn:burkov2019hundred">
+<!-- [@burkov2019hundred] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1546285613i/43190851.jpg" alt="The Hundred-Page Machine Learning Book" title="The Hundred-Page Machine Learning Book" />
   </a>
-  <a href="https://www.goodreads.com/book/show/53141537-grokking-machine-learning" target="_blank">
+  <a href="#fn:serrano2021grokking">
+<!-- [@serrano2021grokking] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1637175552i/53141537.jpg" alt="Grokking Machine Learning" title="Grokking Machine Learning" />
   </a>
-  <a href="https://www.goodreads.com/book/show/174612914-the-little-book-of-deep-learning" target="_blank">
+  <a href="#fn:fleuret2023little">
+<!-- [@fleuret2023little] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1686060481i/174612914.jpg" alt="The Little Book of Deep Learning" title="The Little Book of Deep Learning" />
   </a>
-  <a href="https://www.goodreads.com/book/show/216249119-introduction-to-ai-safety-ethics-and-society" target="_blank">
+  <a href="#fn:hendrycks2024introduction">
+<!-- [@hendrycks2024introduction] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1732362439i/216249119.jpg" alt="Introduction to AI Safety, Ethics and Society" title="Introduction to AI Safety, Ethics and Society" />
   </a>
 </div>
@@ -84,84 +99,108 @@ Once you have a grasp of the big picture, you might want to get a glimpse of the
 For those with some programming experience and basic math background. These books are a great starting point to understand the technical aspects of AI, and build a solid intuition before heading to the advanced level.
 
 <div class="book-grid">
-  <a href="https://www.goodreads.com/book/show/50419441-mathematics-for-machine-learning" target="_blank">
+  <a href="#fn:deisenroth2020mathematics">
+<!-- [@deisenroth2020mathematics] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1572995056l/50041024.jpg" alt="Mathematics for Machine Learning" title="Mathematics for Machine Learning" />
   </a>
-  <a href="https://www.goodreads.com/book/show/33986067-deep-learning-with-python" target="_blank">
+  <a href="#fn:chollet2021deep">
+<!-- [@chollet2021deep] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1513265126i/33986067.jpg" alt="Deep Learning with Python" title="Deep Learning with Python" />
   </a>
-  <a href="https://www.goodreads.com/book/show/50204643-deep-learning-for-coders-with-fastai-and-pytorch" target="_blank">
+  <a href="#fn:howard2020deep">
+<!-- [@howard2020deep] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1568310839l/50204643.jpg" alt="Deep Learning for Coders with Fastai and PyTorch" title="Deep Learning for Coders with Fastai and PyTorch" />
   </a>
-  <a href="https://www.goodreads.com/book/show/218718255-build-a-large-language-model" target="_blank">
+  <a href="#fn:lanning2024llm">
+<!-- [@lanning2024llm] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1726192131i/218718255.jpg" alt="Build a Large Language Model" title="Build a Large Language Model" />
   </a>
-  <a href="https://www.goodreads.com/book/show/178815107-an-introduction-to-statistical-learning" target="_blank">
+  <a href="#fn:james2023introduction">
+<!-- [@james2023introduction] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1687777554i/178815107.jpg" alt="An Introduction to Statistical Learning: with Applications in Python" title="An Introduction to Statistical Learning: with Applications in Python" />
   </a>
-  <a href="https://www.goodreads.com/book/show/60715378-designing-machine-learning-systems" target="_blank">
+  <a href="#fn:huyen2022designing">
+<!-- [@huyen2022designing] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1653945265i/60715378.jpg" alt="Designing Machine Learning Systems: An Iterative Process for Production-Ready Applications" title="Designing Machine Learning Systems: An Iterative Process for Production-Ready Applications" />
   </a>
-  <a href="https://www.goodreads.com/book/show/122776185-dive-into-deep-learning?from_search=true&from_srp=true&qid=8Hf1SjBEBC&rank=2" target="_blank">
+  <a href="#fn:zhang2023dive">
+<!-- [@zhang2023dive] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1681805605i/122776185.jpg" alt="Dive into Deep Learning" title="Dive into Deep Learning" />
   </a>
-  <a href="https://www.goodreads.com/book/show/143240427-understanding-deep-learning" target="_blank">
+  <a href="#fn:prince2023understanding">
+<!-- [@prince2023understanding] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1722904177i/143240427.jpg" alt="Understanding Deep Learning" title="Understanding Deep Learning" />
   </a>
 </div>
 
-Once you get at least comfortable with the math of machine learning[@deisenroth2020mathematics], you might be interested in tackling these, which I found to be highly recommended by many, many Master's and PhD curricula. I also found that some AI/ML programs might benefit a lot from borrowing inspiration from classic neuroscience program textbooks, because we've seen fruitful results in the past from this cross-pollination. Without going into specifics, from interpretability to reinforcement learning, there's much to learn from neuroscience.
+Once you get at least comfortable with the math of machine learning [@deisenroth2020mathematics], you might be interested in tackling these, which I found to be highly recommended by many, many Master's and PhD curricula. I also found that some AI/ML programs might benefit a lot from borrowing inspiration from classic neuroscience program textbooks, because we've seen fruitful results in the past from this cross-pollination. Without going into specifics, from interpretability to reinforcement learning, there's much to learn from neuroscience.
 
-One small thing to note is that instead of the classic _Pattern Recognition and Machine Learning_[@bishop2006pattern] mentioned everywhere, I prefer the newer version from the same author and his son _Deep Learning_[@bishop2024deep], which is more up-to-date and includes more recent research that better reflects the state of the art.
+One small thing to note is that instead of the classic _Pattern Recognition and Machine Learning_ [@bishop2006pattern] mentioned everywhere, I prefer the newer version from the same author and his son _Deep Learning_ [@bishop2024deep], which is more up-to-date and includes more recent research that better reflects the state of the art.
 
 <div class="book-grid">
-  <a href="https://www.goodreads.com/book/show/216848047-ai-engineering" target="_blank">
+  <a href="#fn:aiebook2025">
+<!-- [@aiebook2025] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1733340973i/216848047.jpg" alt="AI Engineering: Building Applications with Foundation Models" title="AI Engineering: Building Applications with Foundation Models" />
   </a>
-  <a href="https://www.goodreads.com/book/show/36451668-artificial-intelligence" target="_blank">
+  <a href="#fn:russell2020artificial">
+<!-- [@russell2020artificial] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1590496674i/36451668.jpg" alt="Artificial Intelligence: A Modern Approach" title="Artificial Intelligence: A Modern Approach" />
   </a>
-  <a href="https://www.goodreads.com/book/show/30422361-deep-learning" target="_blank">
+  <a href="#fn:goodfellow2016deep">
+<!-- [@goodfellow2016deep] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1478212695i/30422361.jpg" alt="Deep Learning" title="Deep Learning" />
   </a>
-  <a href="https://www.goodreads.com/book/show/39813875-reinforcement-learning" target="_blank">
+  <a href="#fn:andrew2018reinforcement">
+<!-- [@andrew2018reinforcement] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1534306204i/39813875.jpg" alt="Reinforcement Learning: An Introduction" title="Reinforcement Learning: An Introduction" />
   </a>
-  <a href="https://www.goodreads.com/book/show/157976035-foundations-of-computer-vision" target="_blank">
+  <a href="#fn:simon2024foundationscv">
+<!-- [@simon2024foundationscv] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1750727657i/157976035.jpg" alt="Foundations of Computer Vision" title="Foundations of Computer Vision" />
   </a>
-  <a href="https://www.goodreads.com/book/show/58064710-probabilistic-machine-learning" target="_blank">
+  <a href="#fn:murphy2022probabilistic">
+<!-- [@murphy2022probabilistic] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1631506276i/58064710.jpg" alt="Probabilistic Machine Learning: An Introduction" title="Probabilistic Machine Learning: An Introduction" />
   </a>
-  <a href="https://www.goodreads.com/book/show/59856387-programming-massively-parallel-processors" target="_blank">
+  <a href="#fn:kirk2016programming">
+<!-- [@kirk2016programming] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1640549172i/59856387.jpg" alt="Programming Massively Parallel Processors: A Hands-on Approach" title="Programming Massively Parallel Processors: A Hands-on Approach" />
   </a>
-  <a href="https://www.goodreads.com/book/show/201357.Information_Theory_Inference_and_Learning_Algorithms" target="_blank">
+  <a href="#fn:mackay2003information">
+<!-- [@mackay2003information] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1386924751i/201357.jpg" alt="Information Theory, Inference, and Learning Algorithms" title="Information Theory, Inference, and Learning Algorithms" />
   </a>
-  <a href="https://www.goodreads.com/book/show/198282489-deep-learning?from_search=true&from_srp=true&qid=2yJsMwKjwM&rank=1" target="_blank">
+  <a href="#fn:bishop2024deep">
+<!-- [@bishop2024deep] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1719110666i/198282489.jpg" alt="Deep Learning" title="Deep Learning" />
   </a>
-    <a href="https://www.goodreads.com/book/show/210099696-multi-agent-reinforcement-learning" target="_blank">
+    <a href="#fn:albrecht2024multi">
+<!-- [@albrecht2024multi] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1750368479i/210099696.jpg" alt="Multi-agent Reinforcement Learning: Foundations and Modern Approaches" title="Multi-agent Reinforcement Learning: Foundations and Modern Approaches" />
   </a>
-  <a href="https://www.goodreads.com/book/show/4094864-the-elements-of-statistical-learning" target="_blank">
+  <a href="#fn:hastie2009elements">
+<!-- [@hastie2009elements] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348887481i/4094864.jpg" alt="The Elements of Statistical Learning: Data Mining, Inference, and Prediction" title="The Elements of Statistical Learning: Data Mining, Inference, and Prediction" />
   </a>
 
-  <a href="https://www.goodreads.com/book/show/433439.Elements_of_Information_Theory_2nd_Edition?ref=nav_sb_ss_1_30" target="_blank">
+  <a href="#fn:cover2006elements">
+<!-- [@cover2006elements] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1388256379i/433439.jpg" alt="Elements of Information Theory 2nd Edition" title="Elements of Information Theory" />
   </a>
-  <a href="https://www.goodreads.com/book/show/16190424-neuroscience" target="_blank">
+  <a href="#fn:purves2018neuroscience">
+<!-- [@purves2018neuroscience] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1418788308i/16190424.jpg" alt="Neuroscience" title="Neuroscience" />
   </a>
-  <a href="https://www.goodreads.com/book/show/52620593-principles-of-neurobiology" target="_blank">
+  <a href="#fn:luo2020principlesneurobio">
+<!-- [@luo2020principlesneurobio] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1625597338i/52620593.jpg" alt="Principles of Neurobiology" title="Principles of Neurobiology" />
   </a>
-  <a href="https://www.goodreads.com/book/show/170015.Theoretical_Neuroscience" target="_blank">
+  <a href="#fn:dayan2005theoretical">
+<!-- [@dayan2005theoretical] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1347629295i/170015.jpg" alt="Theoretical Neuroscience: Computational And Mathematical Modeling of Neural Systems" title="Theoretical Neuroscience: Computational And Mathematical Modeling of Neural Systems" />
   </a>
-  <a href="https://www.goodreads.com/book/show/57397549-principles-of-neural-science" target="_blank">
+  <a href="#fn:kandel2013principles">
+<!-- [@kandel2013principles] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1615653202i/57397549.jpg" alt="Principles of Neural Science" title="Principles of Neural Science" />
   </a>
 </div>
@@ -192,7 +231,6 @@ If you get a strong foundation with all the contents above, you might be in high
 
 [tinygrad]: https://github.com/tinygrad/tinygrad
 [ggml]: https://github.com/ggerganov/ggml
-[Python]: https://github.com/python/cpython
 [PyTorch]: https://github.com/pytorch/pytorch
 [JAX]: https://github.com/jax-ml/jax
 [XLA]: https://github.com/pytorch/xla
