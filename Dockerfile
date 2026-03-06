@@ -18,6 +18,8 @@ COPY . .
 
 RUN if [ -f .git/shallow ]; then git fetch --unshallow; fi
 
+RUN pip install -e .
+
 RUN mkdocs build --clean
 
 FROM nginx:alpine
