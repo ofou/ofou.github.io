@@ -1,5 +1,8 @@
+# syntax=docker/dockerfile:1
 FROM python:3.12-slim AS builder
 WORKDIR /app
+
+COPY --from=ghcr.io/astral-sh/uv:0.4.15 /uv /uvx /bin/
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -13,12 +16,14 @@ RUN wget https://github.com/jgm/pandoc/releases/download/3.7.0.2/pandoc-3.7.0.2-
     pandoc --version
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/uv \
+    UV_LINK_MODE=copy uv pip install --system -r requirements.txt
+
 COPY . .
 
 RUN if [ -f .git/shallow ]; then git fetch --unshallow; fi
 
-RUN pip install -e .
+RUN uv pip install --system -e .
 
 RUN mkdocs build --clean
 
