@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 FROM python:3.12-slim AS builder
 WORKDIR /app
 
@@ -16,8 +15,7 @@ RUN wget https://github.com/jgm/pandoc/releases/download/3.7.0.2/pandoc-3.7.0.2-
     pandoc --version
 
 COPY requirements.txt .
-RUN --mount=type=cache,target=/root/.cache/uv \
-    UV_LINK_MODE=copy uv pip install --system -r requirements.txt
+RUN uv pip install --system -r requirements.txt
 
 COPY . .
 

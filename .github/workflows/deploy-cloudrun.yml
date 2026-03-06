@@ -1,0 +1,52 @@
+# Deploys to Cloud Run (ofou-github-io) and olivares.cl
+# Requires: GitHub secret GCP_SA_KEY (service account JSON with roles/run.admin, roles/artifactregistry.writer, roles/iam.serviceAccountUser)
+# Requires: Billing enabled on project olivares-cl
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: olivares-cl
+  REGION: us-west1
+  SERVICE: ofou-github-io
+  IMAGE: ofou-github-io
+
+jobs:
+  deploy:
+    if: ${{ secrets.GCP_SA_KEY != '' }}
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build and push
+        run: |
+          IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/ofou.github.io/${{ env.IMAGE }}:${{ github.sha }}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/ofou.github.io/${{ env.IMAGE }}:${{ github.sha }}
+          region: ${{ env.REGION }}
+          flags: --allow-unauthenticated
