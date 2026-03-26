@@ -1,20 +1,22 @@
 [
   {
     "name": "keep-latest-per-package",
-    "action": {
-      "type": "Keep"
-    },
-    "mostRecentVersions": {
-      "keepCount": 1
-    }
+    "action": { "type": "Keep" },
+    "mostRecentVersions": { "keepCount": 1 }
   },
   {
     "name": "delete-older-tagged",
-    "action": {
-      "type": "Delete"
-    },
+    "action": { "type": "Delete" },
     "condition": {
       "tagState": "tagged",
+      "olderThan": "1s"
+    }
+  },
+  {
+    "name": "delete-untagged-old",
+    "action": { "type": "Delete" },
+    "condition": {
+      "tagState": "untagged",
       "olderThan": "1s"
     }
   }

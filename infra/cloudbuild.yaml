@@ -1,6 +1,7 @@
 # ofou.github.io → Artifact Registry → Cloud Run (us-west1).
-# Image tag: latest (moving). Traceability: Cloud Run labels still include commit-sha=$COMMIT_SHA.
-# Use as Cloud Build trigger inline YAML, or: gcloud builds submit --config=infra/cloudbuild.yaml
+# Trigger loads this file from the repo (filename: infra/cloudbuild.yaml).
+# Image tag: latest only. Labels keep commit-sha=$COMMIT_SHA for audit.
+# Build: --no-cache --pull minimizes layer reuse; registry cleanup removes old tags/untagged digests.
 steps:
   - id: Build
     name: gcr.io/cloud-builders/docker
