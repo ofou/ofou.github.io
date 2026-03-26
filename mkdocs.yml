@@ -99,13 +99,13 @@ plugins:
       custom_format: "%d. %B %Y"
       timezone: America/Santiago
       locale: en
-      fallback_to_build_date: false
+      fallback_to_build_date: true
       enable_creation_date: true
       exclude:
         - index.md
       enable_git_follow: true
       enabled: true
-      strict: true
+      strict: false
 
 extra:
   status:
