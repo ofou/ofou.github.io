@@ -1,0 +1,21 @@
+[
+  {
+    "name": "keep-latest-per-package",
+    "action": {
+      "type": "Keep"
+    },
+    "mostRecentVersions": {
+      "keepCount": 1
+    }
+  },
+  {
+    "name": "delete-older-tagged",
+    "action": {
+      "type": "Delete"
+    },
+    "condition": {
+      "tagState": "tagged",
+      "olderThan": "1s"
+    }
+  }
+]

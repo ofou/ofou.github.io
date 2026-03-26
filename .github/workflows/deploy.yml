@@ -42,7 +42,7 @@ jobs:
           sudo dpkg -i pandoc-3.7.0.2-1-amd64.deb
 
       - name: Build Site
-        run: mkdocs build
+        run: mkdocs build --clean
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

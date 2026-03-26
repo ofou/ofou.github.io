@@ -1,0 +1,48 @@
+# ofou.github.io → Artifact Registry → Cloud Run (us-west1).
+# Image tag: latest (moving). Traceability: Cloud Run labels still include commit-sha=$COMMIT_SHA.
+# Use as Cloud Build trigger inline YAML, or: gcloud builds submit --config=infra/cloudbuild.yaml
+steps:
+  - id: Build
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --no-cache
+      - --pull
+      - -t
+      - $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:latest
+      - .
+      - -f
+      - Dockerfile
+  - id: Push
+    name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:latest
+  - id: Deploy
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - services
+      - update
+      - $_SERVICE_NAME
+      - --platform=managed
+      - --image=$_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:latest
+      - --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID
+      - --region=$_DEPLOY_REGION
+      - --quiet
+images:
+  - $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:latest
+options:
+  logging: CLOUD_LOGGING_ONLY
+  substitutionOption: ALLOW_LOOSE
+substitutions:
+  _AR_HOSTNAME: us-west1-docker.pkg.dev
+  _DEPLOY_REGION: us-west1
+  _PLATFORM: managed
+  _SERVICE_NAME: ofou-github-io
+  _TRIGGER_ID: 3f924a8c-b4fc-44fa-af41-a14ffacc6e40
+tags:
+  - gcp-cloud-build-deploy-cloud-run
+  - gcp-cloud-build-deploy-cloud-run-managed
+  - ofou-github-io
