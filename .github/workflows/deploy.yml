@@ -28,14 +28,13 @@ jobs:
         uses: astral-sh/setup-uv@v4
         with:
           version: "0.5"
-          enable-cache: true
-          cache-dependency-glob: "**/requirements.txt"
+          enable-cache: false
 
       - name: Install dependencies
-        run: uv pip install --system -r requirements.txt
+        run: uv pip install --system --no-cache -r requirements.txt
 
       - name: Install project (bibtex_chronological plugin)
-        run: uv pip install --system -e .
+        run: uv pip install --system --no-cache -e .
 
       - name: Install Pandoc
         run: |

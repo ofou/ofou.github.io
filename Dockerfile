@@ -16,14 +16,13 @@ RUN wget https://github.com/jgm/pandoc/releases/download/3.7.0.2/pandoc-3.7.0.2-
     pandoc --version
 
 COPY requirements.txt .
-RUN --mount=type=cache,target=/root/.cache/uv \
-    UV_LINK_MODE=copy uv pip install --system -r requirements.txt
+RUN UV_LINK_MODE=copy uv pip install --system --no-cache -r requirements.txt
 
 COPY . .
 
 RUN if [ -f .git/shallow ]; then git fetch --unshallow; fi
 
-RUN uv pip install --system -e .
+RUN uv pip install --system --no-cache -e .
 
 RUN mkdocs build --clean
 
