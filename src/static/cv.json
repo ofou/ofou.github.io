@@ -6,9 +6,8 @@
     "email": "omar@olivares.cl",
     "phone": "+56983810103",
     "url": "https://olivares.cl",
-    "summary": "ML Engineer specializing in intelligent agents, LLM evaluation, and production RAG systems. Bridging research rigor with engineering excellence, from benchmarking 19 LLMs on SQL error detection (DataEd'26) to building high-growth open-source coding agents. Experienced in end-to-end ML lifecycles—data collection, fine-tuning, and scalable serving—with a focus on high-impact, user-facing AI products.",
+    "summary": "AI/ML engineer specializing in LLM agents, evaluation, and production RAG systems. Equal parts researcher and builder: benchmarked 19 LLMs on SQL error detection for a peer-reviewed paper (CLEI 2026) and helped launch one of the fastest-growing open-source coding agents. Hands-on across the full ML lifecycle — data collection, fine-tuning, evaluation, and serving at scale — with a focus on AI products people actually use.",
     "location": {
-      "postalCode": "7510043",
       "city": "Providencia",
       "countryCode": "CL",
       "region": "Metropolitan Region, Chile"
@@ -33,32 +32,44 @@
   },
   "work": [
     {
+      "name": "Maxxa",
+      "position": "Senior AI Engineer",
+      "url": "https://www.maxxa.cl",
+      "startDate": "2026-03-01",
+      "location": "Santiago, Chile",
+      "summary": "Maxxa is a Chilean fintech specializing in credit and surety guarantees. Building the production AI and LLM systems behind its financial products.",
+      "highlights": [
+        "Architected and built the governance, evals, and observability layer for the company's production LLM systems",
+        "Contributing to the internal LLM platform (core and enterprise editions) that powers AI features across the company's financial products",
+        "Helped build the platform's Model Context Protocol (MCP) server, letting AI agents and internal teams plug company data and tools directly into their workflows"
+      ]
+    },
+    {
       "name": "Universidad de Talca",
       "position": "AI Engineer",
       "url": "https://www.utalca.cl",
       "startDate": "2025-09-01",
-      "endDate": "",
-      "summary": "Developing an AI-powered educational platform for SQL database learning using multi-agent LLM systems. Addressing limitations in traditional database education through real-time, granular feedback.",
+      "summary": "Building an AI-powered educational platform for learning SQL, using multi-agent LLM systems to give students the kind of real-time, granular feedback traditional database courses can't.",
       "highlights": [
-        "Architecting a multi-agent system to provide real-time syntactic, semantic, and logical feedback on SQL queries",
-        "Evaluating and benchmarking LLM agents (Grok, GPT-4o, Claude 3.5, Gemini, DeepSeek) for educational tasks",
-        "Built evaluation suite benchmarking 19 LLMs on 300 SQL cases using LLM-as-a-Judge + human-annotated ground truth",
-        "Co-authored peer-reviewed paper accepted at DataEd'26 validating the system's pedagogical impact"
+        "Architecting a multi-agent system that gives students real-time feedback on the syntax, semantics, and logic of their SQL queries",
+        "Benchmarking LLM agents — Grok, GPT-4o, Claude 3.5, Gemini, DeepSeek — on educational tasks",
+        "Built an evaluation suite benchmarking 19 LLMs on 300 SQL cases, combining LLM-as-a-Judge scoring with human-annotated ground truth",
+        "Co-authored a peer-reviewed paper on LLM-based SQL error detection, accepted at CLEI 2026 (IEEE, Scopus-indexed)"
       ]
     },
     {
       "name": "Kilo Code",
-      "position": "AI Engineer & Developer Relations",
+      "position": "Staff Developer Advocate",
       "url": "https://kilocode.ai",
       "startDate": "2025-03-01",
       "endDate": "2025-05-01",
       "location": "San Francisco, CA / Amsterdam",
-      "summary": "Early team member (12-person founding team) of Kilo Code, a high-growth fork of the Cline/Roo-Code open-source coding agent. Joined from project inception to scaling phase.",
+      "summary": "Joined the 12-person founding team of Kilo Code, a high-growth open-source coding agent forked from Cline/Roo-Code, from inception through its first scaling phase.",
       "highlights": [
-        "Collaborated with the founding team to launch one of the fastest-growing open-source coding agents",
-        "Built OpenRouter integrations and technical documentation contributing to #1 model ranking on OpenRouter",
-        "Developed integration guides and reference implementations for developer onboarding; project grew to ~10K GitHub stars",
-        "Worked directly on technical architecture and strategy with leadership (GitLab founder Sid Sijbrandij's team)"
+        "Helped the founding team launch one of the fastest-growing open-source coding agents",
+        "Built OpenRouter integrations and technical documentation that helped push Kilo Code to the #1 model ranking on OpenRouter",
+        "Wrote integration guides and reference implementations for developer onboarding as the project grew to ~10K GitHub stars",
+        "Shaped technical architecture and strategy working directly with GitLab co-founder Sid Sijbrandij's leadership team"
       ]
     },
     {
@@ -68,12 +79,12 @@
       "startDate": "2024-02-01",
       "endDate": "2025-02-01",
       "location": "North Carolina, US (Remote)",
-      "summary": "Led AI development for an innovative arXiv research discovery platform, building production RAG systems to improve scientific search and analysis.",
+      "summary": "Led AI development for an arXiv research-discovery platform, building the production RAG systems behind its scientific search and analysis.",
       "highlights": [
-        "Redesigned RAG pipeline (chunking + hybrid retrieval + reranking) improving search relevance for 200K+ indexed papers",
-        "Built ingestion and indexing pipelines processing daily arXiv submissions; implemented evaluation harness with Weights & Biases",
-        "Deployed FastAPI services with Docker; added tracing and reliability tests for production serving",
-        "Conducted experiments to improve model performance and accuracy; oversaw QA processes for AI-driven features"
+        "Redesigned the RAG pipeline — chunking, hybrid retrieval, reranking — improving search relevance across 200K+ indexed papers",
+        "Built ingestion and indexing pipelines for daily arXiv submissions and stood up an evaluation harness in Weights & Biases",
+        "Deployed Dockerized FastAPI services with tracing and reliability tests for production serving",
+        "Ran experiments to improve model performance and accuracy, and owned QA for AI-driven features"
       ]
     },
     {
@@ -82,11 +93,11 @@
       "startDate": "2021-09-01",
       "endDate": "2025-01-01",
       "location": "San Diego, CA (Remote)",
-      "summary": "Led content creation for a popular series exploring neurotechnology and AI, translating complex scientific concepts for a broad audience.",
+      "summary": "Part-time freelance role held alongside engineering work. Led content for a popular neurotechnology and AI series, translating dense research for a broad audience.",
       "highlights": [
-        "Translated advanced research into engaging content, contributing to channel growth exceeding 80,000 YouTube subscribers",
-        "Produced multiple viral videos surpassing 200,000 views each, fostering public understanding of BCIs and AI",
-        "Managed end-to-end production: research, scripting, and distribution across major social media platforms"
+        "Turned advanced research into engaging videos, helping grow the channel past 80,000 YouTube subscribers",
+        "Produced multiple viral videos — 200,000+ views each — building public understanding of brain-computer interfaces and AI",
+        "Owned production end to end: research, scripting, and distribution across major social platforms"
       ]
     },
     {
@@ -96,7 +107,7 @@
       "startDate": "2024-11-01",
       "endDate": "2024-11-30",
       "location": "Santiago, Chile",
-      "summary": "Participated in rigorous AI model evaluation tasks for LATAM Spanish language models."
+      "summary": "Contract engagement running rigorous evaluations of Spanish-language AI models for Latin America."
     },
     {
       "name": "clicOH",
@@ -104,10 +115,10 @@
       "startDate": "2021-07-01",
       "endDate": "2021-12-01",
       "location": "Remote",
-      "summary": "Software Engineer at a logistics startup (originally RayoApp, acquired by clicOH).",
+      "summary": "Backend engineering at a logistics startup — originally RayoApp, acquired by clicOH.",
       "highlights": [
-        "Contributed to backend development and system integration post-acquisition",
-        " Maintained legacy systems while migrating features to new architecture"
+        "Contributed to backend development and systems integration through the post-acquisition transition",
+        "Maintained legacy systems while migrating features to the new architecture"
       ]
     },
     {
@@ -116,10 +127,10 @@
       "startDate": "2020-01-01",
       "endDate": "2020-04-01",
       "location": "Las Condes, Chile",
-      "summary": "Summer internship during Computer Science studies. Helped rebuild the platform into a scalable microservices-based architecture.",
+      "summary": "Summer internship during Computer Science studies, helping rebuild the platform on a scalable microservices architecture.",
       "highlights": [
-        "Refactored monolithic application into microservices to improve scalability and maintainability",
-        "Implemented API endpoints and optimized database queries for renewable energy forecasting platform"
+        "Refactored a monolithic application into microservices, improving scalability and maintainability",
+        "Built API endpoints and optimized database queries for a renewable-energy forecasting platform"
       ]
     },
     {
@@ -128,9 +139,9 @@
       "startDate": "2016-01-01",
       "endDate": "2018-12-01",
       "location": "Curicó, Chile",
-      "summary": "Responsible for network resolution, technical support, and IT infrastructure deployment.",
+      "summary": "Provided technical support, resolved network issues, and helped deploy IT infrastructure across the university.",
       "highlights": [
-        "Solved network issues and deployed IT infrastructure alongside the technical team"
+        "Diagnosed network issues and rolled out new IT infrastructure alongside the technical team"
       ]
     },
     {
@@ -147,7 +158,7 @@
       "institution": "Centro Nacional de Inteligencia Artificial (CENIA)",
       "url": "https://diplomado.cenia.cl",
       "area": "Generative AI and Large Language Models",
-      "studyType": "Postgraduate Diploma (Feb 2026)",
+      "studyType": "Postgraduate Diploma",
       "startDate": "2025-08-18",
       "endDate": "2026-02-01",
       "courses": [
@@ -166,7 +177,7 @@
       "endDate": "2023-12-01",
       "score": "5.71/7",
       "courses": [
-        "Thesis: Fine-tuned GPT-3.5 for Chile's PAES math exam — improved accuracy from 0.78 to 0.94 (+20%)",
+        "Thesis: Fine-tuned GPT-3.5 for Chile's PAES math exam — improved accuracy from 78% to 94% (+16 points)",
         "Data Structures & Algorithms, Database Systems, Distributed Systems, AI/ML"
       ]
     },
@@ -180,58 +191,81 @@
   ],
   "publications": [
     {
-      "name": "Assessing the Ability of Large Language Models to Identify and Explain Errors in SQL Queries",
-      "publisher": "DataEd'26: International Workshop on Data Systems Education",
-      "releaseDate": "2026-03-24",
-      "url": "https://dataedinitiative.github.io/DataEd26/index.html",
-      "summary": "Empirical evaluation of 19 LLMs on SQL error detection. Used LLM-as-a-Judge paradigm (300 test cases) and human-annotated ground truth. Findings highlight LLM potential for automated tutoring systems."
+      "name": "Assessing the Ability of Large Language Models to Detect and Classify Errors in SQL Queries",
+      "publisher": "CLEI 2026: Latin American Computing Conference (IEEE)",
+      "releaseDate": "2026-09-07",
+      "url": "https://conferencia2026.clei.org/",
+      "summary": "Full paper at CLEI 2026 (Computer Education track) — IEEE-published, Scopus-indexed, 34% acceptance rate (102 of 297 submissions). The study evaluates how well 19 LLMs detect and classify errors in SQL queries, using LLM-as-a-Judge scoring over 300 test cases against human-annotated ground truth, with direct applications in automated tutoring for database education. To be presented in Mexico City, September 2026."
     },
     {
       "name": "Optimization of Language Models for Chile's Mathematics Higher Education Admission Test (PAES)",
       "publisher": "Universidad Católica del Maule",
       "releaseDate": "2024-02-03",
       "url": "https://olivares.cl/thesis.pdf",
-      "summary": "Fine-tuned GPT-3.5 for Chile's PAES mathematics exam. Improved accuracy from 0.78 to 0.94 (+20%) through targeted optimization techniques and OCR/transcription pipelines."
+      "summary": "Fine-tuned GPT-3.5 for Chile's PAES mathematics exam, raising accuracy from 78% to 94% (+16 points) through targeted optimization and OCR/transcription pipelines."
     }
   ],
   "skills": [
     {
-      "name": "ML/AI Specializations",
+      "name": "AI and Machine Learning",
       "keywords": [
         "Intelligent Agents",
-        "LLM Evaluation (LLM-as-a-Judge)",
-        "RAG Systems",
-        "Fine-tuning (LoRA/QLoRA)",
+        "Multi-Agent Systems",
         "Agentic Workflows",
+        "LLM Evaluation",
+        "LLM-as-a-Judge",
+        "Evals",
+        "Benchmarking",
+        "AI Governance",
+        "LLM Observability",
+        "RAG Systems",
+        "Embeddings",
+        "Vector Search",
+        "Reranking",
+        "Fine-tuning",
+        "LoRA",
+        "QLoRA",
+        "PEFT",
+        "Prompt Engineering",
         "Open-Source Development"
       ]
     },
     {
-      "name": "Frameworks & Tools",
+      "name": "Frameworks and Tools",
       "keywords": [
         "PyTorch",
         "Hugging Face",
         "LangChain",
-        "OpenAI/Anthropic APIs",
+        "OpenAI API",
+        "Anthropic API",
         "Weights & Biases",
+        "W&B",
         "MLX"
       ]
     },
     {
-      "name": "Infrastructure & Serving",
+      "name": "Infrastructure and Serving",
       "keywords": [
         "FastAPI",
         "Docker",
         "Microservices",
+        "Model Serving",
+        "Inference",
+        "Observability",
+        "Tracing",
         "PostgreSQL",
-        "Vector DBs (Pinecone/ChromaDB)",
-        "AWS/GCP"
+        "Vector Databases",
+        "Pinecone",
+        "ChromaDB",
+        "OpenRouter",
+        "AWS",
+        "GCP"
       ]
     },
     {
       "name": "Programming Languages",
       "keywords": [
-        "Python (expert)",
+        "Python",
         "SQL",
         "TypeScript"
       ]
@@ -249,6 +283,15 @@
   ],
   "interests": [
     {
+      "name": "AI Research",
+      "keywords": [
+        "Interpretability",
+        "AI alignment & safety",
+        "Agentic systems",
+        "Computational neuroscience"
+      ]
+    },
+    {
       "name": "Technology",
       "keywords": [
         "Neurotechnology",
@@ -260,7 +303,7 @@
       "name": "Art",
       "keywords": [
         "Music production",
-        "Film making",
+        "Video & content creation",
         "Technical writing"
       ]
     },
@@ -281,28 +324,31 @@
   ],
   "projects": [
     {
-      "name": "Graham Essays",
-      "description": "Automated EPUB generator for Paul Graham's essays — reached #1 on Hacker News, 800+ GitHub stars",
+      "name": "WebGrid Eval",
+      "description": "Open-source benchmark for LLM vision and tool-use, evaluating models on Neuralink's Webgrid cursor-control task",
       "highlights": [
-        "Reached #1 on Hacker News frontpage",
-        "Built automated pipeline processing 200+ essays into EPUB format",
-        "800+ GitHub stars; demonstrates open-source community engagement"
+        "Built a benchmark where vision LLMs use screen, mouse_move, and mouse_click tools to drive a cursor, scored in bits-per-second against Neuralink's human baselines",
+        "Ran multi-model evaluations (Gemini, Qwen, and others) through OpenRouter with a FastAPI evaluation server and automated replay generation",
+        "Bridges AI and neurotechnology by scoring LLM agents on the same task Neuralink uses to measure brain-computer-interface performance"
       ],
       "keywords": [
-        "Python",
-        "Web Scraping",
-        "Open Source"
+        "LLM Evaluation",
+        "Vision-Language Models",
+        "Tool Use",
+        "Agents",
+        "FastAPI",
+        "OpenRouter"
       ],
-      "startDate": "2022-07-01",
-      "url": "https://github.com/ofou/graham-essays",
+      "startDate": "2026-02-03",
+      "url": "https://github.com/ofou/webgrid_eval",
       "type": "application"
     },
     {
       "name": "Lucas — AI Finance Agent",
       "description": "Agentic AI personal finance assistant with real-time bank API integration",
       "highlights": [
-        "Built AI-powered finance agent connecting to bank accounts via Fintoc API",
-        "Developed within 36-hour hackathon using Anthropic Claude API + FastAPI backend"
+        "Built an AI finance agent that connects to real bank accounts through the Fintoc API",
+        "Shipped in a 36-hour hackathon using the Anthropic Claude API and a FastAPI backend"
       ],
       "keywords": [
         "Anthropic API",
@@ -312,6 +358,42 @@
       "startDate": "2025-11-21",
       "url": "https://github.com/platanus-hack/platanus-hack-25-team-29",
       "type": "application"
+    },
+    {
+      "name": "Textube — YouTube-to-LLM API",
+      "description": "FastAPI service that pipes YouTube transcripts into LLMs, shipped as a ChatGPT plugin — featured on the Hacker News front page",
+      "highlights": [
+        "Featured on the Hacker News front page; shipped as a live ChatGPT plugin and public API",
+        "Built a FastAPI backend with Google Firestore caching and tiktoken token counting, processing 250+ video playlists (1M+ words)",
+        "Drew so much usage that Google rate-limited it — months later, Google shipped similar functionality natively in Gemini"
+      ],
+      "keywords": [
+        "FastAPI",
+        "LLM Integration",
+        "ChatGPT Plugin",
+        "Firestore",
+        "tiktoken"
+      ],
+      "startDate": "2024-09-01",
+      "url": "https://github.com/ofou/texttube",
+      "type": "application"
+    },
+    {
+      "name": "Graham Essays",
+      "description": "Automated EPUB generator for Paul Graham's essays — reached #1 on Hacker News, 800+ GitHub stars",
+      "highlights": [
+        "Hit #1 on the Hacker News front page",
+        "Built an automated pipeline that compiles 200+ essays into EPUB format",
+        "Earned 800+ GitHub stars from the open-source community"
+      ],
+      "keywords": [
+        "Python",
+        "Web Scraping",
+        "Open Source"
+      ],
+      "startDate": "2022-07-01",
+      "url": "https://github.com/ofou/graham-essays",
+      "type": "application"
     }
   ],
   "awards": [
@@ -319,7 +401,7 @@
       "title": "2nd Place — Computer Vision Hackathon",
       "date": "2025-09-01",
       "awarder": "Fundación País Digital | EY",
-      "summary": "Built traffic monitoring system detecting congestion and anomalies from CCTV streams, scalable to thousands of cameras.",
+      "summary": "Built a traffic-monitoring system that detects congestion and anomalies in CCTV streams, designed to scale to thousands of cameras.",
       "url": "https://www.linkedin.com/posts/activity-7379173484196700160-mUMM"
     }
   ],
@@ -330,8 +412,7 @@
       "url": "https://neuromatch.io",
       "startDate": "2021-07-01",
       "endDate": "2021-09-01",
-      "summary": "Neuromatch is an online community of computational neuroscientists whose mission is to foster inclusive global interactions for learning, mentorship, networking, and professional development.",
-      "highlights": []
+      "summary": "Volunteered as a software engineer with Neuromatch, a global online community of computational neuroscientists focused on inclusive learning, mentorship, and professional development."
     }
   ],
   "certificates": [
@@ -353,8 +434,8 @@
   ],
   "meta": {
     "canonical": "https://olivares.cl/cv.json",
-    "version": "v2.1.0",
-    "lastModified": "2026-01-02T00:00:00Z",
+    "version": "v2.2.0",
+    "lastModified": "2026-06-09T00:00:00Z",
     "theme": "stackoverflow"
   }
 }
