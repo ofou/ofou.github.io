@@ -33,11 +33,24 @@
   },
   "work": [
     {
+      "name": "Maxxa Software SpA",
+      "position": "Senior AI Engineer",
+      "url": "https://www.maxxa.cl",
+      "startDate": "2026-03-03",
+      "location": "Santiago, Chile",
+      "summary": "Chilean fintech specializing in credit and surety guarantees. Building the production AI and LLM systems behind Maxxa's financial products on the TECH team.",
+      "highlights": [
+        "Architected and built the governance, evals, and observability layer for the company's production LLM systems",
+        "Contributing to the internal LLM platform (core and enterprise editions) that powers AI features across the company's financial products",
+        "Helped build the platform's Model Context Protocol (MCP) server, letting AI agents and internal teams plug company data and tools directly into their workflows"
+      ]
+    },
+    {
       "name": "Universidad de Talca",
       "position": "AI Engineer",
       "url": "https://www.utalca.cl",
       "startDate": "2025-09-01",
-      "endDate": "",
+      "endDate": "2026-03-01",
       "summary": "Developing an AI-powered educational platform for SQL database learning using multi-agent LLM systems. Addressing limitations in traditional database education through real-time, granular feedback.",
       "highlights": [
         "Architecting a multi-agent system to provide real-time syntactic, semantic, and logical feedback on SQL queries",
@@ -354,7 +367,7 @@
   "meta": {
     "canonical": "https://olivares.cl/cv.json",
     "version": "v2.1.0",
-    "lastModified": "2026-01-02T00:00:00Z",
+    "lastModified": "2026-07-29T00:00:00Z",
     "theme": "stackoverflow"
   }
 }
