@@ -3,7 +3,8 @@ FROM python:3.13-slim AS build
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY build.py src ./
+COPY build.py .
+COPY src ./src
 RUN python build.py
 FROM python:3.12-slim
 RUN pip install --no-cache-dir "granian==2.8.1"
