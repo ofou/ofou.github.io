@@ -431,7 +431,6 @@ def main() -> None:
     shutil.copytree(SRC / "static", OUT / "static")
     for name in ("favicon.ico", "robots.txt", "references.bib"):
         shutil.copy2(SRC / name, OUT / name)
-    write("CNAME", "olivares.cl\n")
 
     write("index.html", layout(SITE["title"], article(home), url="/", description=SITE["description"], math=has_math(home.html)))
 
