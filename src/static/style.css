@@ -524,22 +524,6 @@ footer.site a:hover {
   }
 }
 
-/* ---------- fig. 01 : interactive cortical column ---------- */
-
-.netfig {
-  margin: 2.2rem 0 2.6rem;
-}
-
-.netfig canvas {
-  display: block;
-  width: 100%;
-  height: 320px;
-  border: 1px solid var(--rule-fine);
-  background: transparent;
-  cursor: crosshair;
-  touch-action: none;
-}
-
 /* ---------- CV ---------- */
 
 .cv-actions {
@@ -713,8 +697,7 @@ footer.site a:hover {
   header.site nav,
   footer.site,
   .cv-actions,
-  .comments,
-  .netfig {
+  .comments {
     display: none;
   }
 
