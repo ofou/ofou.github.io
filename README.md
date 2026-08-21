@@ -1,37 +1,51 @@
+# olivares.cl
+
+Personal site. Markdown in `src/`, one build script, no framework.
+
+```sh
+pip install -r requirements.txt
+python build.py            # → _site/
+python build.py --serve    # → http://localhost:8000
+```
+
+## Layout
+
+| Path                 | What                                                          |
+| -------------------- | ------------------------------------------------------------- |
+| `build.py`           | The whole generator: pages, blog, citations, RSS, sitemap      |
+| `src/index.md`       | Home                                                           |
+| `src/blog/posts/`    | Posts → `/blog/YYYY/MM/DD/<slug-of-title>/`                    |
+| `src/projects/`      | Projects → `/projects/<filename>/`                             |
+| `src/static/`        | CSS, images, PDFs — copied verbatim to `/static/`              |
+| `src/references.bib` | BibTeX for `[@key]` citations                                  |
+
+## Authoring
+
+Front matter is YAML. `title` and `date` drive post URLs, so changing either
+changes the permalink. `draft: true` keeps a post out of the build.
+
+```markdown
 ---
-title: Omar Olivares Urrutia
-description: Software Engineer (AI/ML)
+title: "Post title"
+date: 2025-01-01
+categories: [Books]
+description: Used for the RSS summary and meta tags.
 ---
 
-# Hello, I'm Omar
+# Post title
 
-I'm a Software Engineer with a passion for AI/ML. I previously worked as a music producer, content creator for [Neura Pod], then pivoted into AI Engineering and Developer Advocate, building AI-powered products like [Kilo Code] coding agent, [Emergent Mind] RAG systems for CS research, and scalable web applications for various startups. Currently, I'm developing LLM agents for SQL learning at [University of Talca].
+Lede paragraph.
 
-Available for hiring, consulting, or collaboration.
+<!-- more -->
 
-## What I Do
+Rest of the post. Cite with [@key]; TeX math with $x^2$ renders via KaTeX.
+```
 
-1. _Build production-ready AI/ML products_
-2. _Community building in LLMs/AI/ML space_
-3. _Create technical content from internal docs to videos_
-4. _Independent research in AI, neuroscience, and machine learning_
+`[@key]` becomes a numbered footnote and appends a bibliography sorted by year,
+with `#fn:<key>` anchors.
 
-I also enjoy [making music], contributing to [open-source] projects, learning
-Mandarin (你好), and exploring new places around the world.
+## Deploy
 
-## Let's Connect
-
-Reach out via [X], [LinkedIn], or [omar@olivares.cl] to discuss your next
-project or just to chat about technology.
-
-[Emergent Mind]: https://www.emergentmind.com
-[Kilo Code]: https://kilocode.ai
-[Neura Pod]: https://www.youtube.com/@NeuraPod
-[content]: https://www.youtube.com/watch?v=kFlLzFuslfQ
-[creation]: https://www.youtube.com/watch?v=ISa10TrJK7w
-[making music]: https://open.spotify.com/artist/5e6x7QJXOGbkDEPpEOWm1w
-[open-source]: https://github.com/ofou
-[X]: https://twitter.com/omarnomad
-[LinkedIn]: https://www.linkedin.com/in/ofou
-[omar@olivares.cl]: mailto:omar@olivares.cl
-[University of Talca]: https://www.utalca.cl/en/
+Every push to `main` runs `.github/workflows/deploy.yml`, which builds and
+publishes `_site/` to GitHub Pages. Repository setting **Pages → Source** must
+be **GitHub Actions**.

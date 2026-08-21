@@ -1,1 +1,0 @@
-# Local MkDocs plugins

@@ -1,68 +1,132 @@
-/* Google Fonts: STIX Two Text */
-@import url('https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap");
 
 :root {
-  --timberwolf: #d6d6d6;
-  --dark-cyan: #BC7F14;
-  --onyx: #2e3436;
-  --timberwolf-2: #d3d7cf;
-  --lapis-lazuli: #3465a4;
-  --black: #000000;
-  --white: #ffffff;
-
-  --font-jetbrains: "JetBrains Mono", monospace;
-  --font-sans: "Helvetica", "Helvetica Neue", "Arial", sans-serif;
-  --font-source-serif: "Source Serif 4", serif;
-  --font-stix: "STIX Two Text", serif;
-  --font-stix-math: "STIX Two Text", serif;
-  --font-mono: "JetBrains Mono", monospace;
-  --font-size-base: calc(19px);
+  --paper: #fcfcfb;
+  --paper-2: #f4f4f2;
+  --ink: #1a1d23;
+  --ink-2: #3d434d;
+  --mute: #6b7280;
+  --rule: #e5e6e3;
+  --accent: #9a6810;
+  --serif: "STIX Two Text", "Iowan Old Style", Palatino, Georgia, serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --measure: 40rem;
 }
 
-/* Text selection highlighting */
-::selection {
-  background-color: #FFFF0080;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #16181d;
+    --paper-2: #1c1f26;
+    --ink: #e8eaee;
+    --ink-2: #c6cad2;
+    --mute: #969da9;
+    --rule: #2a2e36;
+    --accent: #e0b84a;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 19px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0 1.25rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.66;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
-  text-decoration: none;
+  color: var(--ink);
+  text-decoration-color: var(--rule);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
-.md-header {
-  font-family: var(--font-sans);
-  font-weight: 700;
+a:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
 }
 
-.md-header__source {
-  font-family: var(--font-jetbrains);
-}
+/* ---------- chrome ---------- */
 
-.md-tabs {
-  font-family: var(--font-sans);
-}
-
-.md-content__inner {
-  max-width: min(768px, 90vw);
-  /* Kept your width, made responsive for harmony on smaller screens */
+header.site,
+main,
+footer.site {
+  max-width: var(--measure);
   margin: 0 auto;
 }
 
-.md-post__content .md-typeset {
-  min-width: min(700px, 100%);
-  /* Adjusted for responsiveness */
+header.site {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 2rem 0 1.25rem;
+  border-bottom: 1px solid var(--rule);
 }
 
-article.md-post--excerpt p,
-article.md-post--excerpt nav {
-  display: none;
+.brand {
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
 }
 
-.md-post--excerpt {
-  margin-bottom: 0;
+header.site nav {
+  display: flex;
+  gap: 1.1rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 
-.md-post--excerpt .md-post__header {
-  min-height: 0;
+header.site nav a {
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+footer.site {
+  margin-top: 4rem;
+  padding: 1.25rem 0 3rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--mute);
+}
+
+footer.site p {
+  margin: 0 0 0.4rem;
+}
+
+footer.site a {
+  color: var(--mute);
+  text-decoration: none;
+}
+
+.colophon {
+  color: var(--mute);
+}
+
+/* ---------- typography ---------- */
+
+main {
+  padding-top: 2.25rem;
 }
 
 h1,
@@ -71,396 +135,307 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-stix);
-  text-align: left;
+  line-height: 1.2;
+  font-weight: 600;
+  margin: 2.25rem 0 0.75rem;
+  text-wrap: balance;
 }
 
-h1,
-h2 {
-  hyphens: none;
-  font-weight: 700;
-}
-
-.md-sidebar__inner {
-  font-family: var(--font-stix);
-}
-
-.md-typeset {
-  font-family: var(--font-stix);
-  font-size: 1rem;
-  line-height: 1.618rem;
-  font-variant-ligatures: contextual common-ligatures;
-  font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
-  /* letter-spacing: -0.01em; */
-  /* text-align: justify; */
-  /* overflow-wrap: break-word; */
-  /* word-break: break-word; */
-  /* hyphens: auto; */
-  max-width: min(768px, 90vw);
-  margin: 0 auto;
-}
-
-
-.content__inner {
-  max-width: 768px;
-  margin: 0 auto;
-}
-
-.md-typeset strong {
-  font-family: var(--font-stix-math);
-}
-
-.content blockquote,
-.content div,
-.content h1,
-.content h2,
-.content h3,
-.content h4,
-.content h5,
-.content h6,
-.content p,
-.content pre,
-.content table,
-.content dl,
-.content video {
-  margin-top: 0rem;
-  margin-bottom: 1.618rem;
-}
-
-.md-typeset ol li,
-.md-typeset ul li {
-  margin-bottom: 0;
-}
-
-/* KaTeX Math Font Integration with STIX Two Text */
-.katex {
-  font-family: var(--font-stix-math) !important;
-  font-size: inherit !important;
-}
-
-.katex-display {
-  margin: 0rem 0 !important;
-}
-
-.katex-display>.katex {
-  margin: 0 !important;
-}
-
-.katex .main {
-  font-family: var(--font-stix-math) !important;
-}
-
-.katex .mathit,
-.katex .mathnormal {
-  font-family: var(--font-stix-math) !important;
-  font-style: italic !important;
-}
-
-.katex .mathbf {
-  font-family: var(--font-stix) !important;
-  font-weight: 700 !important;
-}
-
-.katex .mathrm,
-.katex .text {
-  font-family: var(--font-stix) !important;
-  font-style: normal !important;
-}
-
-.katex .mathtt {
-  font-family: var(--font-mono) !important;
-}
-
-.katex .mathsf {
-  font-family: var(--font-ml-modern-sans) !important;
-}
-
-.md-search {
-  font-family: var(--font-sans);
-}
-
-.md-search__input {
-  font-family: var(--font-sans);
-}
-
-.md-typeset h1 {
-  font-size: 1.68rem;
-  font-weight: 700;
-  line-height: 1.618;
-  margin-bottom: 1.618rem;
-}
-
-.md-typeset h2 {
-  font-size: 1.515rem;
-  font-weight: 700;
-  line-height: 1.618;
+h1 {
+  font-size: 2.1rem;
+  letter-spacing: -0.015em;
   margin-top: 0;
-  /* margin-bottom: 1.618rem; */
 }
 
-.md-typeset h3 {
-  font-size: 1.366rem;
-  line-height: 1.618;
-  margin-bottom: 1.618rem;
+h2 {
+  font-size: 1.45rem;
 }
 
-.md-typeset h4 {
-  font-size: 1.232rem;
-  line-height: 1.618;
-  margin-bottom: 1.618rem;
+h3 {
+  font-size: 1.15rem;
 }
 
-.md-typeset h5 {
-  font-size: 1.111rem;
-  line-height: 1.618;
-  margin-bottom: 1.618rem;
-}
-
-.md-typeset h6 {
+h4,
+h5,
+h6 {
   font-size: 1rem;
-  line-height: 1.618;
-  margin-bottom: 1.618rem;
 }
 
-html {
-  font-size: var(--font-size-base);
+p,
+ul,
+ol,
+dl {
+  margin: 0 0 1.15rem;
 }
 
-.md-typeset img,
-.md-typeset video {
-  margin: 0 auto;
-  display: block;
-  border-radius: 0.618rem;
+li {
+  margin-bottom: 0.35rem;
 }
 
-.md-typeset .md-author img {
-  display: block;
-  border-radius: 0.618rem;
+hr {
   border: 0;
-  padding: 0;
-}
-
-.md-typeset img:hover,
-.md-typeset video:hover {
-  transition: background-color 0.5s ease-in-out;
-  position: relative;
-  z-index: 1;
-}
-
-.md-typeset pre {
-  padding: 0.618em;
-  /* Golden padding */
-  border: 1px solid var(--timberwolf-2);
-  border-radius: 0.618rem;
-}
-
-.md-typeset code {
-  font-family: var(--font-jetbrains);
-  font-size: .75rem;
-  line-height: 1rem;
-  font-variant-ligatures: contextual common-ligatures;
-  font-feature-settings: "calt" 1, "ss01" 1, "ss02" 1;
-  text-rendering: optimizeLegibility;
-  padding: 0.2rem 0.218rem;
-  border-radius: 0.2rem;
-}
-
-.md-typeset code:hover {
-  transition: background-color 0.5s ease-in-out;
-  position: relative;
-}
-
-body {
-  font-family: "STIX Two Text", serif;
+  border-top: 1px solid var(--rule);
+  margin: 2.5rem 0;
 }
 
 blockquote {
+  margin: 1.75rem 0;
+  padding-left: 1.1rem;
+  border-left: 2px solid var(--rule);
+  color: var(--ink-2);
   font-style: italic;
-  font-family: var(--font-stix);
-  font-size: 1rem;
 }
 
-.book-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
-  gap: 0.618rem;
-  /* Golden gap */
-  justify-items: center;
-  align-items: end;
-  position: relative;
-  margin: 1.618rem;
-  /* Golden margin */
+blockquote p:last-child {
+  margin-bottom: 0;
 }
 
-.book-grid img {
-  width: auto;
-  border-radius: 0 6% 6% 0/4%;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.15),
-    0 1px 0 rgba(255, 255, 255, 0.1) inset;
+small,
+sup,
+sub {
+  font-size: 0.75em;
 }
 
-.book-grid img:hover {
-  transform: scale(1.05) translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.2),
-    0 1px 0 rgba(255, 255, 255, 0.1) inset;
-  border-radius: 0 6% 6% 0/4%;
+/* ---------- meta lines ---------- */
+
+.meta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--mute);
+  margin-bottom: 1.5rem;
 }
 
-.md-source-file {
-  font-family: var(--font-sans);
+.meta a {
+  color: var(--mute);
 }
 
-.md-nav {
-  font-family: var(--font-sans);
-  font-variant-east-asian: full-width;
-  font-feature-settings: "fwid" 1;
+.tag {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.05rem 0.35rem;
 }
 
-.md-post__action {
-  font-family: var(--font-sans);
-  font-weight: 700;
+.edit {
+  margin-top: 3rem;
+}
+
+/* ---------- index lists ---------- */
+
+ul.index {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0;
+}
+
+ul.index li {
+  padding-bottom: 1.4rem;
+  margin-bottom: 1.4rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+ul.index li:last-child {
+  border-bottom: 0;
+}
+
+.entry {
+  font-size: 1.2rem;
+  font-weight: 600;
   text-decoration: none;
 }
 
-.md-post__action::after {
-  content: " ⤺";
-  color: var(--md-typeset-a-color);
-  display: inline-block;
-  transform: rotate(45deg);
-  transform-origin: center;
-  font-family: var(--font-jetbrains);
-  font-size: 1rem;
-  vertical-align: middle;
-  margin-left: 0em;
+ul.index .meta {
+  margin: 0.2rem 0 0;
 }
 
-.footnote {
-  font-family: var(--font-stix);
-  font-size: 0.9rem;
-  line-height: 1em;
+.excerpt {
+  color: var(--ink-2);
+  margin-top: 0.5rem;
 }
 
-.footnote-backref {
-  font-size: .3rem;
-  line-height: .3em;
+.excerpt p {
+  margin: 0;
+}
+
+/* ---------- code ---------- */
+
+code,
+kbd,
+samp {
+  font-family: var(--mono);
+  font-size: 0.82em;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.08em 0.28em;
+}
+
+pre {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  line-height: 1.5;
+  margin: 0 0 1.4rem;
+}
+
+pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 0.78rem;
+}
+
+/* ---------- media ---------- */
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 3px;
+}
+
+figure {
+  margin: 2rem 0;
+}
+
+figcaption {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--mute);
+  margin-top: 0.5rem;
 }
 
 .avatar {
+  width: 8.5rem;
+  border-radius: 50%;
+  filter: grayscale(100%);
   transition: filter 0.3s ease;
+  float: right;
+  margin: 0 0 1rem 1.5rem;
 }
 
 .avatar:hover {
-  filter: grayscale(0%);
+  filter: grayscale(0);
 }
 
-/* Mode-specific colors for headings */
-[data-md-color-scheme="default"] .md-typeset h1,
-[data-md-color-scheme="default"] .md-typeset h2,
-[data-md-color-scheme="default"] .md-typeset h3,
-[data-md-color-scheme="default"] .md-typeset h4,
-[data-md-color-scheme="default"] .md-typeset h5,
-[data-md-color-scheme="default"] .md-typeset h6 {
-  color: var(--black);
-}
+/* ---------- tables ---------- */
 
-[data-md-color-scheme="slate"] .md-typeset h1,
-[data-md-color-scheme="slate"] .md-typeset h2,
-[data-md-color-scheme="slate"] .md-typeset h3,
-[data-md-color-scheme="slate"] .md-typeset h4,
-[data-md-color-scheme="slate"] .md-typeset h5,
-[data-md-color-scheme="slate"] .md-typeset h6 {
-  color: var(--white);
-}
-
-/* Footer layout: copyright on left, social icons on right */
-.md-footer-meta__inner.md-grid {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+table {
   width: 100%;
-  max-width: 100%;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  border-collapse: collapse;
+  margin: 0 0 1.5rem;
+  font-size: 0.9rem;
 }
 
-/* Autohide Sidebars and Header - Hide by default, show on hover */
-@media (min-width: 76.25em) {
+th,
+td {
+  text-align: left;
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid var(--rule);
+}
 
-  /* Hide sidebars by default - works for both regular pages and blog posts */
-  .md-sidebar--primary,
-  .md-sidebar--secondary,
-  .md-sidebar[data-md-component="navigation"],
-  .md-sidebar[data-md-component="toc"] {
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+th {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+/* ---------- book grid ---------- */
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 0.6rem;
+  margin: 1.75rem 0;
+}
+
+.book-grid img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 2px;
+  filter: grayscale(65%);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.book-grid a:hover img {
+  filter: grayscale(0);
+  transform: translateY(-2px);
+}
+
+/* ---------- footnotes / bibliography ---------- */
+
+.footnote {
+  margin-top: 3rem;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+
+.footnote hr {
+  margin: 0 0 1rem;
+}
+
+.footnote ol {
+  padding-left: 1.2rem;
+}
+
+.footnote li {
+  margin-bottom: 0.5rem;
+}
+
+.footnote li:target {
+  background: var(--paper-2);
+}
+
+.footnote-ref {
+  text-decoration: none;
+}
+
+/* ---------- comments ---------- */
+
+.comments {
+  margin-top: 3.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* ---------- math ---------- */
+
+.katex {
+  font-size: 1.02em;
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 34rem) {
+  html {
+    font-size: 17px;
   }
 
-  /* Keep navigation sidebar visible on projects/blog pages (no autohide) */
-  /* This class will be added by JavaScript when on projects/blog pages */
-  body.projects-page .md-sidebar--primary,
-  body.projects-page [data-md-component="navigation"] {
-    opacity: 1 !important;
+  h1 {
+    font-size: 1.75rem;
   }
 
-  /* Hide TOC sidebar on projects/blog pages */
-  body.projects-page .md-sidebar--secondary,
-  body.projects-page [data-md-component="toc"] {
-    opacity: 0 !important;
-  }
-
-  /* Show sidebars when hovering over the sidebar container */
-  .md-sidebar--primary:hover,
-  .md-sidebar--secondary:hover,
-  .md-sidebar[data-md-component="navigation"]:hover,
-  .md-sidebar[data-md-component="toc"]:hover {
-    opacity: 1;
-  }
-
-  /* Also handle direct data attribute selectors for blog pages */
-  [data-md-component="navigation"]:hover,
-  [data-md-component="toc"]:hover {
-    opacity: 1;
-  }
-
-  /* Make header non-sticky (scrollable) instead of fixed/sticky */
-  .md-header {
-    position: relative !important;
-    transform: none !important;
-  }
-
-  /* Ensure header scrolls with page content */
-  .md-header--shadow {
-    position: relative !important;
-  }
-
-  /* Make navigation tabs non-sticky as well */
-  .md-tabs {
-    position: relative !important;
-  }
-
-  /* Keep title visible at all times */
-  .md-post__title {
-    opacity: 1 !important;
-  }
-
-  /* Hide "Back to index" button */
-  .md-post__action {
-    display: none !important;
+  .avatar {
+    float: none;
+    display: block;
+    margin: 0 0 1.25rem;
   }
 }
 
-@media (max-width: 768px) {
-  .md-footer-meta__inner.md-grid {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  /* Disable autohide on mobile - let Material theme handle it */
-  .md-sidebar {
-    opacity: 1;
-    pointer-events: auto;
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
   }
 }

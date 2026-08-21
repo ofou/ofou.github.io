@@ -23,53 +23,53 @@ It's pretty easy to get lost in the [countless number of papers](https://www.lat
 I'd advice you to start with the following books, which are a great starting point to fill your appetite for the field, and get a sense of the big picture, and where all we're going.
 
 <div class="book-grid">
-    <a href="#fn:bostrom2014paths">
+    <a href="#fn:bostrom2014paths" title="Superintelligence: Paths, Dangers, Strategies">
 <!-- [@bostrom2014paths] -->
-      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1400884046i/20527133.jpg" alt="Superintelligence: Paths, Dangers, Strategies" title="Superintelligence: Paths, Dangers, Strategies" />
+      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1400884046i/20527133.jpg" alt="Superintelligence: Paths, Dangers, Strategies" />
   </a>
-    <a href="#fn:tegmark2018life">
+    <a href="#fn:tegmark2018life" title="Life 3.0: Being Human in the Age of Artificial Intelligence">
 <!-- [@tegmark2018life] -->
-      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1498857371i/34274957.jpg" alt="Life 3.0: Being Human in the Age of Artificial Intelligence" title="Life 3.0: Being Human in the Age of Artificial Intelligence" />
+      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1498857371i/34274957.jpg" alt="Life 3.0: Being Human in the Age of Artificial Intelligence" />
     </a>
-      <a href="#fn:russell2019human">
+      <a href="#fn:russell2019human" title="Human Compatible: AI and the Problem of Control">
 <!-- [@russell2019human] -->
-      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1561637199i/44767248.jpg" alt="Human Compatible: AI and the Problem of Control" title="Human Compatible: AI and the Problem of Control" />
+      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1561637199i/44767248.jpg" alt="Human Compatible: AI and the Problem of Control" />
     </a>
-    <a href="#fn:christian2021alignment">
+    <a href="#fn:christian2021alignment" title="The Alignment Problem: How Can Machines Learn Human Values?">
 <!-- [@christian2021alignment] -->
-      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1598630749i/50489349.jpg" alt="The Alignment Problem: How Can Machines Learn Human Values?" title="The Alignment Problem: How Can Machines Learn Human Values?" />
+      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1598630749i/50489349.jpg" alt="The Alignment Problem: How Can Machines Learn Human Values?" />
     </a>
-    <a href="#fn:li2023worlds">
+    <a href="#fn:li2023worlds" title="The Worlds I See: Curiosity, Exploration, and Discovery at the Dawn of AI">
 <!-- [@li2023worlds] -->
-      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1682738725i/144405196.jpg" alt="The Worlds I See: Curiosity, Exploration, and Discovery at the Dawn of AI" title="The Worlds I See: Curiosity, Exploration, and Discovery at the Dawn of AI" />
+      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1682738725i/144405196.jpg" alt="The Worlds I See: Curiosity, Exploration, and Discovery at the Dawn of AI" />
     </a>
-    <a href="#fn:kurzweil2024singularity">
+    <a href="#fn:kurzweil2024singularity" title="The Singularity Is Nearer: When We Merge with AI">
 <!-- [@kurzweil2024singularity] -->
-      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1711721717i/45024007.jpg" alt="The Singularity Is Nearer: When We Merge with AI" title="The Singularity Is Nearer: When We Merge with AI" />
+      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1711721717i/45024007.jpg" alt="The Singularity Is Nearer: When We Merge with AI" />
     </a>
-    <a href="#fn:hawkins2004intelligence">
+    <a href="#fn:hawkins2004intelligence" title="On Intelligence: How a New Understanding of the Brain Will Lead to the Creation of Truly Intelligent Machines">
 <!-- [@hawkins2004intelligence] -->
-      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1441230921i/27539.jpg" alt="On Intelligence: How a New Understanding of the Brain Will Lead to the Creation of Truly Intelligent Machines" title="On Intelligence: How a New Understanding of the Brain Will Lead to the Creation of Truly Intelligent Machines" />
+      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1441230921i/27539.jpg" alt="On Intelligence: How a New Understanding of the Brain Will Lead to the Creation of Truly Intelligent Machines" />
     </a>
-    <a href="#fn:scaling2025era">
+    <a href="#fn:scaling2025era" title="The Scaling Era: An Oral History of AI, 2019–2025">
 <!-- [@scaling2025era] -->
-      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1729934727i/220062738.jpg" alt="The Scaling Era: An Oral History of AI, 2019–2025" title="The Scaling Era: An Oral History of AI, 2019–2025" />
+      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1729934727i/220062738.jpg" alt="The Scaling Era: An Oral History of AI, 2019–2025" />
     </a>
-    <a href="#fn:ai2027">
+    <a href="#fn:ai2027" title="AI 2027">
 <!-- [@ai2027] -->
-      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1750365514i/236877599.jpg" alt="AI 2027" title="AI 2027" />
+      <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1750365514i/236877599.jpg" alt="AI 2027" />
     </a>
-  <a href="#fn:dehaene2021we">
+  <a href="#fn:dehaene2021we" title="How We Learn: Why Brains Learn Better Than Any Machine... for Now">
 <!-- [@dehaene2021we] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1562573168i/46064083.jpg" alt="How We Learn: Why Brains Learn Better Than Any Machine... for Now" title="How We Learn: Why Brains Learn Better Than Any Machine... for Now" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1562573168i/46064083.jpg" alt="How We Learn: Why Brains Learn Better Than Any Machine... for Now" />
   </a>
-  <a href="#fn:lawrence1998metaphors">
+  <a href="#fn:lawrence1998metaphors" title="Metaphors of Mind: Conceptions of the Nature of Intelligence">
 <!-- [@lawrence1998metaphors] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348518020i/217562.jpg" alt="Metaphors of Mind: Conceptions of the Nature of Intelligence" title="Metaphors of Mind: Conceptions of the Nature of Intelligence" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348518020i/217562.jpg" alt="Metaphors of Mind: Conceptions of the Nature of Intelligence" />
   </a>
-  <a href="#fn:chen2021ai2041">
+  <a href="#fn:chen2021ai2041" title="AI 2041: Ten Visions for Our Future">
 <!-- [@chen2021ai2041] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1615899279i/56377201.jpg" alt="AI 2041: Ten Visions for Our Future" title="AI 2041: Ten Visions for Our Future" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1615899279i/56377201.jpg" alt="AI 2041: Ten Visions for Our Future" />
   </a>  
 </div>
 
@@ -78,58 +78,58 @@ I'd advice you to start with the following books, which are a great starting poi
 Once you have a grasp of the big picture, you might want to get a glimpse of the technical aspects. These books require minimal prerequisites and focus on concepts rather than heavy mathematics, and are also succinct, which makes them great for a quick read.
 
 <div class="book-grid">
-  <a href="#fn:burkov2019hundred">
+  <a href="#fn:burkov2019hundred" title="The Hundred-Page Machine Learning Book">
 <!-- [@burkov2019hundred] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1546285613i/43190851.jpg" alt="The Hundred-Page Machine Learning Book" title="The Hundred-Page Machine Learning Book" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1546285613i/43190851.jpg" alt="The Hundred-Page Machine Learning Book" />
   </a>
-  <a href="#fn:serrano2021grokking">
+  <a href="#fn:serrano2021grokking" title="Grokking Machine Learning">
 <!-- [@serrano2021grokking] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1637175552i/53141537.jpg" alt="Grokking Machine Learning" title="Grokking Machine Learning" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1637175552i/53141537.jpg" alt="Grokking Machine Learning" />
   </a>
-  <a href="#fn:fleuret2023little">
+  <a href="#fn:fleuret2023little" title="The Little Book of Deep Learning">
 <!-- [@fleuret2023little] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1686060481i/174612914.jpg" alt="The Little Book of Deep Learning" title="The Little Book of Deep Learning" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1686060481i/174612914.jpg" alt="The Little Book of Deep Learning" />
   </a>
-  <a href="#fn:hendrycks2024introduction">
+  <a href="#fn:hendrycks2024introduction" title="Introduction to AI Safety, Ethics and Society">
 <!-- [@hendrycks2024introduction] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1732362439i/216249119.jpg" alt="Introduction to AI Safety, Ethics and Society" title="Introduction to AI Safety, Ethics and Society" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1732362439i/216249119.jpg" alt="Introduction to AI Safety, Ethics and Society" />
   </a>
 </div>
 
 For those with some programming experience and basic math background. These books are a great starting point to understand the technical aspects of AI, and build a solid intuition before heading to the advanced level.
 
 <div class="book-grid">
-  <a href="#fn:deisenroth2020mathematics">
+  <a href="#fn:deisenroth2020mathematics" title="Mathematics for Machine Learning">
 <!-- [@deisenroth2020mathematics] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1572995056l/50041024.jpg" alt="Mathematics for Machine Learning" title="Mathematics for Machine Learning" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1572995056l/50041024.jpg" alt="Mathematics for Machine Learning" />
   </a>
-  <a href="#fn:chollet2021deep">
+  <a href="#fn:chollet2021deep" title="Deep Learning with Python">
 <!-- [@chollet2021deep] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1513265126i/33986067.jpg" alt="Deep Learning with Python" title="Deep Learning with Python" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1513265126i/33986067.jpg" alt="Deep Learning with Python" />
   </a>
-  <a href="#fn:howard2020deep">
+  <a href="#fn:howard2020deep" title="Deep Learning for Coders with Fastai and PyTorch">
 <!-- [@howard2020deep] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1568310839l/50204643.jpg" alt="Deep Learning for Coders with Fastai and PyTorch" title="Deep Learning for Coders with Fastai and PyTorch" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1568310839l/50204643.jpg" alt="Deep Learning for Coders with Fastai and PyTorch" />
   </a>
-  <a href="#fn:lanning2024llm">
+  <a href="#fn:lanning2024llm" title="Build a Large Language Model">
 <!-- [@lanning2024llm] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1726192131i/218718255.jpg" alt="Build a Large Language Model" title="Build a Large Language Model" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1726192131i/218718255.jpg" alt="Build a Large Language Model" />
   </a>
-  <a href="#fn:james2023introduction">
+  <a href="#fn:james2023introduction" title="An Introduction to Statistical Learning: with Applications in Python">
 <!-- [@james2023introduction] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1687777554i/178815107.jpg" alt="An Introduction to Statistical Learning: with Applications in Python" title="An Introduction to Statistical Learning: with Applications in Python" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1687777554i/178815107.jpg" alt="An Introduction to Statistical Learning: with Applications in Python" />
   </a>
-  <a href="#fn:huyen2022designing">
+  <a href="#fn:huyen2022designing" title="Designing Machine Learning Systems: An Iterative Process for Production-Ready Applications">
 <!-- [@huyen2022designing] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1653945265i/60715378.jpg" alt="Designing Machine Learning Systems: An Iterative Process for Production-Ready Applications" title="Designing Machine Learning Systems: An Iterative Process for Production-Ready Applications" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1653945265i/60715378.jpg" alt="Designing Machine Learning Systems: An Iterative Process for Production-Ready Applications" />
   </a>
-  <a href="#fn:zhang2023dive">
+  <a href="#fn:zhang2023dive" title="Dive into Deep Learning">
 <!-- [@zhang2023dive] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1681805605i/122776185.jpg" alt="Dive into Deep Learning" title="Dive into Deep Learning" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1681805605i/122776185.jpg" alt="Dive into Deep Learning" />
   </a>
-  <a href="#fn:prince2023understanding">
+  <a href="#fn:prince2023understanding" title="Understanding Deep Learning">
 <!-- [@prince2023understanding] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1722904177i/143240427.jpg" alt="Understanding Deep Learning" title="Understanding Deep Learning" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1722904177i/143240427.jpg" alt="Understanding Deep Learning" />
   </a>
 </div>
 
@@ -138,70 +138,70 @@ Once you get at least comfortable with the math of machine learning [@deisenroth
 One small thing to note is that instead of the classic _Pattern Recognition and Machine Learning_ [@bishop2006pattern] mentioned everywhere, I prefer the newer version from the same author and his son _Deep Learning_ [@bishop2024deep], which is more up-to-date and includes more recent research that better reflects the state of the art.
 
 <div class="book-grid">
-  <a href="#fn:aiebook2025">
+  <a href="#fn:aiebook2025" title="AI Engineering: Building Applications with Foundation Models">
 <!-- [@aiebook2025] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1733340973i/216848047.jpg" alt="AI Engineering: Building Applications with Foundation Models" title="AI Engineering: Building Applications with Foundation Models" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1733340973i/216848047.jpg" alt="AI Engineering: Building Applications with Foundation Models" />
   </a>
-  <a href="#fn:russell2020artificial">
+  <a href="#fn:russell2020artificial" title="Artificial Intelligence: A Modern Approach">
 <!-- [@russell2020artificial] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1590496674i/36451668.jpg" alt="Artificial Intelligence: A Modern Approach" title="Artificial Intelligence: A Modern Approach" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1590496674i/36451668.jpg" alt="Artificial Intelligence: A Modern Approach" />
   </a>
-  <a href="#fn:goodfellow2016deep">
+  <a href="#fn:goodfellow2016deep" title="Deep Learning">
 <!-- [@goodfellow2016deep] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1478212695i/30422361.jpg" alt="Deep Learning" title="Deep Learning" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1478212695i/30422361.jpg" alt="Deep Learning" />
   </a>
-  <a href="#fn:andrew2018reinforcement">
+  <a href="#fn:andrew2018reinforcement" title="Reinforcement Learning: An Introduction">
 <!-- [@andrew2018reinforcement] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1534306204i/39813875.jpg" alt="Reinforcement Learning: An Introduction" title="Reinforcement Learning: An Introduction" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1534306204i/39813875.jpg" alt="Reinforcement Learning: An Introduction" />
   </a>
-  <a href="#fn:simon2024foundationscv">
+  <a href="#fn:simon2024foundationscv" title="Foundations of Computer Vision">
 <!-- [@simon2024foundationscv] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1750727657i/157976035.jpg" alt="Foundations of Computer Vision" title="Foundations of Computer Vision" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1750727657i/157976035.jpg" alt="Foundations of Computer Vision" />
   </a>
-  <a href="#fn:murphy2022probabilistic">
+  <a href="#fn:murphy2022probabilistic" title="Probabilistic Machine Learning: An Introduction">
 <!-- [@murphy2022probabilistic] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1631506276i/58064710.jpg" alt="Probabilistic Machine Learning: An Introduction" title="Probabilistic Machine Learning: An Introduction" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1631506276i/58064710.jpg" alt="Probabilistic Machine Learning: An Introduction" />
   </a>
-  <a href="#fn:kirk2016programming">
+  <a href="#fn:kirk2016programming" title="Programming Massively Parallel Processors: A Hands-on Approach">
 <!-- [@kirk2016programming] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1640549172i/59856387.jpg" alt="Programming Massively Parallel Processors: A Hands-on Approach" title="Programming Massively Parallel Processors: A Hands-on Approach" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1640549172i/59856387.jpg" alt="Programming Massively Parallel Processors: A Hands-on Approach" />
   </a>
-  <a href="#fn:mackay2003information">
+  <a href="#fn:mackay2003information" title="Information Theory, Inference, and Learning Algorithms">
 <!-- [@mackay2003information] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1386924751i/201357.jpg" alt="Information Theory, Inference, and Learning Algorithms" title="Information Theory, Inference, and Learning Algorithms" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1386924751i/201357.jpg" alt="Information Theory, Inference, and Learning Algorithms" />
   </a>
-  <a href="#fn:bishop2024deep">
+  <a href="#fn:bishop2024deep" title="Deep Learning">
 <!-- [@bishop2024deep] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1719110666i/198282489.jpg" alt="Deep Learning" title="Deep Learning" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1719110666i/198282489.jpg" alt="Deep Learning" />
   </a>
-    <a href="#fn:albrecht2024multi">
+    <a href="#fn:albrecht2024multi" title="Multi-agent Reinforcement Learning: Foundations and Modern Approaches">
 <!-- [@albrecht2024multi] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1750368479i/210099696.jpg" alt="Multi-agent Reinforcement Learning: Foundations and Modern Approaches" title="Multi-agent Reinforcement Learning: Foundations and Modern Approaches" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1750368479i/210099696.jpg" alt="Multi-agent Reinforcement Learning: Foundations and Modern Approaches" />
   </a>
-  <a href="#fn:hastie2009elements">
+  <a href="#fn:hastie2009elements" title="The Elements of Statistical Learning: Data Mining, Inference, and Prediction">
 <!-- [@hastie2009elements] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348887481i/4094864.jpg" alt="The Elements of Statistical Learning: Data Mining, Inference, and Prediction" title="The Elements of Statistical Learning: Data Mining, Inference, and Prediction" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348887481i/4094864.jpg" alt="The Elements of Statistical Learning: Data Mining, Inference, and Prediction" />
   </a>
 
-  <a href="#fn:cover2006elements">
+  <a href="#fn:cover2006elements" title="Elements of Information Theory">
 <!-- [@cover2006elements] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1388256379i/433439.jpg" alt="Elements of Information Theory 2nd Edition" title="Elements of Information Theory" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1388256379i/433439.jpg" alt="Elements of Information Theory 2nd Edition" />
   </a>
-  <a href="#fn:purves2018neuroscience">
+  <a href="#fn:purves2018neuroscience" title="Neuroscience">
 <!-- [@purves2018neuroscience] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1418788308i/16190424.jpg" alt="Neuroscience" title="Neuroscience" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1418788308i/16190424.jpg" alt="Neuroscience" />
   </a>
-  <a href="#fn:luo2020principlesneurobio">
+  <a href="#fn:luo2020principlesneurobio" title="Principles of Neurobiology">
 <!-- [@luo2020principlesneurobio] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1625597338i/52620593.jpg" alt="Principles of Neurobiology" title="Principles of Neurobiology" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1625597338i/52620593.jpg" alt="Principles of Neurobiology" />
   </a>
-  <a href="#fn:dayan2005theoretical">
+  <a href="#fn:dayan2005theoretical" title="Theoretical Neuroscience: Computational And Mathematical Modeling of Neural Systems">
 <!-- [@dayan2005theoretical] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1347629295i/170015.jpg" alt="Theoretical Neuroscience: Computational And Mathematical Modeling of Neural Systems" title="Theoretical Neuroscience: Computational And Mathematical Modeling of Neural Systems" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1347629295i/170015.jpg" alt="Theoretical Neuroscience: Computational And Mathematical Modeling of Neural Systems" />
   </a>
-  <a href="#fn:kandel2013principles">
+  <a href="#fn:kandel2013principles" title="Principles of Neural Science">
 <!-- [@kandel2013principles] -->
-    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1615653202i/57397549.jpg" alt="Principles of Neural Science" title="Principles of Neural Science" />
+    <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1615653202i/57397549.jpg" alt="Principles of Neural Science" />
   </a>
 </div>
 

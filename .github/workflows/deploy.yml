@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Deploy
 
 on:
   push:
@@ -6,47 +6,30 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Fetch all history for git dates
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python build.py
+      - uses: actions/upload-pages-artifact@v3
         with:
-          version: "0.5"
-          enable-cache: false
-
-      - name: Install dependencies
-        run: uv pip install --system --no-cache -r requirements.txt
-
-      - name: Install project (bibtex_chronological plugin)
-        run: uv pip install --system --no-cache -e .
-
-      - name: Install Pandoc
-        run: |
-          wget https://github.com/jgm/pandoc/releases/download/3.7.0.2/pandoc-3.7.0.2-1-amd64.deb
-          sudo dpkg -i pandoc-3.7.0.2-1-amd64.deb
-
-      - name: Build Site
-        run: mkdocs build --clean
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: docs
-          branch: gh-pages
-          clean: true
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
