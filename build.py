@@ -20,6 +20,7 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 import markdown
+import json
 import yaml
 
 ROOT = Path(__file__).parent
@@ -40,7 +41,7 @@ SITE = {
     ),
 }
 
-NAV = [("Blog", "/blog/"), ("Projects", "/projects/"), ("CV", "/static/cv.pdf")]
+NAV = [("Blog", "/blog/"), ("Projects", "/projects/"), ("CV", "/cv/")]
 
 SOCIAL = [
     ("GitHub", "https://github.com/ofou"),
@@ -421,6 +422,150 @@ def sitemap(urls: list[str]) -> str:
     return f'<?xml version="1.0" encoding="utf-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{body}</urlset>\n'
 
 
+def month_yr(iso: str | None) -> str:
+    if not iso:
+        return ""
+    try:
+        return date.fromisoformat(iso[:10]).strftime("%b %Y")
+    except ValueError:
+        return iso
+
+
+def span(start: str | None, end: str | None) -> str:
+    s = month_yr(start)
+    e = month_yr(end) or "Present"
+    return s if s == e else (f"{s} — {e}" if s else e)
+
+
+def cv_page(cv: dict) -> str:
+    b = cv.get("basics", {})
+
+    profiles = " · ".join(
+        f'<a href="{escape(p["url"])}">{escape(p.get("network", p["url"]))}</a>'
+        for p in b.get("profiles", [])
+        if p.get("url")
+    )
+    loc = b.get("location") or {}
+    contact = " · ".join(
+        x for x in [
+            f'<a href="mailto:{escape(b["email"])}">{escape(b["email"])}</a>' if b.get("email") else "",
+            escape(b.get("phone", "")),
+            escape(loc.get("city", "")) + (f", {escape(loc['region'])}" if loc.get("region") else "") if loc else "",
+            profiles,
+        ] if x
+    )
+
+    work = []
+    for w in cv.get("work", []):
+        org = f'<a href="{escape(w["url"])}">{escape(w["name"])}</a>' if w.get("url") else escape(w.get("name", ""))
+        where = f' · {escape(w["location"])}' if w.get("location") else ""
+        hi = "".join(f"<li>{escape(h)}</li>" for h in w.get("highlights", []))
+        work.append(f'''<div class="cv-item">
+<div class="cv-head"><span class="cv-role">{escape(w.get("position", ""))}</span><span class="cv-when">{span(w.get("startDate"), w.get("endDate"))}</span></div>
+<p class="cv-org">{org}{where}</p>
+{f'<p class="cv-sum">{escape(w["summary"])}</p>' if w.get("summary") else ""}
+{f'<ul class="cv-hl">{hi}</ul>' if hi else ""}
+</div>''')
+
+    edu = []
+    for e in cv.get("education", []):
+        inst = f'<a href="{escape(e["url"])}">{escape(e["institution"])}</a>' if e.get("url") else escape(e.get("institution", ""))
+        courses = "".join(f"<li>{escape(c)}</li>" for c in e.get("courses", []))
+        score = f" · {escape(e['score'])}" if e.get("score") else ""
+        edu.append(f'''<div class="cv-item">
+<div class="cv-head"><span class="cv-role">{escape(e.get("area", ""))}</span><span class="cv-when">{span(e.get("startDate"), e.get("endDate"))}</span></div>
+<p class="cv-org">{escape(e.get("studyType", ""))} · {inst}{score}</p>
+{f'<ul class="cv-hl">{courses}</ul>' if courses else ""}
+</div>''')
+
+    pubs = []
+    for i, p in enumerate(cv.get("publications", []), 1):
+        link = f'<a href="{escape(p["url"])}">{escape(p["name"])}</a>' if p.get("url") else escape(p.get("name", ""))
+        pubs.append(f'''<div class="cv-item">
+<div class="cv-head"><span class="cv-role">[{i}] {link}</span><span class="cv-when">{month_yr(p.get("releaseDate"))}</span></div>
+<p class="cv-org">{escape(p.get("publisher", ""))}</p>
+{f'<p class="cv-sum">{escape(p["summary"])}</p>' if p.get("summary") else ""}
+</div>''')
+
+    projs = []
+    for p in cv.get("projects", []):
+        link = f'<a href="{escape(p["url"])}">{escape(p["name"])}</a>' if p.get("url") else escape(p.get("name", ""))
+        chips = "".join(f'<span class="chip">{escape(k)}</span>' for k in p.get("keywords", []))
+        projs.append(f'''<div class="cv-item">
+<div class="cv-head"><span class="cv-role">{link}</span><span class="cv-when">{month_yr(p.get("startDate"))}</span></div>
+{f'<p class="cv-sum">{escape(p["description"])}</p>' if p.get("description") else ""}
+{f'<p class="cv-chips">{chips}</p>' if chips else ""}
+</div>''')
+
+    recog = []
+    for a in cv.get("awards", []):
+        recog.append(f'''<div class="cv-item">
+<div class="cv-head"><span class="cv-role">{escape(a["title"])}</span><span class="cv-when">{month_yr(a.get("date"))}</span></div>
+{f'<p class="cv-org">{escape(a["awarder"])}</p>' if a.get("awarder") else ""}
+{f'<p class="cv-sum">{escape(a["summary"])}</p>' if a.get("summary") else ""}
+</div>''')
+    for c in cv.get("certificates", []):
+        recog.append(f'''<div class="cv-item">
+<div class="cv-head"><span class="cv-role">{escape(c["name"])}</span><span class="cv-when">{month_yr(c.get("date"))}</span></div>
+{f'<p class="cv-org">{escape(c["issuer"])}</p>' if c.get("issuer") else ""}
+</div>''')
+
+    skills = []
+    for g in cv.get("skills", []):
+        chips = "".join(f'<span class="chip">{escape(k)}</span>' for k in g.get("keywords", []))
+        skills.append(f'<div class="cv-skill"><span class="cv-skill-name">{escape(g.get("name", ""))}</span><span class="cv-chips">{chips}</span></div>')
+
+    langs = " · ".join(f'{escape(l["language"])} ({escape(l["fluency"])})' for l in cv.get("languages", []))
+    ints = " · ".join(escape(i["name"]) for i in cv.get("interests", []))
+
+    copy_js = """
+(() => {
+  const b = document.getElementById("cv-copy");
+  if (!b) return;
+  const done = () => {
+    const t = b.textContent;
+    b.textContent = "Copied \\u2713";
+    b.disabled = true;
+    setTimeout(() => { b.textContent = t; b.disabled = false; }, 1400);
+  };
+  b.addEventListener("click", async () => {
+    const url = b.dataset.url;
+    try { await navigator.clipboard.writeText(url); }
+    catch (_) {
+      const i = document.createElement("input");
+      i.value = url; document.body.append(i); i.select();
+      document.execCommand("copy"); i.remove();
+    }
+    done();
+  });
+})();
+</script>"""
+
+    return f"""<div class="cv-actions">
+<button class="cv-btn" id="cv-copy" data-url="{SITE['url']}/cv/" type="button">Copy URL</button>
+<a class="cv-btn" href="/static/cv.pdf">PDF</a>
+<a class="cv-btn" href="/cv.json">JSON</a>
+</div>
+<h1>{escape(b.get("name", ""))}</h1>
+<p class="cv-label">{escape(b.get("label", ""))}</p>
+{f'<p>{escape(b["summary"])}</p>' if b.get("summary") else ""}
+<p class="cv-contact">{contact}</p>
+<h2>Experience</h2>
+{''.join(work)}
+<h2>Education</h2>
+{''.join(edu)}
+<h2>Publications</h2>
+{''.join(pubs)}
+<h2>Projects</h2>
+{''.join(projs)}
+{'<h2>Recognition</h2>' + ''.join(recog) if recog else ''}
+<h2>Skills</h2>
+<div class="cv-skills">{''.join(skills)}</div>
+<h2>Languages &amp; Interests</h2>
+<p class="cv-sum">{langs}<br>{ints}</p>
+<script>{copy_js}"""
+
+
 def main() -> None:
     bib = parse_bib((SRC / "references.bib").read_text(encoding="utf-8"))
     home, posts, projects = load_pages(bib)
@@ -457,6 +602,9 @@ def main() -> None:
             ),
         )
 
+    cv = json.loads((SRC / "static" / "cv.json").read_text(encoding="utf-8"))
+    write("cv/index.html", layout("CV", cv_page(cv), url="/cv/", description=cv["basics"]["summary"]))
+
     write(
         "blog/index.html",
         layout("Blog", listing("Blog", "", posts, dated=True), url="/blog/", description="Essays and notes."),
@@ -473,7 +621,7 @@ def main() -> None:
     feed = rss(posts)
     write("feed.xml", feed)
     write("feed_rss_created.xml", feed)  # legacy subscriber path
-    write("sitemap.xml", sitemap(["/", "/blog/", "/projects/", *[p.url for p in posts], *[p.url for p in projects]]))
+    write("sitemap.xml", sitemap(["/", "/blog/", "/projects/", "/cv/", *[p.url for p in posts], *[p.url for p in projects]]))
 
     print(f"built {len(posts)} posts, {len(projects)} projects → {OUT.relative_to(ROOT)}/")
 
