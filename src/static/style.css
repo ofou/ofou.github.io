@@ -5,6 +5,7 @@
 @import url("https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap");
 
 :root {
+  color-scheme: light dark;
   --paper: #f6f5f1;
   --ink: #1a1917;
   --mute: #706b61;
@@ -18,13 +19,30 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    color-scheme: dark;
+    /* Night edition: ink pulled back from full white to kill halation,
+       the same reason presses never run 100% coverage. */
     --paper: #131311;
-    --ink: #e9e7e1;
-    --mute: #96917f;
+    --ink: #dcd8ce;
+    --mute: #9e9889;
     --accent: #8ea4dd;
     --wash: #1e1d1a;
-    --rule: rgba(233, 231, 225, 0.28);
-    --rule-fine: rgba(233, 231, 225, 0.13);
+    --rule: rgba(221, 216, 206, 0.26);
+    --rule-fine: rgba(221, 216, 206, 0.12);
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Dim the plates at night. */
+  img,
+  video {
+    filter: brightness(0.88) contrast(0.98);
+  }
+
+  .avatar {
+    filter: grayscale(100%) brightness(0.92);
   }
 }
 
@@ -35,18 +53,28 @@
 }
 
 html {
-  -webkit-text-size-adjust: 100%;
+  height: 100%;
 }
 
 body {
-  margin: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--serif);
   font-size: 1.0625rem;
-  line-height: 1.65;
+  line-height: 1.45;
   font-kerning: normal;
+  font-variant-numeric: oldstyle-nums;
   text-rendering: optimizeLegibility;
+}
+
+p,
+li {
+  orphans: 3;
+  widows: 3;
+  text-wrap: pretty;
 }
 
 ::selection {
@@ -136,6 +164,7 @@ header.site nav a:hover::before {
 /* ---------- typography ---------- */
 
 main {
+  flex: 1;
   padding-block: 4rem 5rem;
 }
 
@@ -719,4 +748,115 @@ footer.site a:hover {
   .cv-item {
     break-inside: avoid;
   }
+}
+
+.rel {
+  font-variant-numeric: tabular-nums;
+}
+
+.cv-when .rel {
+  color: var(--accent);
+}
+
+table,
+pre,
+code,
+kbd,
+samp,
+.chip,
+.meta,
+.cv-when {
+  font-variant-numeric: lining-nums;
+}
+
+#bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.fig3d canvas {
+  display: block;
+  width: 100%;
+  height: 320px;
+  border: 1px solid var(--rule-fine);
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+.fig3d canvas:active {
+  cursor: grabbing;
+}
+
+.fig3d input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: min(16rem, 100%);
+  height: 1px;
+  background: var(--rule);
+  margin: 1rem 0 0.4rem;
+  display: block;
+}
+
+.fig3d input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--ink);
+  border: 0;
+  border-radius: 0;
+  cursor: ew-resize;
+}
+
+.fig3d input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--ink);
+  border: 0;
+  border-radius: 0;
+  cursor: ew-resize;
+}
+
+@media print {
+  #bg {
+    display: none;
+  }
+}
+
+@media (max-width: 34rem) {
+  p {
+    hyphens: auto;
+  }
+}
+
+footer.site .icon {
+  display: inline-flex;
+  margin-right: 0.85rem;
+}
+
+footer.site .icon img,
+footer.site .icon svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+  opacity: 0.72;
+}
+
+footer.site .icon:hover img,
+footer.site .icon:hover svg {
+  opacity: 1;
+}
+
+footer.site .handle {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: var(--mute);
+  text-decoration: none;
+  margin-left: 0.3rem;
+}
+
+footer.site .handle:hover {
+  color: var(--accent);
 }

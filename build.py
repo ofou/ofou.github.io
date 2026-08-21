@@ -44,13 +44,19 @@ SITE = {
 NAV = [("Blog", "/blog/"), ("Projects", "/projects/"), ("CV", "/cv/")]
 
 SOCIAL = [
-    ("GitHub", "https://github.com/ofou"),
-    ("X", "https://x.com/omarnomad"),
-    ("LinkedIn", "https://www.linkedin.com/in/ofou/"),
-    ("YouTube", "https://www.youtube.com/@omarnomad"),
-    ("Email", "mailto:omar@olivares.cl"),
-    ("RSS", "/feed.xml"),
+    ("GitHub", "https://github.com/ofou", "github"),
+    ("X", "https://x.com/omarnomad", "x"),
+    ("LinkedIn", "https://www.linkedin.com/in/ofou/", "linkedin"),
+    ("YouTube", "https://www.youtube.com/@omarnomad", "youtube"),
+    ("Email", "mailto:omar@olivares.cl", "email"),
+    ("RSS", "/feed.xml", "rss"),
 ]
+
+
+def load_icon(slug: str) -> str:
+    p = SRC / "static" / "icons" / f"{slug}.svg"
+    return p.read_text(encoding="utf-8").replace('fill="#000000"', 'fill="currentColor"')
+
 
 GISCUS = """<section class="comments">
 <h2 id="comments">Comments</h2>
@@ -66,6 +72,118 @@ KATEX = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\\\(',right:'\\\\)',display:false},{left:'\\\\[',right:'\\\\]',display:true}]})"></script>"""
+
+RELTIME = """<script>
+(() => {
+  const f = t => {
+    const a = new Date(t), b = new Date();
+    let y = b.getFullYear() - a.getFullYear(), o = b.getMonth() - a.getMonth(),
+        d = b.getDate() - a.getDate(), h = b.getHours() - a.getHours(),
+        m = b.getMinutes() - a.getMinutes(), s = b.getSeconds() - a.getSeconds();
+    if (s < 0) { s += 60; m--; }
+    if (m < 0) { m += 60; h--; }
+    if (h < 0) { h += 24; d--; }
+    if (d < 0) { const L = new Date(b.getFullYear(), b.getMonth(), 0).getDate(); d += L; o--; }
+    if (o < 0) { o += 12; y--; }
+    const z = n => String(n).padStart(2, "0");
+    return `${y}Y ${o}M ${d}D ${z(h)}:${z(m)}:${z(s)}`;
+  };
+  const t = () => document.querySelectorAll("[data-rel-from]").forEach(e => {
+    const r = e.querySelector(".rel");
+    if (r) r.textContent = " · " + f(e.dataset.relFrom);
+  });
+  t();
+  setInterval(t, 1000);
+})();
+</script>"""
+
+BG = """<canvas id="bg" aria-hidden="true"></canvas>
+<script>
+(() => {
+  const c = document.getElementById("bg");
+  const gl = c.getContext("webgl", { antialias: true, alpha: false, preserveDrawingBuffer: true });
+  if (!gl) return;
+  const V = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
+  const F = `precision mediump float;
+uniform vec2 u_res;uniform float u_time,u_scroll,u_energy,u_dpr;
+uniform vec3 u_paper,u_ink,u_accent;uniform vec2 u_mouse;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+void main(){
+  vec3 col=u_paper;
+  vec2 g=vec2(9.0*u_dpr);
+  vec2 f=fract(gl_FragCoord.xy/g)-0.5;
+  vec2 id=floor(gl_FragCoord.xy/g);
+  float d=length(f);
+  float n=hash(id);
+  float ph=u_time*0.35+n*6.2831+(id.y-u_scroll/(9.0*u_dpr))*0.045;
+  float breathe=0.5+0.5*sin(ph);
+  float r=(1.05+0.55*breathe)*u_dpr;
+  float dotm=smoothstep(r,r-0.9*u_dpr,d);
+  float w2=0.5+0.5*sin((id.x-id.y)*0.05+u_time*0.22);
+  float strength=(0.05+0.10*w2)*(1.0+u_energy);
+  col=mix(col,u_ink,dotm*strength);
+  vec2 m=vec2(u_mouse.x,u_res.y-u_mouse.y);
+  float md=length(gl_FragCoord.xy-m);
+  float lens=smoothstep(150.*u_dpr,0.,md);
+  col=mix(col,u_ink,dotm*lens*0.22*(1.0+u_energy));
+  col=mix(col,u_accent,dotm*u_energy*0.18);
+  gl_FragColor=vec4(col,1.0);
+}`;
+  window.__bglog = "";
+  const sh = (t, s) => {
+    const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o);
+    if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) window.__bglog += "shader:" + gl.getShaderInfoLog(o);
+    return o;
+  };
+  const pr = gl.createProgram();
+  gl.attachShader(pr, sh(gl.VERTEX_SHADER, V));
+  gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, F));
+  gl.linkProgram(pr);
+  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { window.__bglog += "link:" + gl.getProgramInfoLog(pr); return; }
+  gl.useProgram(pr);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, "p");
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = n => gl.getUniformLocation(pr, n);
+  const uRes = U("u_res"), uTime = U("u_time"), uScroll = U("u_scroll"),
+        uEnergy = U("u_energy"), uDpr = U("u_dpr"), uMouse = U("u_mouse"),
+        uPaper = U("u_paper"), uInk = U("u_ink"), uAccent = U("u_accent");
+  const hex = x => { x = x.trim(); const n = parseInt(x.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; };
+  const pal = () => {
+    const s = getComputedStyle(document.documentElement);
+    gl.uniform3fv(uPaper, hex(s.getPropertyValue("--paper")));
+    gl.uniform3fv(uInk, hex(s.getPropertyValue("--ink")));
+    gl.uniform3fv(uAccent, hex(s.getPropertyValue("--accent")));
+  };
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let dpr = 1, mx = -9e3, my = -9e3, energy = 0, lastY = scrollY, raf = 0;
+  const size = () => {
+    dpr = Math.min(devicePixelRatio || 1, 1.5);
+    c.width = innerWidth * dpr; c.height = innerHeight * dpr;
+    gl.viewport(0, 0, c.width, c.height);
+  };
+  const draw = t => {
+    gl.uniform2f(uRes, c.width, c.height);
+    gl.uniform1f(uTime, reduced ? 0 : t / 1000);
+    gl.uniform1f(uScroll, scrollY * dpr);
+    gl.uniform1f(uEnergy, energy);
+    gl.uniform1f(uDpr, dpr);
+    gl.uniform2f(uMouse, mx * dpr, my * dpr);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  };
+  const loop = t => { draw(t); if (!document.hidden) raf = requestAnimationFrame(loop); };
+  const start = () => { cancelAnimationFrame(raf); if (!reduced) raf = requestAnimationFrame(loop); else draw(0); };
+  addEventListener("resize", () => { size(); pal(); draw(reduced ? 0 : performance.now()); });
+  addEventListener("pointermove", e => { mx = e.clientX; my = e.clientY; });
+  addEventListener("scroll", () => { energy = Math.min(1, energy + Math.abs(scrollY - lastY) / 600); lastY = scrollY; }, { passive: true });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", pal);
+  document.addEventListener("visibilitychange", start);
+  size(); pal(); start();
+})();
+</script>"""
 
 
 # --------------------------------------------------------------------------- bib
@@ -308,7 +426,16 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
     full_title = page_title if page_title == SITE["title"] else f"{page_title} · {SITE['brand']}"
     description = description or SITE["description"]
     nav = "".join(f'<a href="{href}">{label}</a>' for label, href in NAV)
-    social = " · ".join(f'<a href="{href}">{label}</a>' for label, href in SOCIAL)
+    social = "".join(
+        f'<a class="icon" href="{href}" aria-label="{label}">'
+        + (
+            f'<img src="/static/icons/{slug}.png" alt="" width="14" height="14">'
+            if (SRC / "static" / "icons" / f"{slug}.png").exists()
+            else load_icon(slug)
+        )
+        + "</a>"
+        for label, href, slug in SOCIAL
+    )
     analytics = f"""<script async src="https://www.googletagmanager.com/gtag/js?id={SITE['analytics']}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('js',new Date());gtag('config','{SITE['analytics']}')</script>"""
     return f"""<!doctype html>
@@ -317,6 +444,8 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{escape(full_title)}</title>
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f5f1">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#131311">
 <meta name="description" content="{escape(description, {'"': "&quot;"})}">
 <link rel="canonical" href="{SITE['url']}{url}">
 <meta property="og:type" content="website">
@@ -328,9 +457,11 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <link rel="icon" href="/favicon.ico">
 <link rel="alternate" type="application/rss+xml" title="{escape(SITE['title'])}" href="/feed.xml">
 <link rel="stylesheet" href="/static/style.css">
+<script defer src="/static/fig.js"></script>
 {KATEX if math else ""}
 </head>
 <body>
+{BG}
 <header class="site">
 <a class="brand" href="/">{SITE['brand']}</a>
 <nav>{nav}</nav>
@@ -339,10 +470,9 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 {body}
 </main>
 <footer class="site">
-<p>{social}</p>
-<p class="colophon">Copy, share and modify freely ♡ · <a href="{SITE['repo']}">source</a></p>
+<p>{social}<a class="handle" href="https://github.com/ofou">@ofou</a></p>
 </footer>
-{analytics}
+{RELTIME}
 </body>
 </html>
 """
@@ -351,7 +481,7 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 def article(page: Page, *, comments: bool = False) -> str:
     meta_bits = []
     if page.date and page.kind != "home":
-        meta_bits.append(f'<time datetime="{page.date.isoformat()}">{human_date(page.date)}</time>')
+        meta_bits.append(f'<time datetime="{page.date.isoformat()}" data-rel-from="{page.date.isoformat()}T00:00:00">{human_date(page.date)}<span class="rel"></span></time>')
     if (subtitle := page.meta.get("subtitle")) and page.kind != "home":
         meta_bits.append(escape(str(subtitle)))
     meta_bits += [f'<span class="tag">{escape(c)}</span>' for c in page.categories]
@@ -367,7 +497,7 @@ def article(page: Page, *, comments: bool = False) -> str:
 def listing(title: str, intro: str, pages: list[Page], *, dated: bool) -> str:
     items = []
     for page in pages:
-        line = human_date(page.date) if dated else ""
+        line = f'<time data-rel-from="{page.date.isoformat()}T00:00:00">{human_date(page.date)}<span class="rel"></span></time>' if dated else ""
         sub = page.meta.get("subtitle") or ""
         meta = " · ".join(x for x in [line, escape(str(sub))] if x)
         blurb = page.excerpt if dated else ""
@@ -460,8 +590,11 @@ def cv_page(cv: dict) -> str:
         org = f'<a href="{escape(w["url"])}">{escape(w["name"])}</a>' if w.get("url") else escape(w.get("name", ""))
         where = f' · {escape(w["location"])}' if w.get("location") else ""
         hi = "".join(f"<li>{escape(h)}</li>" for h in w.get("highlights", []))
+        live = not w.get("endDate") and w.get("startDate")
+        rel_attr = f' data-rel-from="{w["startDate"]}T00:00:00"' if live else ""
+        rel_slot = '<span class="rel"></span>' if live else ""
         work.append(f'''<div class="cv-item">
-<div class="cv-head"><span class="cv-role">{escape(w.get("position", ""))}</span><span class="cv-when">{span(w.get("startDate"), w.get("endDate"))}</span></div>
+<div class="cv-head"><span class="cv-role">{escape(w.get("position", ""))}</span><span class="cv-when"{rel_attr}>{span(w.get("startDate"), w.get("endDate"))}{rel_slot}</span></div>
 <p class="cv-org">{org}{where}</p>
 {f'<p class="cv-sum">{escape(w["summary"])}</p>' if w.get("summary") else ""}
 {f'<ul class="cv-hl">{hi}</ul>' if hi else ""}
