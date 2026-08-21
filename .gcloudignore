@@ -1,0 +1,7 @@
+*
+!Dockerfile
+!.gcloudignore
+!server.py
+!build.py
+!requirements.txt
+!src/**

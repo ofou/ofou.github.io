@@ -1,42 +1,55 @@
-"""Minimal static file server: Tornado + uvloop, sized for Cloud Run."""
+"""Static site server for olivares.cl: preloaded bytes, boot-time gzip, WSGI."""
+import gzip
+import mimetypes
 import os
-
-import uvloop
-import tornado.ioloop
-import tornado.web
-from tornado.web import StaticFileHandler
 
 ROOT = os.environ.get("STATIC_ROOT", "/srv/site")
 
 
-class SiteHandler(StaticFileHandler):
-    """Serves /dir/ as /dir/index.html and swaps 404s for the site's 404 page."""
-
-    def parse_url_path(self, url_path: str) -> str:
-        if not url_path or url_path.endswith("/"):
-            url_path += "index.html"
-        return super().parse_url_path(url_path)
-
-    def write_error(self, status_code: int, **kwargs) -> None:
-        if status_code == 404:
-            fallback = os.path.join(ROOT, "404.html")
-            if os.path.isfile(fallback):
-                self.set_header("Content-Type", "text/html; charset=utf-8")
-                with open(fallback, "rb") as f:
-                    self.write(f.read())
-                return
-        super().write_error(status_code, **kwargs)
+def ctype_for(path):
+    ct = mimetypes.guess_type(path)[0] or "application/octet-stream"
+    return ct + "; charset=utf-8" if ct.startswith("text/") else ct
 
 
-def main() -> None:
-    app = tornado.web.Application(
-        [(r"/(.*)", SiteHandler, {"path": ROOT})],
-        compress_response=True,
-    )
-    app.listen(int(os.environ.get("PORT", "8080")))
-    tornado.ioloop.IOLoop.current().start()
+FILES = {}
+for dirpath, _, names in os.walk(ROOT):
+    for name in names:
+        full = os.path.join(dirpath, name)
+        key = "/" + os.path.relpath(full, ROOT).replace(os.sep, "/")
+        with open(full, "rb") as f:
+            FILES[key] = f.read()
+
+ROUTES = {p: (b, ctype_for(p)) for p, b in FILES.items()}
+for p, b in FILES.items():
+    if p.endswith("/index.html"):
+        html = ctype_for(p)
+        ROUTES[p[: -len("index.html")]] = (b, html)
+        stem = p[: -len("/index.html")]
+        if stem:
+            ROUTES[stem] = (b, html)
+
+COMPRESSIBLE = {"application/xml", "application/javascript",
+                "application/json", "image/svg+xml"}
+GZ = {p: gzip.compress(b, 6) for p, (b, ct) in ROUTES.items()
+      if len(b) > 200 and (ct.split(";")[0].startswith("text/")
+                           or ct.split(";")[0] in COMPRESSIBLE)}
+
+NOT_FOUND = ROUTES.get("/404.html", (b"Not Found",))[0]
 
 
-if __name__ == "__main__":
-    uvloop.install()
-    main()
+def app(environ, start_response):
+    path = environ.get("PATH_INFO", "/")
+    hit = ROUTES.get(path)
+    if hit is None:
+        start_response("404 Not Found", [
+            ("Content-Type", "text/html; charset=utf-8"),
+            ("Content-Length", str(len(NOT_FOUND)))])
+        return [b""] if environ.get("REQUEST_METHOD") == "HEAD" else [NOT_FOUND]
+    body, ctype = hit
+    headers = [("Content-Type", ctype), ("Content-Length", str(len(body)))]
+    if path in GZ and "gzip" in environ.get("HTTP_ACCEPT_ENCODING", ""):
+        body = GZ[path]
+        headers[1] = ("Content-Length", str(len(body)))
+        headers += [("Content-Encoding", "gzip"), ("Vary", "Accept-Encoding")]
+    start_response("200 OK", headers)
+    return [b""] if environ.get("REQUEST_METHOD") == "HEAD" else [body]
