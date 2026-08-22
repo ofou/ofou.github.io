@@ -436,9 +436,14 @@ figcaption {
   text-wrap: pretty;
 }
 
-main img:not(.avatar) {
+img:not(.avatar) {
   border: 1px solid var(--rule-fine);
-  background: transparent;
+  background: var(--paper);
+}
+
+footer.site a.icon img {
+  border: 0;
+  background: none;
 }
 
 .avatar {
@@ -694,12 +699,6 @@ footer.site a.handle:hover {
 
 /* ---------- scroll motion blur (transient, settles when idle) ---------- */
 
-#scrollfx {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483647;
-  pointer-events: none;
-}
 
 /* ---------- fig.js interactive figures ---------- */
 

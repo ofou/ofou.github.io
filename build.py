@@ -90,31 +90,6 @@ RELTIME = """<script>
 })();
 </script>"""
 
-SCROLLFX = """<div id="scrollfx" aria-hidden="true"></div>
-<script>
-(() => {
-  const el = document.getElementById("scrollfx");
-  if (!el) return;
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduced) return;
-  let last = scrollY, vel = 0, blur = 0, raf = 0, prevT = performance.now();
-  const tick = t => {
-    const dt = Math.max(1, t - prevT); prevT = t;
-    const dy = Math.abs(scrollY - last); last = scrollY;
-    const inst = Math.min(60, (dy / dt) * 16.7);
-    vel = Math.max(vel * Math.pow(0.0025, dt / 1000), inst);
-    blur += (Math.min(2.5, vel * 0.10) - blur) * (blur < vel * 0.10 ? 0.55 : 0.12);
-    if (blur < 0.12) {
-      el.style.backdropFilter = "";
-      raf = 0;
-      return;
-    }
-    el.style.backdropFilter = `blur(${blur.toFixed(2)}px)`;
-    raf = requestAnimationFrame(tick);
-  };
-  addEventListener("scroll", () => { if (!raf) { prevT = performance.now(); raf = requestAnimationFrame(tick); } }, { passive: true });
-})();
-</script>"""
 
 
 
@@ -420,7 +395,6 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <p>{social}<a class="handle" href="https://github.com/ofou">@ofou</a></p>
 </footer>
 {RELTIME}
-{SCROLLFX}
 {analytics}
 </body>
 </html>
