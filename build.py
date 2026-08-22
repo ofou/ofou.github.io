@@ -696,8 +696,8 @@ def main() -> None:
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(SRC / "static", OUT / "static")
-    for name in ("favicon.ico", "robots.txt", "references.bib"):
-        shutil.copy2(SRC / name, OUT / name)
+    for name in ("favicon.ico", "robots.txt", "references.bib", "static/cv.json", "static/cv.pdf", "static/thesis.pdf"):
+        shutil.copy2(SRC / name, OUT / Path(name).name)
 
     write("index.html", layout(SITE["title"], article(home), url="/", description=SITE["description"], math=has_math(home.html)))
 
