@@ -75,115 +75,47 @@ KATEX = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.
 
 RELTIME = """<script>
 (() => {
-  const f = t => {
-    const a = new Date(t), b = new Date();
-    let y = b.getFullYear() - a.getFullYear(), o = b.getMonth() - a.getMonth(),
-        d = b.getDate() - a.getDate(), h = b.getHours() - a.getHours(),
-        m = b.getMinutes() - a.getMinutes(), s = b.getSeconds() - a.getSeconds();
-    if (s < 0) { s += 60; m--; }
-    if (m < 0) { m += 60; h--; }
-    if (h < 0) { h += 24; d--; }
-    if (d < 0) { const L = new Date(b.getFullYear(), b.getMonth(), 0).getDate(); d += L; o--; }
-    if (o < 0) { o += 12; y--; }
-    const z = n => String(n).padStart(2, "0");
-    return `${y}Y ${o}M ${d}D ${z(h)}:${z(m)}:${z(s)}`;
+  const fmt = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+  const rel = ms => {
+    const days = Math.round((Date.now() - ms) / 86400000);
+    if (Math.abs(days) < 45) return fmt.format(-days, "day");
+    const months = Math.round(days / 30.44);
+    if (Math.abs(months) < 18) return fmt.format(-months, "month");
+    return fmt.format(-Math.round(days / 365.25), "year");
   };
-  const t = () => document.querySelectorAll("[data-rel-from]").forEach(e => {
-    const r = e.querySelector(".rel");
-    if (r) r.textContent = " · " + f(e.dataset.relFrom);
+  document.querySelectorAll("[data-rel-from]").forEach(e => {
+    const t = Date.parse(e.dataset.relFrom);
+    if (!Number.isNaN(t)) e.title = rel(t);
   });
-  t();
-  setInterval(t, 1000);
 })();
 </script>"""
 
-BG = """<canvas id="bg" aria-hidden="true"></canvas>
+SCROLLFX = """<div id="scrollfx" aria-hidden="true"></div>
 <script>
 (() => {
-  const c = document.getElementById("bg");
-  const gl = c.getContext("webgl", { antialias: true, alpha: false, preserveDrawingBuffer: true });
-  if (!gl) return;
-  const V = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
-  const F = `precision mediump float;
-uniform vec2 u_res;uniform float u_time,u_scroll,u_energy,u_dpr;
-uniform vec3 u_paper,u_ink,u_accent;uniform vec2 u_mouse;
-float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-void main(){
-  vec3 col=u_paper;
-  vec2 g=vec2(9.0*u_dpr);
-  vec2 f=fract(gl_FragCoord.xy/g)-0.5;
-  vec2 id=floor(gl_FragCoord.xy/g);
-  float d=length(f);
-  float n=hash(id);
-  float ph=u_time*0.35+n*6.2831+(id.y-u_scroll/(9.0*u_dpr))*0.045;
-  float breathe=0.5+0.5*sin(ph);
-  float r=(1.05+0.55*breathe)*u_dpr;
-  float dotm=smoothstep(r,r-0.9*u_dpr,d);
-  float w2=0.5+0.5*sin((id.x-id.y)*0.05+u_time*0.22);
-  float strength=(0.05+0.10*w2)*(1.0+u_energy);
-  col=mix(col,u_ink,dotm*strength);
-  vec2 m=vec2(u_mouse.x,u_res.y-u_mouse.y);
-  float md=length(gl_FragCoord.xy-m);
-  float lens=smoothstep(150.*u_dpr,0.,md);
-  col=mix(col,u_ink,dotm*lens*0.22*(1.0+u_energy));
-  col=mix(col,u_accent,dotm*u_energy*0.18);
-  gl_FragColor=vec4(col,1.0);
-}`;
-  window.__bglog = "";
-  const sh = (t, s) => {
-    const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o);
-    if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) window.__bglog += "shader:" + gl.getShaderInfoLog(o);
-    return o;
-  };
-  const pr = gl.createProgram();
-  gl.attachShader(pr, sh(gl.VERTEX_SHADER, V));
-  gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, F));
-  gl.linkProgram(pr);
-  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { window.__bglog += "link:" + gl.getProgramInfoLog(pr); return; }
-  gl.useProgram(pr);
-  const buf = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(pr, "p");
-  gl.enableVertexAttribArray(loc);
-  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const U = n => gl.getUniformLocation(pr, n);
-  const uRes = U("u_res"), uTime = U("u_time"), uScroll = U("u_scroll"),
-        uEnergy = U("u_energy"), uDpr = U("u_dpr"), uMouse = U("u_mouse"),
-        uPaper = U("u_paper"), uInk = U("u_ink"), uAccent = U("u_accent");
-  const hex = x => { x = x.trim(); const n = parseInt(x.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; };
-  const pal = () => {
-    const s = getComputedStyle(document.documentElement);
-    gl.uniform3fv(uPaper, hex(s.getPropertyValue("--paper")));
-    gl.uniform3fv(uInk, hex(s.getPropertyValue("--ink")));
-    gl.uniform3fv(uAccent, hex(s.getPropertyValue("--accent")));
-  };
+  const el = document.getElementById("scrollfx");
+  if (!el) return;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let dpr = 1, mx = -9e3, my = -9e3, energy = 0, lastY = scrollY, raf = 0;
-  const size = () => {
-    dpr = Math.min(devicePixelRatio || 1, 1.5);
-    c.width = innerWidth * dpr; c.height = innerHeight * dpr;
-    gl.viewport(0, 0, c.width, c.height);
+  if (reduced) return;
+  let last = scrollY, vel = 0, blur = 0, raf = 0, prevT = performance.now();
+  const tick = t => {
+    const dt = Math.max(1, t - prevT); prevT = t;
+    const dy = Math.abs(scrollY - last); last = scrollY;
+    const inst = Math.min(60, (dy / dt) * 16.7);
+    vel = Math.max(vel * Math.pow(0.0025, dt / 1000), inst);
+    blur += (Math.min(2.5, vel * 0.10) - blur) * (blur < vel * 0.10 ? 0.55 : 0.12);
+    if (blur < 0.12) {
+      el.style.backdropFilter = "";
+      raf = 0;
+      return;
+    }
+    el.style.backdropFilter = `blur(${blur.toFixed(2)}px)`;
+    raf = requestAnimationFrame(tick);
   };
-  const draw = t => {
-    gl.uniform2f(uRes, c.width, c.height);
-    gl.uniform1f(uTime, reduced ? 0 : t / 1000);
-    gl.uniform1f(uScroll, scrollY * dpr);
-    gl.uniform1f(uEnergy, energy);
-    gl.uniform1f(uDpr, dpr);
-    gl.uniform2f(uMouse, mx * dpr, my * dpr);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  };
-  const loop = t => { draw(t); if (!document.hidden) raf = requestAnimationFrame(loop); };
-  const start = () => { cancelAnimationFrame(raf); if (!reduced) raf = requestAnimationFrame(loop); else draw(0); };
-  addEventListener("resize", () => { size(); pal(); draw(reduced ? 0 : performance.now()); });
-  addEventListener("pointermove", e => { mx = e.clientX; my = e.clientY; });
-  addEventListener("scroll", () => { energy = Math.min(1, energy + Math.abs(scrollY - lastY) / 600); lastY = scrollY; }, { passive: true });
-  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", pal);
-  document.addEventListener("visibilitychange", start);
-  size(); pal(); start();
+  addEventListener("scroll", () => { if (!raf) { prevT = performance.now(); raf = requestAnimationFrame(tick); } }, { passive: true });
 })();
 </script>"""
+
 
 
 # --------------------------------------------------------------------------- bib
@@ -407,10 +339,22 @@ def drop_dead_backrefs(html: str) -> str:
 
 def render_markdown(pages: list[Page]) -> None:
     md = markdown.Markdown(extensions=["extra", "toc", "sane_lists", "smarty"])
+    stash: list[str] = []
+
+    def protect(m: re.Match) -> str:
+        stash.append(m.group(0))
+        return f"QQMATHSTASH{len(stash) - 1}ZQXMATH"
+
+    math_re = re.compile(r"\$\$.*?\$\$|\$[^$\n]+\$|\\\(|\\\[", re.S)
+
     for page in pages:
         body, _, _ = page.text.partition("<!-- more -->")
         md.reset()
-        page.html = drop_dead_backrefs(md.convert(page.text.replace("<!-- more -->", "")))
+        protected = math_re.sub(protect, page.text.replace("<!-- more -->", ""))
+        html_out = md.convert(protected)
+        html_out = re.sub(r"QQMATHSTASH(\d+)ZQXMATH", lambda m: stash[int(m.group(1))], html_out)
+        stash.clear()
+        page.html = drop_dead_backrefs(html_out)
         md.reset()
         page.excerpt = md.convert(re.sub(r"^#\s+.+$", "", body, count=1, flags=re.MULTILINE))
 
@@ -426,6 +370,10 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
     full_title = page_title if page_title == SITE["title"] else f"{page_title} · {SITE['brand']}"
     description = description or SITE["description"]
     nav = "".join(f'<a href="{href}">{label}</a>' for label, href in NAV)
+    social = "".join(
+        f'<a class="icon" href="{href}" aria-label="{label}">{load_icon(slug)}</a>'
+        for label, href, slug in SOCIAL
+    )
     social = "".join(
         f'<a class="icon" href="{href}" aria-label="{label}">'
         + (
@@ -461,7 +409,6 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 {KATEX if math else ""}
 </head>
 <body>
-{BG}
 <header class="site">
 <a class="brand" href="/">{SITE['brand']}</a>
 <nav>{nav}</nav>
@@ -473,6 +420,8 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <p>{social}<a class="handle" href="https://github.com/ofou">@ofou</a></p>
 </footer>
 {RELTIME}
+{SCROLLFX}
+{analytics}
 </body>
 </html>
 """
@@ -481,7 +430,7 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 def article(page: Page, *, comments: bool = False) -> str:
     meta_bits = []
     if page.date and page.kind != "home":
-        meta_bits.append(f'<time datetime="{page.date.isoformat()}" data-rel-from="{page.date.isoformat()}T00:00:00">{human_date(page.date)}<span class="rel"></span></time>')
+        meta_bits.append(f'<time datetime="{page.date.isoformat()}" data-rel-from="{page.date.isoformat()}T00:00:00">{human_date(page.date)}</time>')
     if (subtitle := page.meta.get("subtitle")) and page.kind != "home":
         meta_bits.append(escape(str(subtitle)))
     meta_bits += [f'<span class="tag">{escape(c)}</span>' for c in page.categories]
@@ -497,23 +446,20 @@ def article(page: Page, *, comments: bool = False) -> str:
 def listing(title: str, intro: str, pages: list[Page], *, dated: bool) -> str:
     items = []
     for page in pages:
-        line = f'<time data-rel-from="{page.date.isoformat()}T00:00:00">{human_date(page.date)}<span class="rel"></span></time>' if dated else ""
+        line = f'<time datetime="{page.date.isoformat()}" data-rel-from="{page.date.isoformat()}T00:00:00">{human_date(page.date)}</time>' if dated else ""
         sub = page.meta.get("subtitle") or ""
         meta = " · ".join(x for x in [line, escape(str(sub))] if x)
         blurb = page.excerpt if dated else ""
         items.append(
             f'<li><a class="entry" href="{page.url}">{escape(page.title)}</a>'
-            f'{f"<p class=meta>{meta}</p>" if meta else ""}'
-            f'{f"<div class=excerpt>{blurb}</div>" if blurb else ""}</li>'
+            f'<p class="meta">{meta}</p>'
+            f'<div class="excerpt">{blurb}</div></li>'
         )
     return f"<h1>{escape(title)}</h1>\n{intro}\n<ul class=\"index\">\n" + "\n".join(items) + "\n</ul>\n"
 
 
 def has_math(html: str) -> bool:
-    return bool(re.search(r"\$\$?|\\\(|\\\[", html))
-
-
-# ------------------------------------------------------------------------ output
+    return bool(re.search(r"\$\$.+?\$\$|\$[^$\n]+\$|\\\(|\\\[", html, re.S))
 
 
 def write(path: str, content: str) -> None:
@@ -531,18 +477,17 @@ def rss(posts: list[Page]) -> str:
         summary = post.meta.get("description") or re.sub(r"<[^>]+>", " ", post.excerpt)
         items.append(
             f"<item><title>{escape(post.title)}</title><link>{link}</link>"
-            f"<guid isPermaLink=\"true\">{link}</guid><pubDate>{stamp}</pubDate>"
-            f"<description>{escape(' '.join(str(summary).split())[:500])}</description>"
-            + "".join(f"<category>{escape(c)}</category>" for c in post.categories)
-            + "</item>"
+            f"<guid>{link}</guid><pubDate>{stamp}</pubDate>"
+            f"<description>{escape(summary)}</description></item>"
         )
     return (
-        '<?xml version="1.0" encoding="utf-8"?>\n<rss version="2.0">\n<channel>\n'
-        f"<title>{escape(SITE['title'])}</title><link>{SITE['url']}/</link>"
+        '<?xml version="1.0" encoding="utf-8"?>\n'
+        '<rss version="2.0"><channel>'
+        f"<title>{escape(SITE['title'])}</title><link>{SITE['url']}</link>"
         f"<description>{escape(SITE['description'])}</description>"
-        f"<language>en</language><lastBuildDate>{now}</lastBuildDate>\n"
-        + "\n".join(items)
-        + "\n</channel>\n</rss>\n"
+        f"<language>en</language><lastBuildDate>{now}</lastBuildDate>"
+        + "".join(items)
+        + "</channel></rss>"
     )
 
 
@@ -585,63 +530,81 @@ def cv_page(cv: dict) -> str:
         ] if x
     )
 
+    def item(role, org_html, when_html, summary, highlights, when_attrs=""):
+        hi = "".join(f"<li>{escape(h)}</li>" for h in highlights or [])
+        return (
+            f'<div class="cv-item">'
+            f'<div class="cv-head"><span class="cv-role">{role}</span><span class="cv-when"{when_attrs}>{when_html}</span></div>'
+            f'<p class="cv-org">{org_html}</p>'
+            + (f'<p class="cv-sum">{escape(summary)}</p>' if summary else "")
+            + (f'<ul class="cv-hl">{hi}</ul>' if hi else "")
+            + "</div>"
+        )
+
     work = []
     for w in cv.get("work", []):
         org = f'<a href="{escape(w["url"])}">{escape(w["name"])}</a>' if w.get("url") else escape(w.get("name", ""))
         where = f' · {escape(w["location"])}' if w.get("location") else ""
-        hi = "".join(f"<li>{escape(h)}</li>" for h in w.get("highlights", []))
         live = not w.get("endDate") and w.get("startDate")
         rel_attr = f' data-rel-from="{w["startDate"]}T00:00:00"' if live else ""
-        rel_slot = '<span class="rel"></span>' if live else ""
-        work.append(f'''<div class="cv-item">
-<div class="cv-head"><span class="cv-role">{escape(w.get("position", ""))}</span><span class="cv-when"{rel_attr}>{span(w.get("startDate"), w.get("endDate"))}{rel_slot}</span></div>
-<p class="cv-org">{org}{where}</p>
-{f'<p class="cv-sum">{escape(w["summary"])}</p>' if w.get("summary") else ""}
-{f'<ul class="cv-hl">{hi}</ul>' if hi else ""}
-</div>''')
+        when_html = span(w.get("startDate"), w.get("endDate"))
+        work.append(item(
+            escape(w.get("position", "")), f"{org}{where}",
+            when_html,
+            w.get("summary", ""), w.get("highlights", []),
+            when_attrs=rel_attr,
+        ))
 
     edu = []
     for e in cv.get("education", []):
         inst = f'<a href="{escape(e["url"])}">{escape(e["institution"])}</a>' if e.get("url") else escape(e.get("institution", ""))
         courses = "".join(f"<li>{escape(c)}</li>" for c in e.get("courses", []))
         score = f" · {escape(e['score'])}" if e.get("score") else ""
-        edu.append(f'''<div class="cv-item">
-<div class="cv-head"><span class="cv-role">{escape(e.get("area", ""))}</span><span class="cv-when">{span(e.get("startDate"), e.get("endDate"))}</span></div>
-<p class="cv-org">{escape(e.get("studyType", ""))} · {inst}{score}</p>
-{f'<ul class="cv-hl">{courses}</ul>' if courses else ""}
-</div>''')
+        edu.append(f'<div class="cv-item">'
+                   f'<div class="cv-head"><span class="cv-role">{escape(e.get("area", ""))}</span><span class="cv-when">{span(e.get("startDate"), e.get("endDate"))}</span></div>'
+                   f'<p class="cv-org">{escape(e.get("studyType", ""))} · {inst}{score}</p>'
+                   + (f'<ul class="cv-hl">{courses}</ul>' if courses else "")
+                   + "</div>")
 
     pubs = []
     for i, p in enumerate(cv.get("publications", []), 1):
         link = f'<a href="{escape(p["url"])}">{escape(p["name"])}</a>' if p.get("url") else escape(p.get("name", ""))
-        pubs.append(f'''<div class="cv-item">
-<div class="cv-head"><span class="cv-role">[{i}] {link}</span><span class="cv-when">{month_yr(p.get("releaseDate"))}</span></div>
-<p class="cv-org">{escape(p.get("publisher", ""))}</p>
-{f'<p class="cv-sum">{escape(p["summary"])}</p>' if p.get("summary") else ""}
-</div>''')
+        pubs.append(f'<div class="cv-item">'
+                    f'<div class="cv-head"><span class="cv-role">[{i}] {link}</span><span class="cv-when">{month_yr(p.get("releaseDate"))}</span></div>'
+                    f'<p class="cv-org">{escape(p.get("publisher", ""))}</p>'
+                    + (f'<p class="cv-sum">{escape(p["summary"])}</p>' if p.get("summary") else "")
+                    + "</div>")
 
     projs = []
     for p in cv.get("projects", []):
         link = f'<a href="{escape(p["url"])}">{escape(p["name"])}</a>' if p.get("url") else escape(p.get("name", ""))
         chips = "".join(f'<span class="chip">{escape(k)}</span>' for k in p.get("keywords", []))
-        projs.append(f'''<div class="cv-item">
-<div class="cv-head"><span class="cv-role">{link}</span><span class="cv-when">{month_yr(p.get("startDate"))}</span></div>
-{f'<p class="cv-sum">{escape(p["description"])}</p>' if p.get("description") else ""}
-{f'<p class="cv-chips">{chips}</p>' if chips else ""}
-</div>''')
+        projs.append(f'<div class="cv-item">'
+                     f'<div class="cv-head"><span class="cv-role">{link}</span><span class="cv-when">{month_yr(p.get("startDate"))}</span></div>'
+                     + (f'<p class="cv-sum">{escape(p["description"])}</p>' if p.get("description") else "")
+                     + (f'<p class="cv-chips">{chips}</p>' if chips else "")
+                     + "</div>")
 
     recog = []
     for a in cv.get("awards", []):
-        recog.append(f'''<div class="cv-item">
-<div class="cv-head"><span class="cv-role">{escape(a["title"])}</span><span class="cv-when">{month_yr(a.get("date"))}</span></div>
-{f'<p class="cv-org">{escape(a["awarder"])}</p>' if a.get("awarder") else ""}
-{f'<p class="cv-sum">{escape(a["summary"])}</p>' if a.get("summary") else ""}
-</div>''')
+        recog.append(f'<div class="cv-item">'
+                     f'<div class="cv-head"><span class="cv-role">{escape(a["title"])}</span><span class="cv-when">{month_yr(a.get("date"))}</span></div>'
+                     + (f'<p class="cv-org">{escape(a["awarder"])}</p>' if a.get("awarder") else "")
+                     + (f'<p class="cv-sum">{escape(a["summary"])}</p>' if a.get("summary") else "")
+                     + "</div>")
     for c in cv.get("certificates", []):
-        recog.append(f'''<div class="cv-item">
-<div class="cv-head"><span class="cv-role">{escape(c["name"])}</span><span class="cv-when">{month_yr(c.get("date"))}</span></div>
-{f'<p class="cv-org">{escape(c["issuer"])}</p>' if c.get("issuer") else ""}
-</div>''')
+        recog.append(f'<div class="cv-item">'
+                     f'<div class="cv-head"><span class="cv-role">{escape(c["name"])}</span><span class="cv-when">{month_yr(c.get("date"))}</span></div>'
+                     + (f'<p class="cv-org">{escape(c["issuer"])}</p>' if c.get("issuer") else "")
+                     + "</div>")
+
+    vol = []
+    for v in cv.get("volunteer", []):
+        org = f'<a href="{escape(v["url"])}">{escape(v["organization"])}</a>' if v.get("url") else escape(v.get("organization", ""))
+        vol.append(item(
+            escape(v.get("position", "")), org,
+            span(v.get("startDate"), v.get("endDate")), v.get("summary", ""), [],
+        ))
 
     skills = []
     for g in cv.get("skills", []):
@@ -649,7 +612,38 @@ def cv_page(cv: dict) -> str:
         skills.append(f'<div class="cv-skill"><span class="cv-skill-name">{escape(g.get("name", ""))}</span><span class="cv-chips">{chips}</span></div>')
 
     langs = " · ".join(f'{escape(l["language"])} ({escape(l["fluency"])})' for l in cv.get("languages", []))
-    ints = " · ".join(escape(i["name"]) for i in cv.get("interests", []))
+    ints = " · ".join(
+        escape(i["name"]) + " — " + ", ".join(escape(k) for k in i.get("keywords", []))
+        for i in cv.get("interests", [])
+    )
+
+    meta = cv.get("meta", {})
+    updated = (f'<span class="cv-when" data-rel-from="{meta["lastModified"]}">'
+               f'Updated {month_yr(meta["lastModified"][:10])}</span>') if meta.get("lastModified") else ""
+
+    sections = [
+        ("Experience", "".join(work)),
+        ("Education", "".join(edu)),
+        ("Publications", "".join(pubs)),
+        ("Projects", "".join(projs)),
+    ]
+    if recog:
+        sections.append(("Recognition", "".join(recog)))
+    if vol:
+        sections.append(("Volunteer", "".join(vol)))
+
+    body_sections = "".join(f"<h2>{t}</h2>{c}" for t, c in sections if c)
+
+    person = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": b.get("name", ""),
+        "jobTitle": b.get("label", ""),
+        "email": f"mailto:{b.get('email', '')}",
+        "url": b.get("url", SITE["url"]),
+        "sameAs": [p.get("url") for p in b.get("profiles", []) if p.get("url")],
+        "alumniOf": [e.get("institution") for e in cv.get("education", []) if e.get("institution")],
+    }, ensure_ascii=False)
 
     copy_js = """
 (() => {
@@ -676,27 +670,22 @@ def cv_page(cv: dict) -> str:
 
     return f"""<div class="cv-actions">
 <button class="cv-btn" id="cv-copy" data-url="{SITE['url']}/cv/" type="button">Copy URL</button>
-<a class="cv-btn" href="/static/cv.pdf">PDF</a>
+<a class="cv-btn" href="/cv.pdf">PDF</a>
 <a class="cv-btn" href="/cv.json">JSON</a>
+{updated}
 </div>
 <h1>{escape(b.get("name", ""))}</h1>
 <p class="cv-label">{escape(b.get("label", ""))}</p>
 {f'<p>{escape(b["summary"])}</p>' if b.get("summary") else ""}
 <p class="cv-contact">{contact}</p>
-<h2>Experience</h2>
-{''.join(work)}
-<h2>Education</h2>
-{''.join(edu)}
-<h2>Publications</h2>
-{''.join(pubs)}
-<h2>Projects</h2>
-{''.join(projs)}
-{'<h2>Recognition</h2>' + ''.join(recog) if recog else ''}
+<script type="application/ld+json">{person}</script>
+{body_sections}
 <h2>Skills</h2>
 <div class="cv-skills">{''.join(skills)}</div>
 <h2>Languages &amp; Interests</h2>
 <p class="cv-sum">{langs}<br>{ints}</p>
 <script>{copy_js}"""
+
 
 
 def main() -> None:

@@ -89,14 +89,30 @@ void main() {
   function init(fig) {
     const cv = fig.querySelector("canvas[data-shape]");
     if (!cv) return;
-    const gl = cv.getContext("webgl", { antialias: true, alpha: true, preserveDrawingBuffer: true });
-    if (!gl) { fig.style.display = "none"; return; }
+    let gl = null;
+    try {
+      gl = cv.getContext("webgl", { antialias: true, alpha: true, preserveDrawingBuffer: true });
+    } catch (e) { console.error("fig.js context:", e); }
+    if (!gl) { fig.dataset.error = "1"; console.error("fig.js: no WebGL context"); return; }
 
-    const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); return o; };
-    const pr = gl.createProgram();
-    gl.attachShader(pr, sh(gl.VERTEX_SHADER, VERT));
-    gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FRAG));
-    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { fig.style.display = "none"; return; }
+    const sh = (t, s) => {
+      const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o);
+      if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o));
+      return o;
+    };
+    let pr = null;
+    try {
+      pr = gl.createProgram();
+      gl.attachShader(pr, sh(gl.VERTEX_SHADER, VERT));
+      gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FRAG));
+      gl.linkProgram(pr);
+      if (!gl.getProgramParameter(pr, gl.LINK_STATUS))
+        throw new Error(gl.getProgramInfoLog(pr) || "link failed");
+    } catch (e) {
+      console.error("fig.js program:", e);
+      fig.dataset.error = "1";
+      return;
+    }
     gl.useProgram(pr);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -125,8 +141,7 @@ void main() {
     gl.uniform1f(uMix, 0);
 
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let dpr = 1, q = qaxis(0.3, 1, 0.15, 0.7), dragging = false, lx = 0, ly = 0,
-        velAxis = null, velAng = 0, mixCur = 0, mixTarget = 0, raf = 0;
+    let dpr = 1, q = qaxis(0.3, 1, 0.15, 0.7), mixCur = 0, mixTarget = 0, raf = 0;
 
     const slider = fig.querySelector("input[type=range]");
     if (slider && cv.dataset.morphTo)
@@ -149,16 +164,14 @@ void main() {
       gl.uniform1f(uMix, mixCur);
       const P = persp(0.9, cv.width / cv.height, 0.1, 20);
       const M = qmat(q);
+      M[14] = -3.0;
       gl.uniformMatrix4fv(uPr, false, P);
       gl.uniformMatrix4fv(uM, false, M);
       gl.drawArrays(gl.POINTS, 0, N);
     };
     const step = () => {
       mixCur += (mixTarget - mixCur) * 0.08;
-      if (!dragging && velAng > 0.0004) {
-        q = qnorm(qmul(qaxis(velAxis[0], velAxis[1], velAxis[2], velAng), q));
-        velAng *= 0.95;
-      } else if (!dragging && !reduced) {
+      if (!reduced) {
         q = qnorm(qmul(qaxis(0, 1, 0, 0.0022), q));
       }
       draw();
@@ -166,29 +179,6 @@ void main() {
     };
     const wake = () => { cancelAnimationFrame(raf); if (!reduced) raf = requestAnimationFrame(step); else draw(); };
 
-    cv.addEventListener("pointerdown", e => {
-      dragging = true; velAng = 0;
-      lx = (e.clientX / cv.clientWidth) * 2 - 1;
-      ly = 1 - (e.clientY / cv.clientHeight) * 2;
-      cv.setPointerCapture(e.pointerId);
-    });
-    cv.addEventListener("pointermove", e => {
-      if (!dragging) return;
-      const x = (e.clientX / cv.clientWidth) * 2 - 1;
-      const y = 1 - (e.clientY / cv.clientHeight) * 2;
-      const ax = ly * 1 - y * 0, ay = 0, dummy = 0;
-      const dx = x - lx, dy = y - ly;
-      const axis = [dy, dx, 0];
-      const ang = Math.hypot(dx, dy) * 2.4;
-      if (ang > 0.0005) {
-        q = qnorm(qmul(qaxis(axis[0], axis[1], axis[2], ang), q));
-        velAxis = axis; velAng = ang;
-      }
-      lx = x; ly = y;
-    });
-    ["pointerup", "pointercancel"].forEach(ev => cv.addEventListener(ev, () => { dragging = false; }));
-
-    addEventListener("resize", () => { size(); draw(); });
     matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => { size(); draw(); });
     size();
     wake();
