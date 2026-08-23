@@ -380,7 +380,7 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <link rel="icon" href="/favicon.ico">
 <link rel="alternate" type="application/rss+xml" title="{escape(SITE['title'])}" href="/feed.xml">
 <link rel="stylesheet" href="/static/style.css">
-<script defer src="/static/fig.js"></script>
+<script defer src="/static/fig-core.js"></script>
 {KATEX if math else ""}
 </head>
 <body>

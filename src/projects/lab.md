@@ -1,22 +1,58 @@
 ---
 title: Lab
-subtitle: Interactive components, on brand
+subtitle: Interactive explainables, on brand
 author: ofou
 date: 2026-08-21
-categories: [Interactive]
+categories:
+  - Interactive
 ---
 
-Bare-WebGL components built for this site — point-cloud figures you can grab and spin, tuned to the same paper-and-ink palette as everything else. No frameworks, no model files: geometry is generated parametrically and rendered as dots, in the spirit of Ciechanowski's explainers but reduced to the site's own visual language.
+A growing library of bare-canvas explainer components — every one built on the same paper-and-ink palette as the rest of the site, lazily loaded, paused offscreen, static under reduced motion. Declare any of them in a post with a single `<div data-fig="…">`.
 
-<figure class="fig3d">
-<canvas data-shape="sphere" data-morph-to="torus"></canvas>
-<input type="range" min="0" max="1000" value="0" aria-label="Morph sphere into torus">
-<figcaption>Fig. L1 — Icosphere ⇄ torus · drag to rotate · slider to morph</figcaption>
-</figure>
+## Signals
 
-<figure class="fig3d">
-<canvas data-shape="helix"></canvas>
-<figcaption>Fig. L2 — Helical column · drag to rotate</figcaption>
-</figure>
+<div data-fig="wave" data-height="220"></div>
 
-One program per figure, point sprites, colors read live from the same CSS custom properties that drive the light and night editions. Source: `/static/fig.js`.
+<div data-fig="interference"></div>
+
+<div data-fig="fourier"></div>
+
+## Learning
+
+<div data-fig="gradient-descent"></div>
+
+<div data-fig="learning-curves"></div>
+
+<div data-fig="normal-curve"></div>
+
+## Language models
+
+<div data-fig="softmax"></div>
+
+<div data-fig="attention-matrix"></div>
+
+<div data-fig="next-token"></div>
+
+<div data-fig="tokenizer"></div>
+
+<div data-fig="entropy"></div>
+
+## Geometry and data
+
+<div data-fig="neuron"></div>
+
+<div data-fig="embeddings"></div>
+
+<div data-fig="pca-axis"></div>
+
+<div data-fig="conv-kernel"></div>
+
+<div data-fig="matrix-product"></div>
+
+<div data-fig="vector-add"></div>
+
+<div data-fig="random-walk"></div>
+
+<div data-fig="sorting-bars"></div>
+
+<div data-fig="iso-cube"></div>
