@@ -9,6 +9,7 @@
     let step = 0, paused = false;
     Fig.caption(el, "click to pause/resume · C[i][j] = Σ A[i][k]·B[k][j]");
     cv.el.addEventListener("pointerdown", () => { paused = !paused; });
+    const tint = a => { const n = parseInt(P().accent.slice(1), 16); return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`; };
     const draw = () => {
       const P = Fig.palette();
       ctx.clearRect(0, 0, cv.w, cv.h);
@@ -19,8 +20,8 @@
       function grid(x, y, rows, cols, mark) {
         for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++) {
           ctx.fillStyle = P.wash;
-          if (mark === "row" && i === hi) ctx.fillStyle = "color-mix(in srgb, var(--accent) 25%, transparent)";
-          if (mark === "col" && j === hk) ctx.fillStyle = "color-mix(in srgb, var(--accent) 25%, transparent)";
+          if (mark === "row" && i === hi) ctx.fillStyle = tint(0.25);
+          if (mark === "col" && j === hk) ctx.fillStyle = tint(0.25);
           if (mark === "out" && i === hi && j === hj) ctx.fillStyle = P.accent;
           ctx.fillRect(x + j * cell, y + i * cell, cell - 2, cell - 2);
           ctx.strokeStyle = P.rule;
@@ -42,9 +43,13 @@
       ctx.font = "10px ui-monospace, Menlo, monospace"; ctx.fillStyle = P.mute;
       ctx.fillText(`C[${hi}][${hj}] += A[${hi}][${hk}]·B[${hk}][${hj}]`, gx, gy + 2 * cell + 22);
     };
-    const drawSafe = () => { try { draw(); } catch (_) {} };
-    setInterval(() => { if (!paused) { step++; drawSafe(); } }, 600);
-    drawSafe();
-    Fig.onScheme(drawSafe);
+    let lastT = performance.now();
+    Fig.animate(cv, () => {
+      const now = performance.now();
+      if (!paused && now - lastT >= 600) { lastT = now; step++; }
+      draw();
+    });
+    draw();
+    Fig.onScheme(draw);
   });
 })();

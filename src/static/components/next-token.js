@@ -15,8 +15,6 @@
     };
     let ctxWords = ["The"];
     el.style.userSelect = "none";
-    const barWrap = document.createElement("div");
-    el.appendChild(barWrap);
     const chipRow = document.createElement("div");
     chipRow.className = "cv-chips";
     el.appendChild(chipRow);
@@ -62,6 +60,7 @@
       draw();
     }
     cv.redraw = draw;
+    Fig.onScheme(draw);
     function clickHandler(e) {
       if (!e.target.classList.contains("chip")) return;
       const w = e.target.textContent;
@@ -69,13 +68,23 @@
       ctxWords.push(w);
       renderBars();
     }
+    cv.el.addEventListener("pointerdown", e => {
+      const r = cv.el.getBoundingClientRect();
+      const d = dist(ctxWords[ctxWords.length - 1]);
+      const bw = (cv.w - 20) / d.length;
+      const idx = Math.floor((e.clientX - r.left - 10) / bw);
+      if (idx >= 0 && idx < d.length) { ctxWords.push(d[idx][0]); renderBars(); }
+    });
     el.addEventListener("click", clickHandler);
+    const resetRow = document.createElement("div");
+    resetRow.style.cssText = "display:flex;gap:0.5rem;margin-top:0.4rem";
     const reset = document.createElement("span");
     reset.className = "chip";
     reset.textContent = "↺ reset";
     reset.style.cursor = "pointer";
     reset.addEventListener("click", () => { ctxWords = ["The"]; renderBars(); });
-    chipRow.appendChild(reset);
+    resetRow.appendChild(reset);
+    el.appendChild(resetRow);
     renderBars();
   });
 })();

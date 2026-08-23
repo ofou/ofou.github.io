@@ -1216,9 +1216,23 @@ footer.site a.handle:hover {
   -webkit-appearance: none;
   width: 14px;
   height: 14px;
-  border: 1px solid var(--paper);
+  margin-top: 5px;
   background: var(--accent);
-  border: 0;
+  border: 1px solid var(--paper);
+  border-radius: 0;
+  cursor: ew-resize;
+}
+
+.fig-control input[type="range"]::-moz-range-track {
+  height: 24px;
+  background: transparent;
+}
+
+.fig-control input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border: 1px solid var(--paper);
   border-radius: 0;
   cursor: ew-resize;
 }
@@ -1232,7 +1246,7 @@ footer.site a.handle:hover {
   cursor: ew-resize;
 }
 
-/* ---------- menu ---------- */
+/* ---------- inline menu ---------- */
 
 .menu-btn {
   font-family: var(--mono);
@@ -1255,45 +1269,32 @@ header.site nav {
   display: none;
 }
 
-.menu-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(19, 19, 17, 0.4);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 998;
-}
-
-.menu-backdrop.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.menu-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100dvh;
-  width: min(320px, 88vw);
-  background: var(--paper);
-  border-left: 1px solid var(--rule);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 1.15rem;
-  padding: 5.2rem 2.2rem 2rem;
-  transform: translateX(102%);
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+.menu-inline {
+  counter-reset: menu;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.4rem 1.4rem;
+  width: min(60ch, calc(100% - 3rem));
+  margin-inline: auto;
+  padding: 0.9rem 0 1.1rem;
+  border-bottom: 1px solid var(--rule-fine);
   overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  padding-block: 0;
+  border-block: 0;
+  transition: max-height 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease, padding 0.38s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.menu-panel.open {
-  transform: none;
+.menu-inline.open {
+  max-height: 5rem;
+  opacity: 1;
+  padding-block: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--rule-fine);
 }
 
-.menu-panel a {
-  font-size: 1.35rem;
+.menu-inline a {
+  font-size: 1.2rem;
   text-decoration: none;
   color: var(--ink);
   position: relative;
@@ -1301,11 +1302,11 @@ header.site nav {
   width: fit-content;
 }
 
-.menu-panel a:hover {
+.menu-inline a:hover {
   color: var(--accent);
 }
 
-.menu-panel a::before {
+.menu-inline a::before {
   counter-increment: menu;
   content: "0" counter(menu);
   font-family: var(--mono);
@@ -1316,10 +1317,6 @@ header.site nav {
   vertical-align: 0.12em;
 }
 
-.menu-panel {
-  counter-reset: menu;
-}
-
 .menu-gl {
   position: absolute;
   inset: 0;
@@ -1328,14 +1325,8 @@ header.site nav {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .menu-panel {
+  .menu-inline {
     transition: opacity 0.15s ease;
-    transform: none;
-    opacity: 0;
-  }
-
-  .menu-panel.open {
-    opacity: 1;
   }
 }
 

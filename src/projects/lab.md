@@ -37,6 +37,22 @@ A growing library of bare-canvas explainer components — every one built on the
 
 <div data-fig="entropy"></div>
 
+## Reinforcement learning
+
+<div data-fig="rl-loop"></div>
+
+<div data-fig="epsilon-greedy"></div>
+
+<div data-fig="q-learning"></div>
+
+<div data-fig="policy-gradient"></div>
+
+<div data-fig="reward-shaping"></div>
+
+<div data-fig="value-iteration"></div>
+
+<div data-fig="trajectory-rollout"></div>
+
 ## Geometry and data
 
 <div data-fig="neuron"></div>
@@ -56,3 +72,7 @@ A growing library of bare-canvas explainer components — every one built on the
 <div data-fig="sorting-bars"></div>
 
 <div data-fig="iso-cube"></div>
+
+## Retro terminal
+
+<div data-fig="crt-terminal" data-height="340"></div>

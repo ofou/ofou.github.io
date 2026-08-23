@@ -20,6 +20,11 @@
       });
     }
     let grid = weights();
+    const geom = () => {
+      const pad = 44;
+      const cell = Math.min((cv.w - pad - 12) / toks.length, (cv.h - pad - 16) / toks.length);
+      return { pad, cell };
+    };
     const readout = document.createElement("p");
     readout.className = "meta";
     readout.style.margin = "0.4rem 0 0";
@@ -28,7 +33,7 @@
       grid = weights();
       const P = Fig.palette();
       ctx.clearRect(0, 0, cv.w, cv.h);
-      const pad = 44, cell = (cv.w - pad - 12) / toks.length;
+      const { pad, cell } = geom();
       ctx.font = "10px ui-monospace, Menlo, monospace";
       toks.forEach((t, j) => {
         ctx.fillStyle = P.mute; ctx.textAlign = "center";
@@ -48,12 +53,12 @@
         ctx.strokeRect(x + 2, y + 2, cell - 4, cell - 4);
         ctx.fillStyle = P.dark ? "#fff" : "#000";
         ctx.font = "10px ui-monospace, Menlo, monospace"; ctx.textAlign = "center";
-        ctx.fillText(w.toFixed(2).slice(1), x + cell / 2, y + cell / 2 + 3);
+        ctx.fillText(w >= 0.995 ? "1.0" : w.toFixed(2).slice(1), x + cell / 2, y + cell / 2 + 3);
       }));
     };
     cv.el.addEventListener("pointermove", e => {
       const r = cv.el.getBoundingClientRect();
-      const pad = 44, cell = (cv.w - pad - 12) / toks.length;
+      const { pad, cell } = geom();
       const j = Math.floor((e.clientX - r.left - pad) / cell);
       const i = Math.floor((e.clientY - r.top - pad) / cell);
       hover = (i >= 0 && j >= 0 && i < 5 && j < 5 && grid[i]) ? [grid[i][j], i, j] : null;

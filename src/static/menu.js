@@ -1,55 +1,44 @@
-/* menu.js — right-side dropdown with a WebGL dot-sweep reveal.
-   No-JS fallback: the inline nav stays in the header. */
+/* menu.js — inline menu reveal: the nav row expands below the masthead
+   with a brief WebGL dot-sweep wipe. No backdrop, no scroll lock. */
 (() => {
   const btn = document.getElementById("menu-btn");
   const panel = document.getElementById("site-menu");
   if (!btn || !panel) return;
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const backdrop = document.createElement("div");
-  backdrop.className = "menu-backdrop";
-  document.body.appendChild(backdrop);
-
-  let open = false, glRaf = 0, glStart = 0;
+  let open = false, glCanvas = null, glRaf = 0;
 
   function setOpen(v) {
     open = v;
     btn.setAttribute("aria-expanded", String(v));
     panel.classList.toggle("open", v);
-    backdrop.classList.toggle("show", v);
-    document.body.style.overflow = v ? "hidden" : "";
     if (v && !reduced) startGL();
     else stopGL();
   }
 
   btn.addEventListener("click", () => setOpen(!open));
-  backdrop.addEventListener("click", () => setOpen(false));
-  panel.addEventListener("click", e => { if (e.target.closest("a")) setOpen(false); });
   addEventListener("keydown", e => { if (e.key === "Escape" && open) setOpen(false); });
 
-  /* ---------- GL dot-sweep: a phosphor dot-curtain dissolves
-     right-to-left across the panel as it slides in ---------- */
-  let gl = null, glCanvas = null;
-
+  /* ---------- GL dot-sweep wipe across the nav strip ---------- */
   function startGL() {
     stopGL();
     glCanvas = document.createElement("canvas");
     glCanvas.className = "menu-gl";
-    panel.prepend(glCanvas);
-    gl = glCanvas.getContext("webgl", { alpha: true, antialias: true, premultipliedAlpha: true });
+    panel.appendChild(glCanvas);
+    const gl = glCanvas.getContext("webgl", { alpha: true, premultipliedAlpha: true });
     if (!gl) { glCanvas.remove(); glCanvas = null; return; }
 
     const V = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
     const F = `precision mediump float;
 uniform vec2 u_res;uniform float u_time,u_prog,u_dpr;
-uniform vec3 u_ink,u_accent,u_paper;
+uniform vec3 u_ink,u_accent;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 void main(){
   vec2 uv=gl_FragCoord.xy/u_res;
   float edge=1.0-u_prog;
   float d=uv.x-edge;
-  vec3 col=u_paper;
   float a=0.0;
+  vec3 col=u_ink;
   if(d>0.0){
     vec2 g=6.0*u_dpr;
     vec2 id=floor(gl_FragCoord.xy/g);
@@ -59,8 +48,7 @@ void main(){
     float dotm=smoothstep(r,r-0.8*u_dpr,length(f));
     float fade=clamp(d/0.35,0.0,1.0);
     a=dotm*(0.55-fade*0.4);
-    col=u_ink;
-    if(d<0.06) { col=u_accent; a=0.8*(1.0-d/0.06); }
+    if(d<0.06){ col=u_accent; a=0.8*(1.0-d/0.06); }
   }
   gl_FragColor=vec4(col*a,a);
 }`;
@@ -83,20 +71,18 @@ void main(){
     glCanvas.width = panel.clientWidth * dpr;
     glCanvas.height = panel.clientHeight * dpr;
     gl.viewport(0, 0, glCanvas.width, glCanvas.height);
-    const ink = hexRGB(getComputedStyle(document.documentElement).getPropertyValue("--ink"));
-    const accent = hexRGB(getComputedStyle(document.documentElement).getPropertyValue("--accent"));
-    const paper = hexRGB(getComputedStyle(document.documentElement).getPropertyValue("--paper"));
-    gl.uniform3fv(U("u_ink"), ink);
-    gl.uniform3fv(U("u_accent"), accent);
-    gl.uniform3fv(U("u_paper"), paper);
+    const hex = x => { x = x.trim(); const n = parseInt(x.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; };
+    const s = getComputedStyle(document.documentElement);
+    gl.uniform3fv(U("u_ink"), hex(s.getPropertyValue("--ink")));
+    gl.uniform3fv(U("u_accent"), hex(s.getPropertyValue("--accent")));
     gl.uniform2f(U("u_res"), glCanvas.width, glCanvas.height);
     gl.uniform1f(U("u_dpr"), dpr);
 
-    glStart = performance.now();
-    const DUR = 620;
+    const t0 = performance.now();
+    const DUR = 520;
     const frame = now => {
       if (!open || !glCanvas) return;
-      const x = Math.min(1, (now - glStart) / DUR);
+      const x = Math.min(1, (now - t0) / DUR);
       const p = 1 - Math.pow(1 - x, 3);
       gl.uniform1f(U("u_prog"), p);
       gl.uniform1f(U("u_time"), now / 1000);
@@ -104,9 +90,9 @@ void main(){
       if (x < 1) {
         glRaf = requestAnimationFrame(frame);
       } else {
-        glCanvas.style.transition = "opacity 0.25s ease";
+        glCanvas.style.transition = "opacity 0.22s ease";
         glCanvas.style.opacity = "0";
-        setTimeout(stopGL, 280);
+        setTimeout(stopGL, 240);
       }
     };
     glRaf = requestAnimationFrame(frame);
@@ -115,11 +101,5 @@ void main(){
   function stopGL() {
     cancelAnimationFrame(glRaf);
     if (glCanvas) { glCanvas.remove(); glCanvas = null; }
-  }
-
-  function hexRGB(x) {
-    x = x.trim();
-    const n = parseInt(x.slice(1), 16);
-    return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255];
   }
 })();

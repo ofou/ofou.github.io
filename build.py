@@ -341,7 +341,7 @@ def human_date(value: date | None) -> str:
     return value.strftime("%d %B %Y").lstrip("0") if value else ""
 
 
-def layout(page_title: str, body: str, *, url: str, description: str = "", math: bool = False) -> str:
+def layout(page_title: str, body: str, *, url: str, description: str = "", math: bool = False, extra_head: str = "") -> str:
     full_title = page_title if page_title == SITE["title"] else f"{page_title} · {SITE['brand']}"
     description = description or SITE["description"]
     nav = "".join(f'<a href="{href}">{label}</a>' for label, href in NAV)
@@ -386,13 +386,14 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <script defer src="/static/fig-core.js"></script>
 <script defer src="/static/menu.js"></script>
 {KATEX if math else ""}
+{extra_head}
 </head>
 <body>
-<nav id="site-menu" class="menu-panel" aria-label="Main">{nav}</nav>
 <header class="site">
 <a class="brand" href="/">{SITE['brand']}</a>
 <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-menu">Menu</button>
 </header>
+<nav id="site-menu" class="menu-inline" aria-label="Main">{nav}</nav>
 <main>
 {body}
 </main>
@@ -715,6 +716,7 @@ def main() -> None:
     write("index.html", layout(SITE["title"], article(home), url="/", description=SITE["description"], math=has_math(home.html)))
 
     for post in posts:
+        extra = '<script defer src="/static/fig.js"></script>' if "fig3d" in post.html else ""
         write(
             post.url + "index.html",
             layout(
@@ -723,6 +725,7 @@ def main() -> None:
                 url=post.url,
                 description=str(post.meta.get("description") or ""),
                 math=has_math(post.html),
+                extra_head=extra,
             ),
         )
     for project in projects:
