@@ -55,7 +55,8 @@
     }
 
     draw();
-    Fig.animate(cv, draw);
+    cv.redraw = draw;
     Fig.onScheme(draw);
+    Fig.animate(cv, draw);
   });
 })();

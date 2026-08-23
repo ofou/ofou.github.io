@@ -48,6 +48,7 @@
       readout.textContent = `σ² along θ = ${(varSum / cloud.length).toFixed(3)} · θ = ${theta}°`;
     };
     draw();
+    cv.redraw = draw;
     Fig.onScheme(draw);
   });
 })();

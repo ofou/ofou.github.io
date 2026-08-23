@@ -52,6 +52,7 @@
       }
     };
     draw();
+    cv.redraw = draw;
     Fig.onScheme(draw);
   });
 })();

@@ -3,17 +3,16 @@
     const cv = Fig.canvas(el, 240);
     Fig.frame(cv);
     const ctx = cv.ctx;
+    const LRS = [0.06, 0.15, 0.35];
     let noise = 0.08;
     Fig.controls(el, [{ key: "noise", label: "Noise", min: 0, max: 0.3, step: 0.01, value: noise }],
       (k, v) => { noise = v; curves(); draw(); });
     Fig.caption(el, "simulated loss for three learning rates");
-    function mulberry32(a) {
-      return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
-    }
+    function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
     let series = [];
     function curves() {
       const rnd = mulberry32(1234);
-      series = [0.06, 0.15, 0.35].map((lr, i) => {
+      series = LRS.map(lr => {
         const pts = [];
         for (let s = 0; s <= 500; s += 5) {
           const base = Math.exp(-s / (60 + lr * 400)) * 2.2 + 0.25 + lr;
@@ -37,13 +36,14 @@
         ctx.stroke();
       });
       ctx.font = "10px ui-monospace, Menlo, monospace";
-      [["LR 0.01", P.mute], ["LR 0.10", P.accent], ["LR 0.30", P.ink]].forEach(([t, c], i) => {
-        ctx.fillStyle = c;
-        ctx.fillText(t, cv.w - 74, 18 + i * 13);
+      LRS.forEach((lr, i) => {
+        ctx.fillStyle = cs[i];
+        ctx.fillText("LR " + lr.toFixed(2), cv.w - 74, 18 + i * 13);
       });
     };
     curves();
-    draw();
+    cv.redraw = draw;
     Fig.onScheme(draw);
+    draw();
   });
 })();

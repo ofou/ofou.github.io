@@ -38,6 +38,7 @@
       ctx.fillText("H = " + H(p).toFixed(3) + " bits", Math.min(dotX + 8, cv.w - 92), dotY - 8);
     };
     draw();
+    cv.redraw = draw;
     Fig.onScheme(draw);
   });
 })();

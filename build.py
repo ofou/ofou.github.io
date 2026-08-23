@@ -41,7 +41,7 @@ SITE = {
     ),
 }
 
-NAV = [("Blog", "/blog/"), ("Projects", "/projects/"), ("CV", "/cv/")]
+NAV = [("Blog", "/blog/"), ("Projects", "/projects/"), ("CV", "/cv/"), ("Contact", "/contact/")]
 
 SOCIAL = [
     ("GitHub", "https://github.com/ofou", "github"),
@@ -379,14 +379,19 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="/favicon.ico">
 <link rel="alternate" type="application/rss+xml" title="{escape(SITE['title'])}" href="/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300..700&family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap">
 <link rel="stylesheet" href="/static/style.css">
 <script defer src="/static/fig-core.js"></script>
+<script defer src="/static/menu.js"></script>
 {KATEX if math else ""}
 </head>
 <body>
+<nav id="site-menu" class="menu-panel" aria-label="Main">{nav}</nav>
 <header class="site">
 <a class="brand" href="/">{SITE['brand']}</a>
-<nav>{nav}</nav>
+<button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-menu">Menu</button>
 </header>
 <main>
 {body}
@@ -662,6 +667,40 @@ def cv_page(cv: dict) -> str:
 
 
 
+def contact_page() -> str:
+    return """
+<div class="cv-actions">
+<a class="cv-btn" href="mailto:omar@olivares.cl">Direct email</a>
+<a class="cv-btn" href="https://x.com/omarnomad">X</a>
+<a class="cv-btn" href="https://www.linkedin.com/in/ofou/">LinkedIn</a>
+</div>
+<h1>Contact</h1>
+<p class="cv-label">Open to long-term moonshots · selective consulting · saying hi</p>
+<p>The form below composes an email in your own mail client — nothing is stored, tracked, or routed through a server. Prefer plain text? Write to <a href="mailto:omar@olivares.cl">omar@olivares.cl</a> directly.</p>
+<form id="contact-form" class="contact-form">
+<label class="fig-control"><span>Name</span><input type="text" name="name" required autocomplete="name" placeholder="Ada Lovelace"></label>
+<label class="fig-control"><span>Email</span><input type="email" name="email" required autocomplete="email" placeholder="you@example.com"></label>
+<label class="fig-control"><span>Subject</span><input type="text" name="subject" placeholder="Hello from the internet"></label>
+<label class="fig-control fig-control-col"><span>Message</span><textarea name="body" rows="7" required placeholder="What are you working on?"></textarea></label>
+<button class="cv-btn" type="submit">Compose email</button>
+</form>
+<p class="meta" id="contact-note" style="margin-top:0.8rem">Opens your mail client with everything pre-filled.</p>
+<script>
+(() => {
+  const f = document.getElementById("contact-form");
+  f.addEventListener("submit", e => {
+    e.preventDefault();
+    const d = new FormData(f);
+    const subject = encodeURIComponent("[olivares.cl] " + (d.get("subject") || "Hello"));
+    const body = encodeURIComponent(d.get("body") + "\n\n— " + d.get("name") + " (" + d.get("email") + ")");
+    window.location.href = "mailto:omar@olivares.cl?subject=" + subject + "&body=" + body;
+    const n = document.getElementById("contact-note");
+    n.textContent = "Your mail client should be open with the message ready to send.";
+  });
+})();
+</script>"""
+
+
 def main() -> None:
     bib = parse_bib((SRC / "references.bib").read_text(encoding="utf-8"))
     home, posts, projects = load_pages(bib)
@@ -700,6 +739,7 @@ def main() -> None:
 
     cv = json.loads((SRC / "static" / "cv.json").read_text(encoding="utf-8"))
     write("cv/index.html", layout("CV", cv_page(cv), url="/cv/", description=cv["basics"]["summary"]))
+    write("contact/index.html", layout("Contact", contact_page(), url="/contact/", description="Get in touch — email, form, or social."))
 
     write(
         "blog/index.html",
@@ -717,7 +757,7 @@ def main() -> None:
     feed = rss(posts)
     write("feed.xml", feed)
     write("feed_rss_created.xml", feed)  # legacy subscriber path
-    write("sitemap.xml", sitemap(["/", "/blog/", "/projects/", "/cv/", *[p.url for p in posts], *[p.url for p in projects]]))
+    write("sitemap.xml", sitemap(["/", "/blog/", "/projects/", "/cv/", "/contact/", *[p.url for p in posts], *[p.url for p in projects]]))
 
     print(f"built {len(posts)} posts, {len(projects)} projects → {OUT.relative_to(ROOT)}/")
 
@@ -728,5 +768,10 @@ if __name__ == "__main__":
         from functools import partial
         from http.server import HTTPServer, SimpleHTTPRequestHandler
 
+        class DevHandler(SimpleHTTPRequestHandler):
+            def end_headers(self):
+                self.send_header("Cache-Control", "no-store, must-revalidate")
+                super().end_headers()
+
         print("serving http://localhost:8000")
-        HTTPServer(("", 8000), partial(SimpleHTTPRequestHandler, directory=str(OUT))).serve_forever()
+        HTTPServer(("", 8000), DevHandler).serve_forever()

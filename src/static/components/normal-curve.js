@@ -39,6 +39,7 @@
       ctx.textAlign = "left";
     };
     draw();
+    cv.redraw = draw;
     Fig.onScheme(draw);
   });
 })();

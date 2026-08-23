@@ -1,8 +1,12 @@
 /* olivares.cl — science-textbook minimalism
    Editorial serif on warm paper, hairline structure,
-   monospace micro-labels, one muted pop of the spectrum. */
+   monospace micro-labels, one muted pop of the spectrum.
 
-@import url("https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap");
+   Webfonts (STIX Two Text, JetBrains Mono) are linked from the document
+   head with preconnect rather than @import-ed here: an @import inside a
+   stylesheet cannot start downloading until this file has itself been
+   fetched and parsed, which is one round trip too many for the two faces
+   the page cannot render without. */
 
 :root {
   color-scheme: light dark;
@@ -15,7 +19,23 @@
   --rule: rgba(26, 25, 23, 0.22);
   --rule-fine: rgba(26, 25, 23, 0.12);
   --serif: "STIX Two Text", Georgia, "Times New Roman", serif;
+
+  /* Two monospaces, two jobs. --mono is the label voice: caps, tracked
+     out, never longer than a few words, where a system face is free and
+     invisible. --mono-code is the verbatim voice, and it is worth a
+     download: JetBrains Mono carries a 0.55em x-height (vs ~0.53 for the
+     ui-monospace defaults) with punctuation drawn large and centred on
+     the line, which is where code legibility is actually won. Every
+     fallback below shares its 0.6em advance, so a listing holds its
+     column count while the webfont is still in flight. */
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --mono-code: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* 0.9rem = 14.4px. Below ~14px the counters in a mono face at typical
+     screen densities start closing up; above it the 46rem measure stops
+     holding 80 columns. It holds 80 exactly. */
+  --code-size: 0.9rem;
+  --code-weight: 400;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -32,6 +52,12 @@
     --mark: #4a4433;
     --rule: rgba(221, 216, 206, 0.2);
     --rule-fine: rgba(221, 216, 206, 0.1);
+
+    /* Light strokes on a dark plate bloom outward — the same irradiation
+       that makes reversed type look a half-weight heavy than it is. The
+       variable axis lets a listing be set back to the colour it has by
+       day instead of glaring. */
+    --code-weight: 370;
   }
 
   body {
@@ -45,7 +71,7 @@
   }
 
   .avatar {
-    filter: grayscale(100%) brightness(0.92);
+    filter: brightness(0.92);
   }
 }
 
@@ -112,7 +138,7 @@ footer.site {
 
 header.site {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding-block: 1.4rem 1.2rem;
@@ -131,13 +157,7 @@ header.site {
 }
 
 header.site nav {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  display: flex;
-  gap: 1.4em;
-  counter-reset: nav;
+  display: none;
 }
 
 header.site nav a {
@@ -381,36 +401,105 @@ ul.index .meta {
 
 /* ---------- code ---------- */
 
+/* Verbatim text is a second voice, not decorated prose. Three rules
+   govern it here: the literal glyph is the whole message (nothing on
+   this site is syntax-highlighted, so shape is the only channel), the
+   grid must survive (a monospace that reflows or re-columns has lost
+   its one advantage over the serif), and the plate is recessed while a
+   keycap is raised. */
+
 code,
 kbd,
+samp,
+pre {
+  font-family: var(--mono-code);
+  /* Weight is deliberately left to inherit here: a `path` inside a bold
+     heading has to come out bold, or it reads as a rendering fault.
+     --code-weight is applied to `pre` alone, below, which is where a
+     half-step of colour actually matters. */
+  /* Ligatures off, deliberately. A reader here is copying, not editing:
+     `!=` must arrive as two characters, `->` must not collapse into an
+     arrow, and `===` must stay countable. The slashed zero stays on so
+     0/O never has to be inferred from context. */
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "clig" 0, "calt" 0, "zero" 1;
+}
+
+code,
 samp {
-  font-family: var(--mono);
-  font-size: 0.82em;
+  /* Matched on x-height, not on em: STIX Two Text sits at ~0.468em,
+     JetBrains Mono at 0.550em, so 0.85em puts the two lowercases on the
+     same optical line. The old 0.82em left inline code visibly shorter
+     than the prose it interrupts. */
+  font-size: 0.85em;
   background: var(--wash);
-  padding: 0.12em 0.35em;
+  /* Vertical padding stays under the serif's leading so a wrapped
+     paragraph never has two plates touching. */
+  padding: 0.1em 0.34em;
   border-radius: 2px;
   overflow-wrap: break-word;
 }
 
+/* A key is an object, not a quotation: it sits on top of the sheet in
+   paper stock, where code sits down in a wash well. Same face, opposite
+   depth, so the two never read as the same thing. */
 kbd {
+  font-size: 0.8em;
+  background: var(--paper);
   box-shadow: inset 0 0 0 1px var(--rule), 0 1px 0 0 var(--rule);
   border-radius: 3px;
   padding: 0.18em 0.45em;
+  white-space: nowrap;
 }
 
 pre {
   background: var(--wash);
   border: 1px solid var(--rule-fine);
+  /* 1.15rem of gutter against a 46rem measure leaves 697px of text —
+     80 columns of JetBrains Mono at 14.4px, to within half a character.
+     The classic limit is not nostalgia: it is what most code is written
+     against, so honouring it is what keeps listings from wrapping. */
   padding: 1rem 1.15rem;
+  margin: 1.5rem 0;
+  font-size: var(--code-size);
+  font-weight: var(--code-weight);
+  /* Looser than the 1.5 of the prose. Code is scanned down the indent
+     columns as much as it is read across, and brackets and descenders
+     stack up far more densely than in a sentence. */
+  line-height: 1.6;
+  tab-size: 4;
   overflow-x: auto;
-  line-height: 1.55;
+  /* A sideways flick on a listing must not become a page-back gesture. */
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
 }
 
 pre code {
+  display: block;
   background: none;
+  border-radius: 0;
   padding: 0;
-  font-size: 0.82rem;
+  font-size: inherit;
+  /* Never break a token, never hyphenate an identifier: a wrapped line
+     destroys the indent reading that the leading above is protecting. */
+  white-space: pre;
   overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+/* Selecting is how code leaves this page. Reversing 14px monospace out
+   to paper thins every stroke exactly when the reader is checking what
+   they grabbed, so code takes a wash of accent instead and keeps full
+   ink — ~11:1 by day, ~8.5:1 at night. */
+pre::selection,
+pre *::selection,
+code::selection,
+samp::selection,
+kbd::selection {
+  background: color-mix(in srgb, var(--accent) 24%, var(--paper));
+  color: var(--ink);
 }
 
 /* ---------- media ---------- */
@@ -420,6 +509,7 @@ video {
   max-width: 100%;
   height: auto;
   display: block;
+  margin-inline: auto;
 }
 
 figure {
@@ -452,12 +542,6 @@ footer.site a.icon img {
   height: 8.5rem;
   object-fit: cover;
   margin: 0.35rem 1.6rem 0.9rem 0;
-  filter: grayscale(100%);
-  transition: filter 0.35s ease;
-}
-
-.avatar:hover {
-  filter: grayscale(0);
 }
 
 /* ---------- inline semantics ---------- */
@@ -590,12 +674,10 @@ details[open] summary {
   object-fit: cover;
   border: 0;
   background: none;
-  filter: grayscale(100%);
-  transition: filter 0.35s ease, transform 0.35s ease;
+  transition: transform 0.35s ease;
 }
 
 .book-grid a:hover img {
-  filter: grayscale(0);
   transform: translateY(-2px);
 }
 
@@ -605,7 +687,8 @@ details[open] summary {
   margin-top: 3rem;
   border-top: 1px solid var(--rule);
   padding-top: 0.8rem;
-  font-size: 0.92em;
+  font-size: 0.85em;
+  line-height: 1.35;
 }
 
 .footnote hr {
@@ -617,7 +700,7 @@ details[open] summary {
 }
 
 .footnote li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .footnote li:target {
@@ -660,6 +743,7 @@ footer.site {
 footer.site p {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.85rem;
   font-family: var(--mono);
   font-size: 0.7rem;
@@ -765,12 +849,6 @@ footer.site a.handle:hover {
 /* ---------- small screens ---------- */
 
 @media (max-width: 34rem) {
-  header.site {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.6rem;
-  }
-
   main {
     padding-block: 2.8rem 4rem;
   }
@@ -787,6 +865,18 @@ footer.site a.handle:hover {
   .cv-sum,
   .excerpt p {
     hyphens: auto;
+  }
+
+  /* On a phone the cheapest horizontal room is the indent, not the type:
+     halving the tab recovers two columns per nesting level, which beats
+     shrinking 14.4px glyphs that are already at the legibility floor.
+     The plate runs to the sheet edge so the sideways scroll is legible
+     as an affordance rather than as a clipped box. */
+  pre {
+    tab-size: 2;
+    margin-inline: -1.5rem;
+    padding-inline: 1.5rem;
+    border-inline: 0;
   }
 }
 
@@ -1029,6 +1119,46 @@ footer.site a.handle:hover {
   .cv-item {
     break-inside: avoid;
   }
+
+  /* Paper cannot scroll, and browsers drop background colours by
+     default — so on paper the wash well becomes a ruled box, and the
+     one thing a listing must do is wrap rather than run off the trim.
+     Wrapping loses the indent grid, which is the lesser evil against
+     losing the right-hand half of every long line. */
+  pre {
+    --code-weight: 400;
+    background: none;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    font-size: 8.5pt;
+    line-height: 1.45;
+    overflow: visible;
+    orphans: 2;
+    widows: 2;
+  }
+
+  /* The screen rule pins `white-space: pre` on the inner <code>, so the
+     wrap has to be undone there too or the listing prints clipped. */
+  pre,
+  pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  /* Inline verbatim keeps its distinction from the serif by face alone;
+     the plate would print as nothing on most printers anyway. */
+  code,
+  samp {
+    background: none;
+    padding: 0;
+  }
+
+  /* A keycap still has to look pressable in ink. */
+  kbd {
+    background: none;
+    box-shadow: none;
+    border: 1px solid rgba(0, 0, 0, 0.55);
+    padding: 0.1em 0.3em;
+  }
 }
 
 /* ---------- fig-core controls ---------- */
@@ -1054,27 +1184,39 @@ footer.site a.handle:hover {
   color: var(--mute);
 }
 
+/* The label to the left of a slider is a caption and stays in the label
+   voice; the number to its right is machine output and belongs to the
+   verbatim voice. It reads live under a dragging thumb, so it gets the
+   slashed zero and the taller x-height too. */
 .fig-control output {
-  font-family: var(--mono);
+  font-family: var(--mono-code);
   font-size: 0.72rem;
   color: var(--ink);
   text-align: right;
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "zero" 1;
 }
 
 .fig-control input[type="range"] {
   appearance: none;
   -webkit-appearance: none;
   width: 100%;
-  height: 1px;
-  background: var(--rule);
+  height: 24px;
+  background: linear-gradient(var(--rule), var(--rule)) 0 50% / 100% 1px no-repeat;
   display: block;
+  touch-action: pan-y;
+}
+
+.fig-control input[type="range"]::-webkit-slider-runnable-track {
+  height: 24px;
+  background: transparent;
 }
 
 .fig-control input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 11px;
-  height: 11px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--paper);
   background: var(--accent);
   border: 0;
   border-radius: 0;
@@ -1089,3 +1231,165 @@ footer.site a.handle:hover {
   border-radius: 0;
   cursor: ew-resize;
 }
+
+/* ---------- menu ---------- */
+
+.menu-btn {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  padding: 0.55em 1em;
+  cursor: pointer;
+}
+
+.menu-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+header.site nav {
+  display: none;
+}
+
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(19, 19, 17, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 998;
+}
+
+.menu-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.menu-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100dvh;
+  width: min(320px, 88vw);
+  background: var(--paper);
+  border-left: 1px solid var(--rule);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  padding: 5.2rem 2.2rem 2rem;
+  transform: translateX(102%);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+.menu-panel.open {
+  transform: none;
+}
+
+.menu-panel a {
+  font-size: 1.35rem;
+  text-decoration: none;
+  color: var(--ink);
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+}
+
+.menu-panel a:hover {
+  color: var(--accent);
+}
+
+.menu-panel a::before {
+  counter-increment: menu;
+  content: "0" counter(menu);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.13em;
+  color: var(--mute);
+  margin-right: 0.7em;
+  vertical-align: 0.12em;
+}
+
+.menu-panel {
+  counter-reset: menu;
+}
+
+.menu-gl {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-panel {
+    transition: opacity 0.15s ease;
+    transform: none;
+    opacity: 0;
+  }
+
+  .menu-panel.open {
+    opacity: 1;
+  }
+}
+
+/* ---------- contact form ---------- */
+
+.contact-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.8rem;
+}
+
+.contact-form .fig-control {
+  grid-template-columns: 5.5rem 1fr;
+}
+
+.contact-form input,
+.contact-form textarea {
+  font-family: var(--serif);
+  font-size: 0.95em;
+  color: var(--ink);
+  background: var(--wash);
+  border: 1px solid var(--rule-fine);
+  padding: 0.55em 0.8em;
+  width: 100%;
+  resize: vertical;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.contact-form ::placeholder {
+  color: var(--mute);
+  opacity: 0.7;
+}
+
+.contact-form .fig-control-col {
+  grid-template-columns: 5.5rem 1fr;
+}
+
+.contact-form .fig-control-col span {
+  align-self: start;
+  padding-top: 0.55em;
+}
+
+/* ---------- lab figure height reserves (CLS) ---------- */
+
+[data-fig] { min-height: 300px; }
+[data-fig="wave"] { min-height: 260px; }
+[data-fig="next-token"] { min-height: 210px; }
+[data-fig="tokenizer"] { min-height: 150px; }
+[data-fig="entropy"] { min-height: 280px; }
+[data-fig="iso-cube"] { min-height: 320px; }
+[data-fig="conv-kernel"] { min-height: 240px; }
+[data-fig="attention-matrix"] { min-height: 300px; }

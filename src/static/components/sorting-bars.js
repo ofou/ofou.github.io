@@ -36,6 +36,7 @@
       ctx.fillText(`comparisons ${comps} · swaps ${swaps}`, 12, 16);
     };
     shuffle();
+    cv.redraw = draw;
     Fig.onScheme(draw);
     Fig.animate(cv, draw);
   });

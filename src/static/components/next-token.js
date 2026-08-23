@@ -58,11 +58,10 @@
       });
     };
     function renderBars() {
-      barWrap.innerHTML = "";
-      barWrap.appendChild(cv.el);
       chips();
       draw();
     }
+    cv.redraw = draw;
     function clickHandler(e) {
       if (!e.target.classList.contains("chip")) return;
       const w = e.target.textContent;
