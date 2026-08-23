@@ -1,5 +1,5 @@
-/* menu.js — inline menu reveal: the nav row expands below the masthead
-   with a brief WebGL dot-sweep wipe. No backdrop, no scroll lock. */
+/* menu.js — inline menu reveal: the nav strip expands on the masthead
+   line (brand · links · Menu), with a brief WebGL dot-sweep wipe. */
 (() => {
   const btn = document.getElementById("menu-btn");
   const panel = document.getElementById("site-menu");
@@ -12,6 +12,8 @@
     open = v;
     btn.setAttribute("aria-expanded", String(v));
     panel.classList.toggle("open", v);
+    panel.toggleAttribute("inert", !v);
+    panel.setAttribute("aria-hidden", String(!v));
     if (v && !reduced) startGL();
     else stopGL();
   }
@@ -68,20 +70,26 @@ void main(){
     const U = n => gl.getUniformLocation(pr, n);
 
     const dpr = Math.min(devicePixelRatio || 1, 2);
-    glCanvas.width = panel.clientWidth * dpr;
-    glCanvas.height = panel.clientHeight * dpr;
-    gl.viewport(0, 0, glCanvas.width, glCanvas.height);
+    const size = () => {
+      const w = Math.max(panel.scrollWidth, panel.clientWidth, 1);
+      const h = Math.max(panel.scrollHeight, panel.clientHeight, btn.clientHeight, 1);
+      glCanvas.width = Math.round(w * dpr);
+      glCanvas.height = Math.round(h * dpr);
+      gl.viewport(0, 0, glCanvas.width, glCanvas.height);
+      gl.uniform2f(U("u_res"), glCanvas.width, glCanvas.height);
+    };
     const hex = x => { x = x.trim(); const n = parseInt(x.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; };
     const s = getComputedStyle(document.documentElement);
     gl.uniform3fv(U("u_ink"), hex(s.getPropertyValue("--ink")));
     gl.uniform3fv(U("u_accent"), hex(s.getPropertyValue("--accent")));
-    gl.uniform2f(U("u_res"), glCanvas.width, glCanvas.height);
     gl.uniform1f(U("u_dpr"), dpr);
+    size();
 
     const t0 = performance.now();
     const DUR = 520;
     const frame = now => {
       if (!open || !glCanvas) return;
+      size();
       const x = Math.min(1, (now - t0) / DUR);
       const p = 1 - Math.pow(1 - x, 3);
       gl.uniform1f(U("u_prog"), p);

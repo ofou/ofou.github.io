@@ -1,42 +1,34 @@
 ---
 title: Vibe hacking Ableton's Push 3
-subtitle: Adding MIDI Support Without Documentation
+subtitle: Adding MIDI support without documentation
 date: 2026-01-12
 categories:
   - Hacking
+description: >
+  Reverse-engineering Push 3's MIDI, USB, and BGR565 display — dual ports,
+  a CC that means two things, and 60 fps video on a $2,000 instrument
+  Ableton never documented.
 ---
 
 # Vibe hacking Ableton's Push 3
 
-When Ableton shipped Push 3 in 2023, they delivered a powerful standalone instrument packed with new buttons, encoders, and a gorgeous color display. What they didn’t ship was documentation.
+When Ableton shipped Push 3 in 2023, they delivered a standalone instrument: new buttons, encoders, a colour display. What they did not ship was a spec.
 
 <!-- more -->
 
-For Push 2, developers had the excellent *Push 2 MIDI and Display Interface Manual*, which explained everything from LED control to display formats. For Push 3? Radio silence. So we did what any stubborn developer would do: fired up a MIDI monitor and started poking at the hardware.
+Push 2 had the *Push 2 MIDI and Display Interface Manual* — LEDs, pixel formats, the lot. Push 3 got silence. So we did the obvious stubborn thing: opened a MIDI monitor and poked the hardware.
 
-This post documents how we reverse engineered Push 3 and added full support to `push2-python`—and why this kind of work matters if you care about extensible hardware.
+This is how we reverse-engineered it, added support to `push2-python`, and why that kind of work still matters if you care about hardware you can actually extend.
 
----
+## The documentation desert
 
-## The Documentation Desert
+Push 3 is a $2,000 instrument. Sixty-four velocity-sensitive pads, a 960×160 colour display, MPE, deep MIDI. If you want a custom controller, a live visualisation, a MIDI processor, or a teaching tool, you are on your own. Every interaction is a guess until it isn't.
 
-Push 3 is a $2,000 instrument. You get sixty-four velocity-sensitive pads, a 960×160 color display, full MPE support, and deep MIDI capabilities. But if you want to build custom controllers, real-time visualizations, MIDI processors, or educational tools, you’re on your own.
+We rebuilt the protocol from a monitor log. Along the way: why two buttons share a CC, how the dual MIDI ports actually split, and why the display format is more annoying than it looks.
 
-No documentation means no clear path to custom integrations, alternative workflows, or experimental software. Every interaction becomes guesswork.
+## USB detection and Linux permissions
 
-We ended up reverse engineering the protocol from scratch. Along the way, we discovered why some buttons share control change numbers, how Push’s dual-port MIDI setup actually works, and why the display format matters more than you’d expect.
-
-Here’s what we learned.
-
----
-
-## USB Detection and Linux Permissions
-
-Everything starts with finding the device.
-
-USB devices identify themselves using vendor IDs (VIDs) and product IDs (PIDs)—sixteen-bit numbers assigned by the USB Implementers Forum. Ableton’s vendor ID is `0x2982`. Push 2 uses product ID `0x1967`; Push 3 uses `0x1969`.
-
-We try Push 3 first, then fall back to Push 2:
+USB devices identify themselves with a vendor ID and a product ID. Ableton is `0x2982`. Push 2 is `0x1967`; Push 3 is `0x1969`. Try 3 first, then fall back:
 
 ```python
 import usb.core
@@ -50,7 +42,7 @@ if usb_device is None:
     usb_device = usb.core.find(idVendor=ABLETON_VENDOR_ID, idProduct=PUSH2_PRODUCT_ID)
 ```
 
-On Linux, there’s an extra wrinkle. Kernel drivers often claim USB interfaces at boot, which prevents user-space programs from accessing them. To take control, you have to explicitly detach the kernel driver and claim the interface yourself:
+On Linux the kernel often claims the interface at boot, which locks out user space. You have to detach it:
 
 ```python
 if usb_device.is_kernel_driver_active(0):
@@ -58,48 +50,42 @@ if usb_device.is_kernel_driver_active(0):
 usb.util.claim_interface(usb_device, 0)
 ```
 
-macOS and Windows handle this differently, using driver models that don’t require manual detachment. That’s one of those undocumented platform quirks you only learn by failing first.
+macOS and Windows use driver models that do not need this. You learn that by failing on a Linux box first.
 
----
+## Two ports, two purposes
 
-## Two Ports, Two Purposes
+Push 3 exposes two MIDI ports over USB: **User** and **Live**.
 
-Push 3 exposes two MIDI ports over USB: the **User Port** and the **Live Port**.
+Full LED control — pads and buttons lighting the way you asked — needs the User Port. Live is what Ableton Live attaches to, and it appears to withhold LED access on purpose so the DAW and a user program do not fight.
 
-The User Port is required for full LED control—pads and buttons won’t light correctly without it. The Live Port is what Ableton Live connects to, and it appears to intentionally restrict LED access to avoid conflicts.
+Standalone tools should try User, then degrade to Live.
 
-This means any standalone tool needs fallback logic: try the User Port first, then gracefully degrade to the Live Port if necessary.
+The names are a mess, and they differ by OS. Python reports macOS as `Darwin`:
 
-Port naming also varies wildly by operating system:
-
-* **macOS**: “Ableton Push 3 User Port” / “Ableton Push 3 Live Port”
-* **Windows**: “MIDIIN2 (Ableton Push 3)” / “Ableton Push 3”
-* **Linux (ALSA)**: numeric suffixes (`:1` for User, `:0` for Live)
-
-All of this was discovered experimentally:
+- **macOS**: "Ableton Push 3 User Port" / "Ableton Push 3 Live Port"
+- **Windows**: "MIDIIN2 (Ableton Push 3)" / "Ableton Push 3"
+- **Linux (ALSA)**: numeric suffixes (`:1` User, `:0` Live)
 
 ```python
 import platform
 
 def is_push_midi_in_port_name(port_name, use_user_port=False):
-    if platform.system() == "macOS":
+    system = platform.system()
+    if system == "Darwin":
         return "User Port" in port_name if use_user_port else "Live Port" in port_name
-    elif platform.system() == "Windows":
+    if system == "Windows":
         return "MIDIIN2" in port_name if use_user_port else "Ableton Push 3" in port_name
-    else:  # Linux
-        suffix = ":1" if use_user_port else ":0"
-        return port_name.endswith(suffix)
+    suffix = ":1" if use_user_port else ":0"
+    return port_name.endswith(suffix)
 ```
 
----
+## MIDI detective work
 
-## MIDI Detective Work
+Without a spec, this is archaeology.
 
-With no spec, reverse engineering becomes archaeology.
+Control Change messages use controller numbers 0–127, each with a value 0–127. Some CCs are standardised (mod wheel, sustain); the rest are whoever built the box. Note On / Note Off carry a note number and a velocity.
 
-MIDI defines several message types. Control Change (CC) messages use controller numbers from 0 to 127, each with a value from 0 to 127. Some CCs are standardized (mod wheel, sustain pedal), while others are left to manufacturers. Note On and Note Off messages carry note numbers and velocities.
-
-Step one was building a raw MIDI logger. Step two was pressing *everything*:
+We logged the raw stream, then pressed everything:
 
 ```python
 import time
@@ -117,19 +103,17 @@ with mido.open_input("Ableton Push 3 User Port") as port:
         on_raw_midi(msg)
 ```
 
-Some mappings were straightforward. Add is CC 32. Swap is CC 33. Session, Save, Capture, Sets, Learn, Lock, New—each has its own CC number.
+Some mappings were boring in a good way. Add is CC 32. Swap is CC 33. Session, Save, Capture, Sets, Learn, Lock, New — each has a number.
 
-Then things got weird.
+Then it got weird.
 
----
+### The jog wheel shares a brain
 
-### The Jog Wheel Shares a Brain
+CC 88 does two jobs.
 
-CC 88 does double duty.
+Duplicate sends CC 88 with 127 on press and 0 on release. Jog-wheel rotation also sends CC 88: 1 for counter-clockwise, 65 for clockwise.
 
-The Duplicate button sends CC 88 with value 127 when pressed and 0 when released. But the Jog Wheel rotation also uses CC 88, sending 1 for counter-clockwise and 65 for clockwise.
-
-Same CC number. Completely different semantics. The only way to disambiguate is by inspecting the value range:
+Same controller number, different meaning. The only tell is the value:
 
 ```python
 def handle_cc_88(msg):
@@ -142,15 +126,11 @@ def handle_cc_88(msg):
         print(f"Duplicate {action}")
 ```
 
-Why do this? No idea. The documentation would have told us.
+Why? No idea. A manual would have said.
 
----
+### Touch and click are different
 
-### Touch and Click Are Different
-
-The D-Pad center button revealed another pattern.
-
-It’s touch-sensitive, so touching it sends **Note 13**. Clicking it sends **CC 91**. Same physical control, two completely different MIDI message types:
+The D-Pad centre is touch-sensitive. Touching it sends **Note 13**. Clicking it sends **CC 91**. One piece of plastic, two MIDI types:
 
 ```python
 def handle_dpad_center(msg):
@@ -160,15 +140,13 @@ def handle_dpad_center(msg):
         print("D-Pad Center clicked")
 ```
 
-Without exhaustively testing every interaction, this would have been easy to miss.
+If you only click, you never see the note. If you only graze it, you never see the CC.
 
----
+## Display hacking: BGR565 and frame rates
 
-## Display Hacking: BGR565 and Frame Rates
+The display wants **BGR565**: sixteen bits per pixel, red and blue swapped relative to the RGB565 everyone else uses.
 
-Push’s display expects pixels in **BGR565** format: sixteen bits per pixel, with red and blue swapped relative to the more common RGB565.
-
-If you send RGB565 directly, reds appear blue and blues appear red. Converting per pixel in Python tanks performance, so we wrote a vectorized NumPy converter:
+Send RGB565 and reds come out blue. A Python loop per pixel will not keep up, so we vectorized it:
 
 ```python
 import numpy
@@ -180,17 +158,15 @@ def rgb565_to_bgr565(rgb565_frame):
     return frame_r + frame_g + frame_b
 ```
 
-For video playback, we avoid Python entirely. FFmpeg outputs BGR565 directly, hardware-accelerated via VideoToolbox on macOS. Frames are streamed as raw bytes, wrapped in NumPy with zero-copy, and pushed straight to the display.
+For video we skip Python. FFmpeg emits BGR565 directly, hardware-accelerated through VideoToolbox on macOS. Frames arrive as raw bytes, wrap in NumPy with no copy, and go straight to the display.
 
-Result: smooth 60 fps video on a MIDI controller. Because why not.
+Result: 60 fps video on a MIDI controller.
 
----
+## Velocity to colour: 127 shades
 
-## Velocity to Color: 127 Shades
+Pads have 127 colours, one per velocity.
 
-Push pads support 127 colors—one for each velocity value.
-
-We map velocity to color using HSV instead of RGB. HSV is easier to reason about: hue controls color, saturation controls intensity, and value controls brightness. Hue sweeps from 0 to 0.85 (avoiding the red wrap-around), saturation stays maxed, and brightness ramps from 0.3 to 1.0 so low-velocity hits remain visible:
+HSV is easier to aim than RGB: hue is the colour, saturation the intensity, value the brightness. Hue runs 0–0.85 so it does not wrap back to red; saturation stays maxed; brightness starts at 0.3 so a ghosted hit still reads:
 
 ```python
 import colorsys
@@ -202,22 +178,20 @@ def velocity_to_rgb(velocity):
     return [int(c * 255) for c in colorsys.hsv_to_rgb(h, s, v_bright)]
 ```
 
-Now every pad strike produces a distinct color tied directly to how hard you hit it.
+Every strike gets a colour tied to how hard you hit it.
 
----
+## Why this matters
 
-## Why This Matters
+The hardware already does these things. The missing piece was the map:
 
-This work unlocks capabilities that the hardware clearly supports—but that aren’t officially documented:
+- Custom controllers and workflows
+- Real-time visualisations
+- MIDI processors and effects
+- Teaching and experimental tools
+- Talking to other hardware and software
 
-* Custom controllers and workflows
-* Real-time visualizations
-* MIDI processors and effects
-* Educational and experimental tools
-* Integration with other hardware and software
+Push 3 is a capable instrument. Writing the protocol down lowers the cost of the next person doing something Ableton did not design for.
 
-Push 3 is an extremely capable instrument. By documenting what we reverse engineered, we lower the barrier for other developers and expand what the device can do beyond its intended use.
+The code is in `push2-python`. Push 3 support works. The process also made the obvious point: with a real manual, more people would have shipped more things, with fewer late nights on CC 88.
 
-The code is complete, tested, and available in `push2-python`. Push 3 support works today. But the process made one thing painfully clear: with proper documentation, developers could build more, faster, and with fewer hacks.
-
-We’ve built the tools. Now it’s up to the community to decide what to build with them.
+The tools are there. What you build with them is the interesting part.

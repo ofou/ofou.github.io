@@ -1,6 +1,5 @@
 ---
 title: "A path to human-machine symbiosis"
-bibliography: ../../references.bib
 draft: true
 date: 2026-12-31
 ---

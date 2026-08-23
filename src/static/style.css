@@ -139,8 +139,8 @@ footer.site {
 header.site {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  flex-wrap: nowrap;
+  gap: 0.85rem;
   padding-block: 1.4rem 1.2rem;
   border-bottom: 1px solid var(--rule);
 }
@@ -150,33 +150,16 @@ header.site {
   font-size: 1.05rem;
   letter-spacing: 0.01em;
   text-decoration: none;
+  margin-inline-end: auto;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .brand:hover {
   color: var(--ink);
-}
-
-header.site nav {
-  display: none;
-}
-
-header.site nav a {
-  text-decoration: none;
-  color: var(--ink);
-  white-space: nowrap;
-}
-
-header.site nav a::before {
-  counter-increment: nav;
-  content: "0" counter(nav);
-  color: var(--mute);
-  margin-right: 0.55em;
-  font-size: 0.92em;
-}
-
-header.site nav a:hover,
-header.site nav a:hover::before {
-  color: var(--accent);
 }
 
 /* ---------- typography ---------- */
@@ -402,11 +385,11 @@ ul.index .meta {
 /* ---------- code ---------- */
 
 /* Verbatim text is a second voice, not decorated prose. Three rules
-   govern it here: the literal glyph is the whole message (nothing on
-   this site is syntax-highlighted, so shape is the only channel), the
-   grid must survive (a monospace that reflows or re-columns has lost
-   its one advantage over the serif), and the plate is recessed while a
-   keycap is raised. */
+   govern it here: the literal glyph carries the message (the highlighter
+   further down speaks in weight and one accent, never in hue, so shape
+   stays the channel that has to work), the grid must survive (a
+   monospace that reflows or re-columns has lost its one advantage over
+   the serif), and the plate is recessed while a keycap is raised. */
 
 code,
 kbd,
@@ -502,6 +485,111 @@ kbd::selection {
   color: var(--ink);
 }
 
+/* ---------- highlighted listings (@speed-highlight) ---------- */
+
+/* highlight.js appends the vendor theme to <head> at runtime, so it always
+   lands after this file and wins on source order. Every rule below is
+   therefore prefixed to outspecify `[class*=shj-lang-]` (0,1,0) rather
+   than relying on cascade position.
+
+   Two jobs. First, undo: the vendor sheet repaints the <code> child as a
+   white 12px-radius card in Consolas 16px/1.625 with its own border,
+   padding and margin, which nests a second box inside the wash plate and
+   goes badly wrong at night. Its `font` shorthand is the dangerous part —
+   per CSS Fonts it also resets font-feature-settings, so ligatures come
+   back on and the slashed zero switches off unless both are restated. */
+
+pre code[class*="shj-lang-"] {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  tab-size: inherit;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "clig" 0, "calt" 0, "zero" 1;
+}
+
+/* One scroll container, not two. The vendor puts `overflow-x: auto` on
+   its inner flex row, which would nest a second scroller inside the
+   `pre` that already scrolls — two tracks, and neither carrying the
+   overscroll and scrollbar treatment set above. */
+pre code[class*="shj-lang-"] > div {
+  overflow: visible;
+}
+
+/* Numbered listings are the textbook idiom, and they cost about four
+   columns of the eighty. The gutter is a hairline and a mute figure —
+   an index, not content — and it is unselectable so that copying a
+   listing yields the program and not a column of integers. */
+pre code[class*="shj-lang-"] .shj-numbers {
+  /* The vendor gives the code column `flex: 1`; without this the gutter
+     is the only item left that can absorb the shortfall, and the numbers
+     compress out of alignment with the lines they index. */
+  flex: none;
+  margin-right: 0.6em;
+  padding-right: 0.6em;
+  border-right: 1px solid var(--rule-fine);
+  color: var(--mute);
+  user-select: none;
+}
+
+pre code[class*="shj-lang-"] .shj-numbers div::before {
+  color: var(--mute);
+  opacity: 0.65;
+}
+
+/* Second job, colour. A printed listing has always distinguished its
+   parts with weight and italic, not hue, and this page has exactly one
+   pop of the spectrum to spend. So: keywords take a half-step of weight
+   (tracking --code-weight, so the night edition stays as restrained as
+   the day one), literals take the accent, comments recede to mute, and
+   everything else is simply ink. Nothing here is a colour the rest of
+   the site does not already use. */
+pre code[class*="shj-lang-"] .shj-syn-kwd,
+pre code[class*="shj-lang-"] .shj-syn-section {
+  color: inherit;
+  font-weight: calc(var(--code-weight) + 200);
+}
+
+pre code[class*="shj-lang-"] .shj-syn-str,
+pre code[class*="shj-lang-"] .shj-syn-num,
+pre code[class*="shj-lang-"] .shj-syn-bool {
+  color: var(--accent);
+}
+
+/* Mute alone carries the comment. The webfont is loaded upright only —
+   the vendor's italic would be a synthetic slant of a monospace, which
+   is worse than no italic at all. */
+pre code[class*="shj-lang-"] .shj-syn-cmnt {
+  color: var(--mute);
+  font-style: normal;
+}
+
+pre code[class*="shj-lang-"] .shj-syn-err {
+  color: var(--mute);
+}
+
+pre code[class*="shj-lang-"] .shj-syn-func,
+pre code[class*="shj-lang-"] .shj-syn-type,
+pre code[class*="shj-lang-"] .shj-syn-class,
+pre code[class*="shj-lang-"] .shj-syn-oper,
+pre code[class*="shj-lang-"] .shj-syn-var {
+  color: inherit;
+}
+
+/* The vendor's #bdf5 selection outspecifies the rule above it. */
+pre code[class*="shj-lang-"]::selection,
+pre code[class*="shj-lang-"] ::selection {
+  background: color-mix(in srgb, var(--accent) 24%, var(--paper));
+  color: var(--ink);
+}
+
 /* ---------- media ---------- */
 
 img,
@@ -582,7 +670,7 @@ td {
 
 th {
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -977,7 +1065,7 @@ footer.site a.handle:hover {
 
 .cv-when {
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--mute);
@@ -1024,7 +1112,7 @@ footer.site a.handle:hover {
 
 .cv-skill-name {
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--mute);
@@ -1077,11 +1165,11 @@ footer.site a.handle:hover {
     --rule-fine: rgba(0, 0, 0, 0.22);
   }
 
-  header.site nav,
+  .menu-btn,
+  .menu-inline,
   footer.site,
   .cv-actions,
-  .comments,
-  #scrollfx {
+  .comments {
     display: none;
   }
 
@@ -1137,9 +1225,13 @@ footer.site a.handle:hover {
   }
 
   /* The screen rule pins `white-space: pre` on the inner <code>, so the
-     wrap has to be undone there too or the listing prints clipped. */
+     wrap has to be undone there too or the listing prints clipped. The
+     highlighter's own `white-space: pre` outspecifies `pre code`, hence
+     the third selector — without it every coloured listing would print
+     with its right-hand half off the trim. */
   pre,
-  pre code {
+  pre code,
+  pre code[class*="shj-lang-"] {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
@@ -1237,16 +1329,7 @@ footer.site a.handle:hover {
   cursor: ew-resize;
 }
 
-.fig-control input[type="range"]::-moz-range-thumb {
-  width: 11px;
-  height: 11px;
-  background: var(--accent);
-  border: 0;
-  border-radius: 0;
-  cursor: ew-resize;
-}
-
-/* ---------- inline menu ---------- */
+/* ---------- inline menu (same masthead line) ---------- */
 
 .menu-btn {
   font-family: var(--mono);
@@ -1258,6 +1341,7 @@ footer.site a.handle:hover {
   border: 1px solid var(--rule);
   padding: 0.55em 1em;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .menu-btn:hover {
@@ -1265,41 +1349,41 @@ footer.site a.handle:hover {
   color: var(--accent);
 }
 
-header.site nav {
-  display: none;
-}
-
 .menu-inline {
+  position: relative;
   counter-reset: menu;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.4rem 1.4rem;
-  width: min(60ch, calc(100% - 3rem));
-  margin-inline: auto;
-  padding: 0.9rem 0 1.1rem;
-  border-bottom: 1px solid var(--rule-fine);
+  display: flex;
+  align-items: center;
+  gap: 1.05rem;
+  min-width: 0;
+  max-width: 0;
+  flex: 0 1 auto;
   overflow: hidden;
-  max-height: 0;
   opacity: 0;
-  padding-block: 0;
-  border-block: 0;
-  transition: max-height 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease, padding 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  transition: max-width 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
 }
 
 .menu-inline.open {
-  max-height: 5rem;
+  max-width: 28rem;
   opacity: 1;
-  padding-block: 0.9rem 1.1rem;
-  border-bottom: 1px solid var(--rule-fine);
+  pointer-events: auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.menu-inline.open::-webkit-scrollbar {
+  display: none;
 }
 
 .menu-inline a {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   text-decoration: none;
   color: var(--ink);
   position: relative;
   z-index: 1;
-  width: fit-content;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .menu-inline a:hover {
@@ -1310,10 +1394,10 @@ header.site nav {
   counter-increment: menu;
   content: "0" counter(menu);
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   letter-spacing: 0.13em;
   color: var(--mute);
-  margin-right: 0.7em;
+  margin-right: 0.45em;
   vertical-align: 0.12em;
 }
 
@@ -1322,6 +1406,17 @@ header.site nav {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+}
+
+@media (max-width: 36rem) {
+  .menu-inline {
+    gap: 0.8rem;
+  }
+
+  .menu-inline a::before {
+    content: none;
+    margin: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

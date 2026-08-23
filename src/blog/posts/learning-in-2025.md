@@ -1,26 +1,27 @@
 ---
 title: "Things you should be reading about AI in 2025"
 date: 2025-01-01
-bibliography: ../../references.bib
 categories:
   - Books
 description: >
-  If your focus is exploring the intersection of neuroscience and AI. I'll be diving deep into reading material and codebases to better understand both the natural and artificial cognition. The following lists outline the books, textbooks, and codebases that I'm currently learning and probably you should too if you are interested in AI, more than just the hype.
+  A reading list for people who want to understand AI rather than just use it:
+  textbooks over papers, neuroscience next to machine learning, and the
+  codebases that actually show up in hiring loops.
 ---
 
 # Things you should be reading about AI in 2025
 
-This year, my focus is on exploring the intersection of AI, Machine Learning, and Neuroscience. I'll be diving deep into [reading material](https://www.goodreads.com/user/year_in_books/2025/6440247) and codebases to better understand both the natural and artificial cognition. The following lists outline the books, textbooks, and code that I'm currently learning from and probably you should too if you are interested in AI, more than just the hype and actually care about the future of the field.
+This year I am reading across AI, machine learning, and neuroscience. The aim is to understand natural and artificial cognition well enough to do useful work, not to keep up with the feed. What follows is what I am actually reading and the code I am actually opening — with a [Goodreads log](https://www.goodreads.com/user/year_in_books/2025/6440247) if you want the raw list.
 
 <!-- more -->
 
-I compiled the [most cited](https://analytics.opensyllabus.org/singleton/fields?id=15) books and textbooks from top UK/US schools to see if I can get a sense of what I should be learning in a Master's program and meaningfully try to contribute to the field.
+I started from the [most-cited textbooks](https://analytics.opensyllabus.org/singleton/fields?id=15) in UK and US computer-science programmes, then asked what a master's student would need in order to contribute rather than just pass exams.
 
-It's pretty easy to get lost in the [countless number of papers](https://www.latent.space/p/2025-papers) you have to read to catch up with the latest research/engineering in AI right now. I default to the basics instead and I'm reading textbooks over papers lately. If you really want to be up to date with the latest research, it should be something you personally care about, you might want to head to [Emergent Mind](https://www.emergentmind.com/papers) and check out all the papers that people are sharing right now (on X, Reddit, HN, etc.) because the space is moving so fast that as of today, [this text might be deprecated too](https://x.com/karpathy/status/1935077692258558443). But I won't advise people to start reading papers, because it's a lot of work and you'll probably get lost in a sea of noise.
+It is easy to drown in [this year's papers](https://www.latent.space/p/2025-papers). I have been defaulting to textbooks. Papers are for a question you already care about; [Emergent Mind](https://www.emergentmind.com/papers) is a decent firehose if you insist, with the usual caveat that [the ground moves](https://x.com/karpathy/status/1935077692258558443). I would not start there. You will spend a month in noise.
 
 ## Books
 
-I'd advice you to start with the following books, which are a great starting point to fill your appetite for the field, and get a sense of the big picture, and where all we're going.
+Start here if you want the map before the math: what the field thinks it is doing, and where it might go.
 
 <div class="book-grid">
     <a href="#fn:bostrom2014paths" title="Superintelligence: Paths, Dangers, Strategies">
@@ -70,12 +71,12 @@ I'd advice you to start with the following books, which are a great starting poi
   <a href="#fn:chen2021ai2041" title="AI 2041: Ten Visions for Our Future">
 <!-- [@chen2021ai2041] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1615899279i/56377201.jpg" alt="AI 2041: Ten Visions for Our Future" />
-  </a>  
+  </a>
 </div>
 
 ## Textbooks
 
-Once you have a grasp of the big picture, you might want to get a glimpse of the technical aspects. These books require minimal prerequisites and focus on concepts rather than heavy mathematics, and are also succinct, which makes them great for a quick read.
+Once the map is in your head, these are short and conceptual. Little math, little padding.
 
 <div class="book-grid">
   <a href="#fn:burkov2019hundred" title="The Hundred-Page Machine Learning Book">
@@ -96,7 +97,7 @@ Once you have a grasp of the big picture, you might want to get a glimpse of the
   </a>
 </div>
 
-For those with some programming experience and basic math background. These books are a great starting point to understand the technical aspects of AI, and build a solid intuition before heading to the advanced level.
+If you already write code and remember some linear algebra, these build intuition before the graduate books.
 
 <div class="book-grid">
   <a href="#fn:deisenroth2020mathematics" title="Mathematics for Machine Learning">
@@ -133,9 +134,9 @@ For those with some programming experience and basic math background. These book
   </a>
 </div>
 
-Once you get at least comfortable with the math of machine learning [@deisenroth2020mathematics], you might be interested in tackling these, which I found to be highly recommended by many, many Master's and PhD curricula. I also found that some AI/ML programs might benefit a lot from borrowing inspiration from classic neuroscience program textbooks, because we've seen fruitful results in the past from this cross-pollination. Without going into specifics, from interpretability to reinforcement learning, there's much to learn from neuroscience.
+After you are comfortable with the math in *Mathematics for Machine Learning* [@deisenroth2020mathematics], these are the titles that keep showing up on master's and PhD reading lists. I would steal from neuroscience curricula too. Interpretability and reinforcement learning have both taken real ideas from that side of campus; the traffic should go both ways.
 
-One small thing to note is that instead of the classic _Pattern Recognition and Machine Learning_ [@bishop2006pattern] mentioned everywhere, I prefer the newer version from the same author and his son _Deep Learning_ [@bishop2024deep], which is more up-to-date and includes more recent research that better reflects the state of the art.
+One substitution: instead of the ubiquitous *Pattern Recognition and Machine Learning* [@bishop2006pattern], I prefer Bishop's later *Deep Learning* [@bishop2024deep], written with his son. Same mind, current field.
 
 <div class="book-grid">
   <a href="#fn:aiebook2025" title="AI Engineering: Building Applications with Foundation Models">
@@ -207,33 +208,31 @@ One small thing to note is that instead of the classic _Pattern Recognition and 
 
 ## Code
 
-Besides reading material, I also think it's important to get hands-on coding experience with codebases and frameworks that are currently being used in the industry. I've compiled a list of some of the most popular projects in the field that are mentioned in many job postings and are used by top AI labs. These are the ones you should be looking at:
+Reading is not enough. These are the libraries that show up in hiring loops and in the labs people actually use:
 
-- [PyTorch] by Meta
-- [XLA] & [JAX] by Google DeepMind
-- Transformers[@wolf-etal-2020-transformers] by [Hugging Face]
-- [MLX][@mlx2023], [MLX examples] & [axlearn] by Apple
-- [tinygrad] by [tiny corp]
-- [ggml] & [llama.cpp] by Georgi Gerganov
-- [Triton] by OpenAI[@tillet2019triton]
-- [CUDA] by Nvidia & [GPU Puzzles] by Sasha Rush
+- [PyTorch] (Meta)
+- [XLA] and [JAX] (Google DeepMind)
+- Transformers [@wolf-etal-2020-transformers] ([Hugging Face])
+- [MLX] [@mlx2023], [MLX examples], and [axlearn] (Apple)
+- [tinygrad] ([tiny corp])
+- [ggml] and [llama.cpp] (Georgi Gerganov)
+- [Triton] (OpenAI) [@tillet2019triton]
+- [CUDA] (NVIDIA) and [GPU Puzzles] (Sasha Rush)
 
-And also some educational implementations:
+And the teaching implementations, which are often the right first clone:
 
-- [nanoGPT], [micrograd], & [llm.c] by Andrej Karpathy
-- [x-transfomers] by Phil Wang (aka lucidrains)
+- [nanoGPT], [micrograd], and [llm.c] (Andrej Karpathy)
+- [x-transformers] (Phil Wang / lucidrains)
 
-If you're not sure where to start, I'd recommend starting with [tinygrad], [MLX] and [MLX examples], which are minimalistic and easy to understand, and you can also run them using your own hardware if you own a Mac.
+If you do not know where to start and you have a Mac, clone [tinygrad], [MLX], and the [MLX examples]. They are small enough to read, and they run on the machine you already own.
 
-If you get a strong foundation with all the contents above, you might be in high demand in the industry. If you have any questions or suggestions for this post, feel free to reach out to me on [X](https://x.com/ofou), or suggest edits on [GitHub](https://github.com/ofou/ofou.github.io/blob/main/src/blog/posts/learning-in-2025.md).
-
-**Happy learning!**
+Work through the list and you will have a foundation most job posts are quietly asking for. Questions or additions: [X](https://x.com/omarnomad), or a pull request on [GitHub](https://github.com/ofou/ofou.github.io/blob/main/src/blog/posts/learning-in-2025.md).
 
 [tinygrad]: https://github.com/tinygrad/tinygrad
 [ggml]: https://github.com/ggerganov/ggml
 [PyTorch]: https://github.com/pytorch/pytorch
 [JAX]: https://github.com/jax-ml/jax
-[XLA]: https://github.com/pytorch/xla
+[XLA]: https://github.com/openxla/xla
 [Triton]: https://github.com/triton-lang/triton
 [CUDA]: https://github.com/NVIDIA/cuda-samples
 [GPU Puzzles]: https://github.com/srush/GPU-Puzzles
@@ -246,4 +245,4 @@ If you get a strong foundation with all the contents above, you might be in high
 [llama.cpp]: https://github.com/ggerganov/llama.cpp
 [tiny corp]: https://tinygrad.org
 [Hugging Face]: https://github.com/huggingface
-[x-transfomers]: https://github.com/lucidrains/x-transformers
+[x-transformers]: https://github.com/lucidrains/x-transformers

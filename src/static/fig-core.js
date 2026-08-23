@@ -138,17 +138,26 @@
     cvState.el.style.border = "1px solid var(--rule-fine)";
   }
 
+  const pending = Object.create(null);
+
   async function mount(el) {
     if (el.__booted) return;
     el.__booted = true;
-    const name = el.dataset.fig;
+    const name = el.dataset.fig || "";
+    if (!/^[a-z0-9-]+$/.test(name)) {
+      el.dataset.error = "unknown component: " + name;
+      return;
+    }
     if (!registry[name]) {
-      await new Promise(res => {
-        const s = document.createElement("script");
-        s.src = "/static/components/" + name + ".js";
-        s.onload = s.onerror = res;
-        document.head.appendChild(s);
-      });
+      if (!pending[name]) {
+        pending[name] = new Promise(res => {
+          const s = document.createElement("script");
+          s.src = "/static/components/" + name + ".js";
+          s.onload = s.onerror = res;
+          document.head.appendChild(s);
+        });
+      }
+      await pending[name];
     }
     const factory = registry[name];
     if (!factory) { el.dataset.error = "unknown component: " + name; return; }

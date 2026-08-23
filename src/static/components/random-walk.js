@@ -13,7 +13,7 @@
     reseedBtn.style.cursor = "pointer";
     reseedBtn.addEventListener("click", () => { seedBase = (seedBase * 7 + 3) % 100000; walks(); draw(); });
     el.appendChild(reseedBtn);
-    let paths = [];
+    let paths = [], pathW = cv.w;
     function walks() {
       paths = [];
       for (let n = 0; n < 8; n++) {
@@ -28,9 +28,11 @@
         }
         paths.push(pts);
       }
+      pathW = cv.w;
     }
     const draw = () => {
       const P = Fig.palette();
+      if (cv.w !== pathW) { walks(); }
       ctx.clearRect(0, 0, cv.w, cv.h);
       paths.forEach((pts, i) => {
         ctx.strokeStyle = i === 0 ? P.accent : P.ink;

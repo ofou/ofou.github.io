@@ -1,0 +1,76 @@
+/*
+ * Custom giscus theme matching the olivares.cl palette.
+ * Loaded via data-theme="https://olivares.cl/static/giscus.css".
+ * Light palette: paper #f6f5f1 · ink #1a1917 · accent #2d4fa1 · wash #ecebe5
+ * Dark palette:  paper #131311 · ink #dcd8ce · accent #7e9ce6 · wash #1e1d1a
+ */
+
+/* ---- Light (default) -------------------------------------------------- */
+main {
+  color-scheme: light;
+
+  /* Surfaces */
+  --color-canvas-default: #f6f5f1;
+  --color-canvas-overlay: #ffffff;
+  --color-canvas-inset: #ecebe5;
+  --color-canvas-subtle: #ecebe5;
+
+  /* Text */
+  --color-fg-default: #1a1917;
+  --color-fg-muted: #5c5952;
+  --color-header-text: #1a1917;
+
+  /* Accent */
+  --color-accent-fg: #2d4fa1;
+  --color-accent-emphasis: #2d4fa1;
+  --color-attention-subtle: rgba(45, 79, 161, 0.15);
+
+  /* Buttons */
+  --color-btn-text: #1a1917;
+  --color-btn-primary-hover-bg: #243e7d;
+  --color-btn-primary-hover-border: #243e7d;
+  --color-btn-primary-selected-bg: #1a2f63;
+  --color-social-reaction-bg-hover: #ecebe5;
+
+  /* Borders */
+  --color-card-border: rgba(26, 25, 23, 0.1);
+  --color-border-default: rgba(26, 25, 23, 0.15);
+  --color-border-muted: rgba(26, 25, 23, 0.1);
+  --color-neutral-muted: rgba(26, 25, 23, 0.2);
+}
+
+/* ---- Dark (prefers-color-scheme) --------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  main {
+    color-scheme: dark;
+
+    /* Surfaces */
+    --color-canvas-default: #131311;
+    --color-canvas-overlay: #1e1d1a;
+    --color-canvas-inset: #1e1d1a;
+    --color-canvas-subtle: #1e1d1a;
+
+    /* Text */
+    --color-fg-default: #dcd8ce;
+    --color-fg-muted: #948f84;
+    --color-header-text: #dcd8ce;
+
+    /* Accent */
+    --color-accent-fg: #7e9ce6;
+    --color-accent-emphasis: #7e9ce6;
+    --color-attention-subtle: rgba(126, 156, 230, 0.15);
+
+    /* Buttons */
+    --color-btn-text: #dcd8ce;
+    --color-btn-primary-hover-bg: #556fb0;
+    --color-btn-primary-hover-border: #556fb0;
+    --color-btn-primary-selected-bg: #3d5290;
+    --color-social-reaction-bg-hover: #1e1d1a;
+
+    /* Borders */
+    --color-card-border: rgba(220, 216, 206, 0.1);
+    --color-border-default: rgba(220, 216, 206, 0.15);
+    --color-border-muted: rgba(220, 216, 206, 0.1);
+    --color-neutral-muted: rgba(220, 216, 206, 0.2);
+  }
+}

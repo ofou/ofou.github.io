@@ -5,7 +5,7 @@ Personal site. Markdown in `src/`, one build script, no framework.
 ```sh
 pip install -r requirements.txt
 python build.py            # → _site/
-python build.py --serve    # → http://localhost:8000
+python build.py --serve    # → http://localhost:8000, rebuilds on change
 ```
 
 ## Layout
@@ -16,7 +16,7 @@ python build.py --serve    # → http://localhost:8000
 | `src/index.md`       | Home                                                           |
 | `src/blog/posts/`    | Posts → `/blog/YYYY/MM/DD/<slug-of-title>/`                    |
 | `src/projects/`      | Projects → `/projects/<filename>/`                             |
-| `src/static/`        | CSS, images, PDFs — copied verbatim to `/static/`              |
+| `src/static/`        | CSS, images, PDFs — copied to `/static/` (`_*` skipped; cv/thesis at site root) |
 | `src/references.bib` | BibTeX for `[@key]` citations                                  |
 
 ## Authoring
@@ -46,6 +46,10 @@ with `#fn:<key>` anchors.
 
 ## Deploy
 
-Every push to `main` runs `.github/workflows/deploy.yml`, which builds and
-publishes `_site/` to GitHub Pages. Repository setting **Pages → Source** must
-be **GitHub Actions**.
+`Dockerfile` is a two-stage image: `python build.py`, then Granian serving
+`_site/` through `server.py` on Cloud Run.
+
+```sh
+docker build -t olivares.cl .
+docker run --rm -p 8080:8080 olivares.cl
+```

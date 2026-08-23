@@ -1,56 +1,59 @@
 ---
 title: Introduction to Tinygrad
-subtitle: A guide to Tinygrad
+subtitle: Lazy tensors, UOps, and the rewrite engine
 date: 2025-06-10
 categories:
   - Machine Learning
+description: >
+  A walk through Tinygrad's actual model: devices, lazy tensors, UOps,
+  realization, autodiff, and the rewrite engine that turns t + 3 + 4 into + 7.
 ---
 
 # Introduction to Tinygrad
 
-Understanding Tinygrad can be hard, even Karpathy is a bit confused about it. This guide is my first attempt to navigate Tinygrad by synthesizing insights from official documentation and various livestreams.
+Tinygrad is hard to read, even if you already live in autograd. Karpathy has said as much. This is my first pass at it: documentation, livestreams, and the parts of the source that actually matter, in one place.
 
 <!-- more -->
 
-<iframe width="720" height="320" src="https://www.youtube.com/embed/QUry9dHC-bk" frameborder="0" allowfullscreen></iframe>
+<iframe width="720" height="320" src="https://www.youtube.com/embed/QUry9dHC-bk" title="Tinygrad overview" loading="lazy" allowfullscreen></iframe>
 
 ## Why Tinygrad?
 
-Tinygrad seems different from other mature frameworks such as [PyTorch], [JAX], and [TensorFlow] etc. But to me, what it seems appealing is that they want to democratize the petaflop as their core mission.
+It does not look like [PyTorch], [JAX], or [TensorFlow], and that is the point. The stated mission is to democratize the petaflop: a compiler small enough that a handful of people can hold the whole thing in their heads.
 
 [PyTorch]: https://pytorch.org/
 [JAX]: https://jax.readthedocs.io/en/latest/index.html
 [TensorFlow]: https://www.tensorflow.org/
 
-This is what I like about it:
+What I like:
 
-1. Fully open source (_even its hiring process, but that's another story_)
+1. Fully open source — including the hiring process, which is a story of its own
 2. No dependencies
 3. Multiple backends
-4. And a very tiny codebase
+4. A genuinely small codebase
 
-On the other hand, what I still don't like:
+What I still don't:
 
-1. Steep learning curve, and not noob friendly
-2. Hard to read code
-3. Not the best documentation, and some broken examples
-4. It's not stable yet, but soon will be
+1. Steep, and not kind to beginners
+2. The source is dense
+3. Docs lag; some examples are broken
+4. The API is not stable yet
 
-But let's start coding.
+That is enough throat-clearing. Here is the model.
 
 ## Installation
 
-Tinygrad is designed to be hackable from the ground up. The recommended installation uses the editable `-e` flag from pip, allowing you to edit the source code and see changes right away.
+Tinygrad is meant to be hacked. Install it editable so a change in the clone is a change in the import:
 
 ```bash
-git clone https://github.com/Tinygrad/Tinygrad.git
-cd Tinygrad
+git clone https://github.com/tinygrad/tinygrad.git
+cd tinygrad
 python3 -m pip install -e .
 ```
 
 ## The Tensor
 
-Let's start with something familiar, thanks to Pytorch-like API, creating and manipulating tensors:
+The surface looks like PyTorch on purpose:
 
 ```python
 from tinygrad import Tensor
@@ -67,11 +70,11 @@ result = t + 3 + 4
 print(result.tolist())   # [8, 10, 12, 14]
 ```
 
-This looks familiar if you've used PyTorch or NumPy. But Tinygrad is doing something fundamentally different under the hood, let's explore what makes it special.
+Familiar API, different machine underneath.
 
 ## The Devices
 
-Tinygrad's first key concept is the Device, where Tensors are stored and compute is executed. There are multiple devices supported, including CPU, CUDA, METAL, and more. For example, on my Apple Silicon macbook, the default device is METAL:
+A Device is where a tensor lives and where kernels run: CPU, CUDA, METAL, and others. On Apple Silicon the default is METAL:
 
 ```python
 from tinygrad import Device
@@ -79,18 +82,18 @@ from tinygrad import Device
 print(Device.DEFAULT)  # On Apple Silicon Mac: "METAL"
 ```
 
-Tinygrad auto-detects the best available device on your system and makes it the default. This could be METAL (Apple Silicon), CUDA (NVIDIA), CPU, or other supported backends. The device abstraction allows the same code to run across different hardware.
-
-You can override the default device:
+Tinygrad picks the fastest backend it can see. You can override it:
 
 ```python
 Device.DEFAULT = "CPU"
 print(Device.DEFAULT)  # "CPU"
 ```
 
+The same Python then runs on whatever you pointed it at.
+
 ## Lazy Evaluation
 
-Here's where Tinygrad becomes interesting. Let's examine what we actually created:
+Nothing has been computed yet:
 
 ```python
 from tinygrad import Tensor, dtypes
@@ -106,19 +109,17 @@ print(t)
 # <Tensor <UOp CPU (4,) int (<Ops.COPY: 7>, None)> on CPU with grad None>
 ```
 
-_This Tensor has not been computed yet. Tinygrad is lazy - it builds a computational specification rather than immediately executing operations. The Tensor contains a chain of UOPs (micro-operations) that specify how to compute it when needed._
+Tinygrad is lazy. A Tensor is a *specification* of work — a chain of UOps — not a buffer of results. Execution waits until you ask.
 
 ## The UOP
 
-UOPs (micro-operations) are the core specification language in Tinygrad. They are immutable and form a [DAG] (Directed Acyclic Graph). Each UOP has an operation type, dtype, arguments, and source dependencies.
-
-[DAG]: https://en.wikipedia.org/wiki/Directed_acyclic_graph
+UOps (micro-operations) are the IR. They are immutable and form a [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph). Each node has an op, a dtype, an argument, and sources.
 
 ```python
 print(t.uop)
 ```
 
-You'll see something like:
+You get something like:
 
 ```python
 UOp(Ops.COPY, dtypes.int, arg=None, src=(
@@ -128,7 +129,7 @@ UOp(Ops.COPY, dtypes.int, arg=None, src=(
   UOp(Ops.DEVICE, dtypes.void, arg='CPU', src=()),))
 ```
 
-This UOP tree specifies a COPY operation from a BUFFER on the PYTHON device (where our Python list `[1,2,3,4]` lives) to the CPU device. The UNIQUE identifier ensures unambiguous reference to this specific buffer.
+That tree is a COPY from a BUFFER on the PYTHON device (the list `[1, 2, 3, 4]`) onto CPU. The UNIQUE id pins that buffer so nothing else can be confused with it.
 
 ```mermaid
 flowchart LR
@@ -146,14 +147,14 @@ flowchart LR
 
 ## Realization
 
-To execute the computational specification, we use the `realize()` method:
+`realize()` runs the spec:
 
 ```python
 t.realize()
 print(t.uop)
 ```
 
-After realization, the UOP changes fundamentally:
+After that, the COPY is gone. You are looking at a BUFFER:
 
 ```python
 UOp(Ops.BUFFER, dtypes.int, arg=4, src=(
@@ -171,18 +172,18 @@ flowchart LR
     A --> C
 ```
 
-The COPY operation has been replaced by a simple BUFFER reference. The UNIQUE identifier changed from `arg=0` to `arg=1`, indicating the data now exists as a new computational artifact on the target device.
+UNIQUE moved from `arg=0` to `arg=1`: the data now exists as a new object on the target device.
 
 ## Operations build computation graphs
 
-Let's see how operations create more complex graphs:
+Arithmetic is more graph:
 
 ```python
 t_times_2 = t * 2
 print(t_times_2.uop)
 ```
 
-This creates a UOP tree with a MUL operation. What appears as simple scalar multiplication becomes an explicit broadcasting specification:
+Scalar multiply becomes an explicit broadcast:
 
 ```mermaid
 flowchart LR
@@ -205,9 +206,7 @@ flowchart LR
     H --> D
 ```
 
-**Understanding Broadcasting**: The scalar `2` is transformed through RESHAPE and EXPAND operations to match our Tensor's shape. This makes the computational intent explicit and optimizable.
-
-We can verify the result:
+The `2` is RESHAPEd and EXPANDed to `(4,)`. Broadcasting is not a hidden NumPy trick here; it is a node the rewrite engine can see and fold.
 
 ```python
 assert t_times_2.tolist() == [2, 4, 6, 8]
@@ -215,7 +214,7 @@ assert t_times_2.tolist() == [2, 4, 6, 8]
 
 ## Smart Deduplication
 
-UOPs are both immutable and globally unique, leading to elegant computational deduplication:
+UOps are immutable and globally unique, so identical specs are the same object:
 
 ```python
 A = t * 4
@@ -228,7 +227,7 @@ assert A is not B
 assert A.uop is B.uop
 ```
 
-When we realize one Tensor, both benefit from the shared computation:
+Realize one, and the other is already done:
 
 ```python
 A.realize()
@@ -241,7 +240,7 @@ print(B.tolist())  # [4, 8, 12, 16] - no computation needed
 
 ## Automatic Differentiation
 
-Tinygrad includes automatic differentiation that operates on the same UOP principles. Let's see gradients in action:
+Gradients are the same machinery. For $y = x^2 + 3x + 1$:
 
 ```python
 x = Tensor([2.0], requires_grad=True)
@@ -252,15 +251,11 @@ print(x.item()) # 2.0
 print(y.item()) # 4 + 6 + 1 = 11
 ```
 
-For the function $y = x^2 + 3x + 1$, the derivative is:
-
 $$\frac{dy}{dx} = 2x + 3$$
 
-At our input value $x = 2$:
+At $x = 2$:
 
 $$\frac{dy}{dx}\bigg|_{x=2} = 2(2) + 3 = 7$$
-
-Now let's compute the gradient using Tinygrad's automatic differentiation:
 
 ```python
 grad, = loss.gradient(x)
@@ -269,7 +264,7 @@ print(grad.item()) # 7.0
 
 ### Chain Rule
 
-Tinygrad automatically applies the chain rule:
+Tinygrad applies the chain rule without being asked. For $z = \log(x^2 + 1)$:
 
 ```python
 x = Tensor([2.0], requires_grad=True)
@@ -280,18 +275,9 @@ print(x.item()) # 2.0
 print(z.item()) # log(2^2 + 1) = log(5) ≈ 1.6094378232955933
 ```
 
-For the composite function $z = \log(x^2 + 1)$, we need to apply the chain rule:
-
-1. Let $z = \log(x^{2}+1)$.  
-   Set $g(x)=x^{2}+1$. Then $z = \log(g(x))$.
-
-2. Apply the chain rule:  
-   $\frac{dz}{dx} = \frac{1}{g(x)} \cdot g'(x) = \frac{1}{x^2+1} \cdot 2x = \frac{2x}{x^2+1}$
-
-3. Evaluate at $x=2$:  
-   $\frac{dz}{dx}|_{x=2} = \frac{2 \cdot 2}{2^2+1} = \frac{4}{5} = 0.8$
-
-Tinygrad handles all the chain rule complexity automatically:
+1. Let $z = \log(x^{2}+1)$. Set $g(x)=x^{2}+1$, so $z = \log(g(x))$.
+2. $\frac{dz}{dx} = \frac{1}{g(x)} \cdot g'(x) = \frac{2x}{x^2+1}$
+3. At $x=2$: $\frac{dz}{dx} = \frac{4}{5} = 0.8$
 
 ```python
 grad, = loss.gradient(x)
@@ -300,7 +286,7 @@ print(grad.item()) # 0.8
 
 ## Graph Optimization and Kernel Generation
 
-Tinygrad's power lies in its graph rewrite system. Let's see optimization in action:
+The interesting part is the rewrite. Start with `t + 3 + 4`:
 
 ```python
 t = Tensor([1, 2, 3, 4])
@@ -343,14 +329,14 @@ flowchart LR
     N --> K
 ```
 
-The initial UOP tree shows two separate ADD operations. But when we prepare for kernel generation:
+Two ADD nodes. Then kernelize:
 
 ```python
 t_plus_3_plus_4.kernelize()
 print(t_plus_3_plus_4.uop)
 ```
 
-The graph rewrite engine has optimized this to add 7 directly, demonstrating constant folding:
+Constant folding turns `+ 3 + 4` into `+ 7`:
 
 ```mermaid
 flowchart LR
@@ -383,7 +369,7 @@ flowchart LR
     J --> L
 ```
 
-We can extract and examine the kernel AST:
+The kernel AST after rewrite:
 
 ```python
 kernel_ast = t_plus_3_plus_4.uop.src[1].arg.ast
@@ -418,11 +404,11 @@ flowchart LR
     H --> E
 ```
 
-This shows the final optimized computation graph that will be compiled to device code.
+That graph is what gets compiled to device code.
 
 ### Generated Code
 
-With `DEBUG=4`, we can see the actual generated kernel code:
+`DEBUG=4` prints the kernel. After optimization:
 
 ```c
 void E_4n2(int* restrict data0, int* restrict data1) {
@@ -437,7 +423,7 @@ void E_4n2(int* restrict data0, int* restrict data1) {
 }
 ```
 
-When running with `DEBUG=2`, the `4` appears in yellow to indicate it's been upcasted. Running with `NOOPT=1` will show the unoptimized code with a loop:
+`DEBUG=2` paints the `4` yellow because it was upcasted. `NOOPT=1` keeps the loop:
 
 ```c
 void E_4n2(int* restrict data0, int* restrict data1) {
@@ -450,41 +436,31 @@ void E_4n2(int* restrict data0, int* restrict data1) {
 
 ## Development and Debugging Tools
 
-### Debug Flags
+Useful flags:
 
-Tinygrad provides extensive debugging capabilities:
+- `DEBUG=2` — data movement and kernel execution
+- `DEBUG=4` — generated kernel code
+- `VIZ=1` — web graph-rewrite explorer
+- `NOOPT=1` — skip optimizations
 
-- `DEBUG=2` - Shows data movement and kernel execution
-- `DEBUG=4` - Shows generated kernel code
-- `VIZ=1` - Launches web-based graph rewrite explorer
-- `NOOPT=1` - Disables optimizations for debugging
+They compose in the shell: `DEBUG=2 CPU=1 python docs/ramp.py`.
 
-### Color Coding System
+Debug colours:
 
-Tinygrad uses a color system in debug output to indicate optimization states:
+- **Blue**: global ops (`ADD`)
+- **Light blue**: local ops (`COPY`)
+- **Red**: reductions (`SUM`)
+- **Yellow**: upcast (`EXPAND`)
+- **Purple**: unroll (`UNROLL`)
+- **Green**: groups (`GROUP`)
 
-- **Blue**: Global operations (e.g. `ADD`)
-- **Light Blue**: Local operations (e.g. `COPY`)
-- **Red**: Reduce operations (e.g. `SUM`)
-- **Yellow**: Upcasted operations (e.g. `EXPAND`)
-- **Purple**: Unrolled operations (e.g. `UNROLL`)
-- **Green**: Group operations (e.g. `GROUP`)
-
-### Visual Graph Explorer
-
-You can explore Tinygrad's graph rewriting visually:
-
-```bash
-VIZ=1 python ramp.py
-```
-
-This launches a web-based graph rewrite explorer where you can see UOP transformations in real-time.
+`VIZ=1 python ramp.py` opens the rewrite explorer so you can watch UOps change instead of staring at dumps.
 
 ## Advanced Topics
 
 ### Low-Level UOP Construction
 
-For complete understanding, you can construct UOPs directly:
+You can build UOps by hand:
 
 ```python
 from tinygrad import dtypes
@@ -502,8 +478,6 @@ a_plus_b = a + b
 print(a_plus_b)
 ```
 
-This results in a UOP that adds two constants:
-
 ```python
 UOp(Ops.ADD, dtypes.int, arg=None, src=(
   x0:=UOp(Ops.CONST, dtypes.int, arg=2, src=()),
@@ -512,7 +486,7 @@ UOp(Ops.ADD, dtypes.int, arg=None, src=(
 
 ### Pattern Matching and Graph Rewriting
 
-Tinygrad's graph rewrite engine uses pattern matching for optimizations:
+Rewrites are pattern matchers:
 
 ```python
 from tinygrad.uop.ops import graph_rewrite, UPat, PatternMatcher
@@ -529,7 +503,7 @@ a_plus_b_simplified = graph_rewrite(a_plus_b, simple_pm)
 print(a_plus_b_simplified)  # UOp(Ops.CONST, dtypes.int, arg=4, src=())
 ```
 
-Syntactic sugar makes patterns more readable:
+There is sugar for the same idea:
 
 ```python
 simpler_pm = PatternMatcher([
@@ -541,33 +515,13 @@ assert graph_rewrite(a_plus_b, simple_pm) is graph_rewrite(a_plus_b, simpler_pm)
 
 ## Performance and Training
 
-### Performance Expectations
+With `BEAM=2`, Tinygrad is competitive today, and often ahead of PyTorch on unoptimized work, on AMD, and in training — about 20% faster than PyTorch on AMD in the HLBC implementation, if you believe their numbers.
 
-You should expect competitive performance today. With `BEAM=2` optimization, Tinygrad often outperforms PyTorch on:
+There is no `trainer.fit()`. `examples/beautiful_mnist.py` is a complete MNIST trainer: everything you need, nothing you don't.
 
-- Unoptimized workloads
-- AMD hardware
-- Training scenarios (20% faster than PyTorch on AMD in HLBC implementation)
+## Closing
 
-### Training Philosophy
-
-Tinygrad avoids the `trainer.fit()` abstraction. If you examine `examples/beautiful_mnist.py`, you'll find a complete MNIST trainer that contains everything you need and nothing you don't.
-
-### Visual Graph Explorer
-
-You can explore Tinygrad's graph rewriting visually:
-
-```bash
-VIZ=1 python ramp.py
-```
-
-Environment variables like `DEBUG=2` or `CPU=1` are set in bash like: `DEBUG=2 CPU=1 python docs/ramp.py`.
-
-This launches a web-based graph rewrite explorer where you can see UOP transformations in real-time.
-
-## Conclusion
-
-You now understand Tinygrad's core concepts: how UOPs transform through graph rewrites to create optimized computational kernels. The beauty lies not in each line being simple, but in the whole system being maintainable by small groups of smart engineers, and you can be one of them.
+You now have the spine: UOps, lazy tensors, realize, rewrite, kernel. The charm is not that each line is simple. It is that a small group of careful engineers can still own the whole stack — and you can be one of them.
 
 ## Glossary
 

@@ -9,7 +9,7 @@
       (k, v) => { speed = Math.round(v); });
     const btnRow = document.createElement("div");
     btnRow.style.cssText = "display:flex;gap:0.5rem;margin-top:0.5rem";
-    for (const [t, fn] of [["↺ Shuffle", () => { shuffle(); }], ["▶ Run/Pause", () => { running = !running; }]]) {
+    for (const [t, fn] of [["↺ Shuffle", () => { running = false; shuffle(); }], ["▶ Run/Pause", () => { running = !running; }]]) {
       const b = document.createElement("button");
       b.className = "chip"; b.textContent = t; b.style.cursor = "pointer";
       b.addEventListener("click", fn);

@@ -7,7 +7,7 @@ date: 2025-12-21
 
 # Hello, I'm Omar
 
-<img src="static/images/E1031983-712A-4347-AFF4-D3F293CA39D9_1_201_a.jpeg" alt="Portrait of Omar Olivares, AI engineer, smiling in London" class="avatar">
+<img src="/static/images/E1031983-712A-4347-AFF4-D3F293CA39D9_1_201_a.jpeg" alt="Portrait of Omar Olivares, AI engineer, smiling in London" class="avatar">
 
  I’m a software engineer specializing in artificial intelligence and machine learning, with strong interests in interpretability, alignment, and agentic systems. I build AI-powered products, explore how digital and biological brains work, and help startups find product–market fit. Open to long-term moonshots and selective consulting engagements.
 
@@ -24,6 +24,6 @@ Fun fact: I once worked as a [music](https://open.spotify.com/artist/5e6x7QJXOGb
 
 Reach out via [X], [LinkedIn], or [omar@olivares.cl] to discuss your next project or just to chat about tech.
 
-[X]: https://twitter.com/omarnomad
+[X]: https://x.com/omarnomad
 [LinkedIn]: https://www.linkedin.com/in/ofou
 [omar@olivares.cl]: mailto:omar@olivares.cl

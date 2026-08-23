@@ -4,7 +4,7 @@
 One file, two dependencies (markdown, pyyaml). Reads src/, writes _site/.
 
     python build.py            # build
-    python build.py --serve    # build + serve on :8000
+    python build.py --serve    # build + serve on :8000, rebuild on change
 """
 
 from __future__ import annotations
@@ -18,6 +18,7 @@ from datetime import date, datetime, timezone
 from email.utils import format_datetime
 from pathlib import Path
 from xml.sax.saxutils import escape
+from urllib.parse import quote
 
 import markdown
 import json
@@ -64,7 +65,7 @@ GISCUS = """<section class="comments">
   data-repo-id="MDEwOlJlcG9zaXRvcnkzNzQxNDAxMDM=" data-category="General"
   data-category-id="DIC_kwDOFkzsx84CtY2c" data-mapping="pathname" data-strict="0"
   data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom"
-  data-theme="preferred_color_scheme" data-lang="en" crossorigin="anonymous" async>
+  data-theme="https://olivares.cl/static/giscus.css" data-lang="en" crossorigin="anonymous" async>
 </script>
 </section>"""
 
@@ -240,10 +241,13 @@ def slugify(value: str) -> str:
 
 def read_page(path: Path) -> tuple[dict, str]:
     raw = path.read_text(encoding="utf-8")
-    if raw.startswith("---"):
-        _, front, body = raw.split("---", 2)
-        return yaml.safe_load(front) or {}, body.lstrip("\n")
-    return {}, raw
+    if not raw.startswith("---"):
+        return {}, raw
+    parts = raw.split("---", 2)
+    if len(parts) < 3:
+        raise SystemExit(f"{path}: unclosed YAML front matter")
+    _, front, body = parts
+    return yaml.safe_load(front) or {}, body.lstrip("\n")
 
 
 def as_date(value) -> date | None:
@@ -320,7 +324,7 @@ def render_markdown(pages: list[Page]) -> None:
         stash.append(m.group(0))
         return f"QQMATHSTASH{len(stash) - 1}ZQXMATH"
 
-    math_re = re.compile(r"\$\$.*?\$\$|\$[^$\n]+\$|\\\(|\\\[", re.S)
+    math_re = re.compile(r"\$\$.*?\$\$|\$[^$\n]+\$|\\\(.*?\\\)|\\\[.*?\\\]", re.S)
 
     for page in pages:
         body, _, _ = page.text.partition("<!-- more -->")
@@ -349,16 +353,6 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
         f'<a class="icon" href="{href}" aria-label="{label}">{load_icon(slug)}</a>'
         for label, href, slug in SOCIAL
     )
-    social = "".join(
-        f'<a class="icon" href="{href}" aria-label="{label}">'
-        + (
-            f'<img src="/static/icons/{slug}.png" alt="" width="14" height="14">'
-            if (SRC / "static" / "icons" / f"{slug}.png").exists()
-            else load_icon(slug)
-        )
-        + "</a>"
-        for label, href, slug in SOCIAL
-    )
     analytics = f"""<script async src="https://www.googletagmanager.com/gtag/js?id={SITE['analytics']}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('js',new Date());gtag('config','{SITE['analytics']}')</script>"""
     return f"""<!doctype html>
@@ -375,7 +369,7 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <meta property="og:title" content="{escape(full_title, {'"': "&quot;"})}">
 <meta property="og:description" content="{escape(description, {'"': "&quot;"})}">
 <meta property="og:url" content="{SITE['url']}{url}">
-<meta property="og:image" content="{SITE['url']}/static/images/profile.png">
+<meta property="og:image" content="{SITE['url']}/static/images/E1031983-712A-4347-AFF4-D3F293CA39D9_1_201_a.jpeg">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="/favicon.ico">
 <link rel="alternate" type="application/rss+xml" title="{escape(SITE['title'])}" href="/feed.xml">
@@ -383,17 +377,18 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300..700&family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap">
 <link rel="stylesheet" href="/static/style.css">
-<script defer src="/static/fig-core.js"></script>
+{"<script defer src=\"/static/fig-core.js\"></script>" if "data-fig=" in body else ""}
 <script defer src="/static/menu.js"></script>
+<script type="module" src="/static/highlight.js"></script>
 {KATEX if math else ""}
 {extra_head}
 </head>
 <body>
 <header class="site">
 <a class="brand" href="/">{SITE['brand']}</a>
+<nav id="site-menu" class="menu-inline" aria-label="Main" inert aria-hidden="true">{nav}</nav>
 <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-menu">Menu</button>
 </header>
-<nav id="site-menu" class="menu-inline" aria-label="Main">{nav}</nav>
 <main>
 {body}
 </main>
@@ -414,7 +409,7 @@ def article(page: Page, *, comments: bool = False) -> str:
     if (subtitle := page.meta.get("subtitle")) and page.kind != "home":
         meta_bits.append(escape(str(subtitle)))
     meta_bits += [f'<span class="tag">{escape(c)}</span>' for c in page.categories]
-    edit = f"{SITE['repo']}/blob/main/{page.path.relative_to(ROOT).as_posix()}"
+    edit = SITE['repo'] + '/blob/main/' + '/'.join(quote(s, safe='') for s in page.path.relative_to(ROOT).as_posix().split('/'))
     head = f'<p class="meta">{" · ".join(meta_bits)}</p>' if meta_bits else ""
     return (
         f"<article>\n{head}\n{page.html}\n"
@@ -702,6 +697,13 @@ def contact_page() -> str:
 </script>"""
 
 
+_ROOT_STATIC = {"cv.json", "cv.pdf", "thesis.pdf"}
+
+
+def _ignore_private(_directory: str, names: list[str]) -> list[str]:
+    return [n for n in names if n.startswith("_") or n == ".DS_Store" or n in _ROOT_STATIC]
+
+
 def main() -> None:
     bib = parse_bib((SRC / "references.bib").read_text(encoding="utf-8"))
     home, posts, projects = load_pages(bib)
@@ -709,9 +711,11 @@ def main() -> None:
 
     if OUT.exists():
         shutil.rmtree(OUT)
-    shutil.copytree(SRC / "static", OUT / "static")
-    for name in ("favicon.ico", "robots.txt", "references.bib", "static/cv.json", "static/cv.pdf", "static/thesis.pdf"):
-        shutil.copy2(SRC / name, OUT / Path(name).name)
+    shutil.copytree(SRC / "static", OUT / "static", ignore=_ignore_private)
+    for name in ("favicon.ico", "robots.txt"):
+        shutil.copy2(SRC / name, OUT / name)
+    for name in _ROOT_STATIC:
+        shutil.copy2(SRC / "static" / name, OUT / name)
 
     write("index.html", layout(SITE["title"], article(home), url="/", description=SITE["description"], math=has_math(home.html)))
 
@@ -765,16 +769,43 @@ def main() -> None:
     print(f"built {len(posts)} posts, {len(projects)} projects → {OUT.relative_to(ROOT)}/")
 
 
+def _src_mtime() -> dict[Path, float]:
+    return {p: p.stat().st_mtime for p in SRC.rglob("*") if p.is_file()}
+
+
+def serve() -> None:
+    from functools import partial
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
+    import threading
+    import time
+
+    class DevHandler(SimpleHTTPRequestHandler):
+        def end_headers(self):
+            self.send_header("Cache-Control", "no-store, must-revalidate")
+            super().end_headers()
+
+    httpd = HTTPServer(("", 8000), partial(DevHandler, directory=str(OUT)))
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    print("serving http://localhost:8000  (watching src/)")
+    stamp = _src_mtime()
+    try:
+        while True:
+            time.sleep(0.4)
+            now = _src_mtime()
+            if now != stamp:
+                stamp = now
+                print("rebuilding…")
+                try:
+                    main()
+                except SystemExit as e:
+                    print(e)
+                except Exception as e:
+                    print(f"build failed: {e}")
+    except KeyboardInterrupt:
+        print()
+
+
 if __name__ == "__main__":
     main()
     if "--serve" in sys.argv:
-        from functools import partial
-        from http.server import HTTPServer, SimpleHTTPRequestHandler
-
-        class DevHandler(SimpleHTTPRequestHandler):
-            def end_headers(self):
-                self.send_header("Cache-Control", "no-store, must-revalidate")
-                super().end_headers()
-
-        print("serving http://localhost:8000")
-        HTTPServer(("", 8000), DevHandler).serve_forever()
+        serve()
