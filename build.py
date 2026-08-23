@@ -316,6 +316,56 @@ def drop_dead_backrefs(html: str) -> str:
     )
 
 
+SUP_REF = re.compile(r'<sup id="fnref:(?P<key>[^":]+)(?::\d+)?"[^>]*>.*?</sup>', re.S)
+FOOTNOTE_LI = re.compile(r'<li id="fn:(?P<key>[^"]+)">(?P<body>.*?)</li>', re.S)
+BACKREF = re.compile(r'\s*<a class="footnote-backref".*?</a>', re.S)
+
+
+def _note_body(fragment: str) -> str:
+    """Inline the note. A <span class="sidenote"> may hold only phrasing
+    content, so the <p> python-markdown wraps every note in is unwrapped
+    and the jump-back link (meaningless in a margin) is dropped."""
+    fragment = BACKREF.sub("", fragment)
+    return re.sub(r"<p>(.*?)</p>", r"\1", fragment, flags=re.S).strip()
+
+
+def make_sidenotes(html: str) -> str:
+    """Port python-markdown's endnotes to Tufte-style sidenotes.
+
+    Every reference becomes a label + checkbox pair followed by the note
+    itself, which the stylesheet floats into the margin on wide viewports
+    and reveals in place behind a tap on narrow ones. One CSS counter
+    numbers both the marker and the note, so no numbering lives here.
+
+    Notes nothing refers to — citations made inside HTML comments, as in
+    the reading-list post — have no anchor to hang from; they keep the
+    endnote section as a plain bibliography instead of being dropped.
+    """
+    m = re.search(r'<div class="footnote">(.*?)</div>', html, re.S)
+    if not m or "<div" in m.group(1):
+        return html
+    notes = {mm.group("key"): _note_body(mm.group("body")) for mm in FOOTNOTE_LI.finditer(m.group(1))}
+    section = m.group(0)
+
+    used: set[str] = set()
+
+    def repl(mm: re.Match) -> str:
+        key = mm.group("key")
+        if key not in notes or key in used:
+            return mm.group(0)  # a repeated reference keeps its marker
+        used.add(key)
+        return (
+            f'<label class="margin-toggle sidenote-number" for="sn-{key}"></label>'
+            f'<input type="checkbox" id="sn-{key}" class="margin-toggle">'
+            f'<span class="sidenote">{notes[key]}</span>'
+        )
+
+    html = SUP_REF.sub(repl, html)
+    rest = "".join(f"<li>{body}</li>" for k, body in notes.items() if k not in used)
+    html = html.replace(section, f'<section class="bibliography"><ol>{rest}</ol></section>' if rest else "")
+    return html
+
+
 def render_markdown(pages: list[Page]) -> None:
     md = markdown.Markdown(extensions=["extra", "toc", "sane_lists", "smarty"])
     stash: list[str] = []
@@ -333,14 +383,12 @@ def render_markdown(pages: list[Page]) -> None:
         html_out = md.convert(protected)
         html_out = re.sub(r"QQMATHSTASH(\d+)ZQXMATH", lambda m: stash[int(m.group(1))], html_out)
         stash.clear()
-        page.html = drop_dead_backrefs(html_out)
+        page.html = make_sidenotes(drop_dead_backrefs(html_out))
         md.reset()
         page.excerpt = md.convert(re.sub(r"^#\s+.+$", "", body, count=1, flags=re.MULTILINE))
 
 
 # ------------------------------------------------------------------------ layout
-
-
 def human_date(value: date | None) -> str:
     return value.strftime("%d %B %Y").lstrip("0") if value else ""
 
@@ -348,7 +396,12 @@ def human_date(value: date | None) -> str:
 def layout(page_title: str, body: str, *, url: str, description: str = "", math: bool = False, extra_head: str = "") -> str:
     full_title = page_title if page_title == SITE["title"] else f"{page_title} · {SITE['brand']}"
     description = description or SITE["description"]
-    nav = "".join(f'<a href="{href}">{label}</a>' for label, href in NAV)
+    def nav_link(label: str, href: str) -> str:
+        current = url == href or url.startswith(href)
+        aria = ' aria-current="page"' if current else ""
+        return f'<a href="{href}"{aria}>{label}</a>'
+
+    nav = "".join(nav_link(label, href) for label, href in NAV)
     social = "".join(
         f'<a class="icon" href="{href}" aria-label="{label}">{load_icon(slug)}</a>'
         for label, href, slug in SOCIAL
@@ -375,8 +428,9 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <link rel="alternate" type="application/rss+xml" title="{escape(SITE['title'])}" href="/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300..700&family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind:wght@700&family=IBM+Plex+Mono:wght@400;600&family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap">
 <link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/menu.css">
 {"<script defer src=\"/static/fig-core.js\"></script>" if "data-fig=" in body else ""}
 <script defer src="/static/menu.js"></script>
 <script type="module" src="/static/highlight.js"></script>
@@ -386,9 +440,9 @@ def layout(page_title: str, body: str, *, url: str, description: str = "", math:
 <body>
 <header class="site">
 <a class="brand" href="/">{SITE['brand']}</a>
-<nav id="site-menu" class="menu-inline" aria-label="Main" inert aria-hidden="true">{nav}</nav>
 <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-menu">Menu</button>
 </header>
+<nav id="site-menu" class="menu-inline" aria-label="Main">{nav}</nav>
 <main>
 {body}
 </main>

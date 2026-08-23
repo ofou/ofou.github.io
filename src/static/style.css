@@ -2,40 +2,134 @@
    Editorial serif on warm paper, hairline structure,
    monospace micro-labels, one muted pop of the spectrum.
 
-   Webfonts (STIX Two Text, JetBrains Mono) are linked from the document
-   head with preconnect rather than @import-ed here: an @import inside a
-   stylesheet cannot start downloading until this file has itself been
-   fetched and parsed, which is one round trip too many for the two faces
-   the page cannot render without. */
+   One webfont is linked from the document head with preconnect rather
+   than @import-ed here: an @import inside a stylesheet cannot start
+   downloading until this file has itself been fetched and parsed, one
+   round trip too many for the face the page cannot render without.
+
+   The prose face is not downloaded at all — STIX Two Text where the
+   reader already has it, Georgia everywhere else. Measured, those two
+   sit 1.7% apart in x-height (0.473em vs 0.481em) and 4% apart in
+   average advance: a cosmetic difference, not a legibility one, so the
+   page does not spend a request closing it. */
 
 :root {
   color-scheme: light dark;
   --paper: #f6f5f1;
   --ink: #1a1917;
-  --mute: #706b61;
+  /* Mute carries micro-labels at 11.5px and sidenotes at 13.6px, so it
+     is held at 6:1 instead of the 4.86:1 it used to sit at — still
+     plainly quieter than ink (16:1), no longer the weakest thing on the
+     page for a reader in bright light. */
+  --mute: #615d54;
   --accent: #2d4fa1;
   --wash: #ecebe5;
   --mark: #f2e4b7;
   --rule: rgba(26, 25, 23, 0.22);
   --rule-fine: rgba(26, 25, 23, 0.12);
-  --serif: "STIX Two Text", Georgia, "Times New Roman", serif;
+  --serif: "STIX Two Text", Georgia, "Iowan Old Style", Palatino, serif;
 
   /* Two monospaces, two jobs. --mono is the label voice: caps, tracked
      out, never longer than a few words, where a system face is free and
      invisible. --mono-code is the verbatim voice, and it is worth a
-     download: JetBrains Mono carries a 0.55em x-height (vs ~0.53 for the
-     ui-monospace defaults) with punctuation drawn large and centred on
-     the line, which is where code legibility is actually won. Every
-     fallback below shares its 0.6em advance, so a listing holds its
-     column count while the webfont is still in flight. */
+     download: IBM Plex Mono measures a 0.516em x-height against the
+     0.473em of the serif beside it, with punctuation drawn large and
+     centred on the line, which is where code legibility is actually
+     won. Every fallback below shares its 0.6em advance, so a listing
+     holds its column count while the webfont is still in flight. */
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --mono-code: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --mono-code: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
-  /* 0.9rem = 14.4px. Below ~14px the counters in a mono face at typical
-     screen densities start closing up; above it the 46rem measure stops
-     holding 80 columns. It holds 80 exactly. */
+  /* Type sizes derive from the reference device rather than from taste
+     alone. A 16-inch MacBook Pro is 3456×2234 native at 2×: a viewport
+     of 1728×1117 CSS px, about 127 px/inch, so the browser's default
+     16px root em renders ≈ 9pt. Book text runs 10–11pt and a laptop is
+     held at book distance, so prose takes 1.25rem = 20px ≈ 11.3pt; the
+     small-screen edition steps it back to 18px. Every text size on the
+     page is a multiple of this one number. */
+  --text: 1.25rem;
+
+  /* IBM Plex Mono keeps the one property the column table cannot lose:
+     a true 0.6em advance, so the columns-per-plate figures above land
+     on whole columns at every module width. Its Text grade (450) is
+     not on Google Fonts, so the listing takes Regular. */
   --code-size: 0.9rem;
   --code-weight: 400;
+
+  /* One module, and every width on the page an integer multiple of it.
+     That is the part of the classical tradition that survives scrutiny:
+     not the golden section — there is no prescription for it in
+     Vitruvius, Alberti, Palladio or Vignola, and the architectural
+     claims for it come from selective measurement (Markowsky 1992) —
+     but a working unit chosen so the parts come out commensurable, the
+     way Roman work came out in whole feet. The hierarchy here is
+
+       text : plate : notes = 4 : 5 : 2
+
+     which makes text + notes 6 and the plate one module wider than the
+     prose, so the step between them is not a near-miss of some
+     irrational ratio but the module itself, restated.
+
+     The module is bounded at both ends and fluid between them, because
+     a Roman foot was chosen per building and this one is chosen per
+     screen. The ceiling is the reading measure: 9.5rem puts the prose
+     at 72 characters, the top of the 65–75 band the line-length
+     experiments support, and no screen size is a reason to go past it.
+     The floor is what a 12-inch panel can hold at all. 10.2vw between
+     them lands on every MacBook Apple ships or shipped, at default and
+     scaled logical widths — measured off a rendered post:
+
+       1152  12"                     M 136  text 544  62 cpl  74 col
+       1280  13" / 15" scaled        M 136  text 544  62 cpl  74 col
+       1352  14" / 13.6" scaled      M 138  text 552  63 cpl  75 col
+       1440  13" default, 15" legacy M 147  text 588  69 cpl  80 col
+       1470  13.6" Air default       M 150  text 600  70 cpl  82 col
+       1512  14" default             M 152  text 608  72 cpl  83 col
+       1710  15" Air default         M 152  text 608  72 cpl  83 col
+       1728  16" default             M 152  text 608  72 cpl  83 col
+       1920, 2056  more space        M 152  text 608  72 cpl  83 col
+
+     From the 13-inch default up, the field carries the full 80 columns
+     of the mono face. Below roughly 1420px it cannot, and there the
+     three things wanted — 80 columns, a note in the margin, prose
+     inside the band — do not fit in the viewport at once: 80 columns
+     needs a 9.15rem module, and a note beside a 9.15rem composition
+     needs 1220px of screen. The note wins, because spatial contiguity
+     is the largest effect in this literature and a listing that
+     overruns the field simply scrolls, which the widest 7 of 57 code
+     blocks in this repository already do at any width.
+
+     Type size scales with none of this: 20px is 20px at book distance
+     whatever the panel is, and scaling it would push the measure back
+     out of the band it was chosen for. Only the field grows. */
+  --module: clamp(8.5rem, 10.2vw, 9.5rem);
+  --measure: calc(4 * var(--module));
+  --plate: calc(5 * var(--module));
+  --channel: calc(2 * var(--module));
+
+  /* Margin geometry for sidenotes; build.py emits Tufte's label +
+     checkbox + floated span. The channel is the primitive now and the
+     note is what is left of it once the gap is taken out. --gutter is
+     the daylight outside the column, and everything that reaches past
+     the measure — listings, fullwidth figures — is capped by it. */
+  --sidenote-gap: 2rem;
+  --sidenote-w: calc(var(--channel) - var(--sidenote-gap));
+  --gutter: max(1.5rem, calc((100vw - var(--measure)) / 2));
+
+  /* --hang-l / --hang-r are how far the field reaches out of the prose
+     column: one module on the left once there is a margin to reach into,
+     nothing otherwise. Below the sidenote breakpoint the page is a
+     single column and everything — listings, section rules, the rule
+     under the title — lines up with it, because a field that creeps to
+     within a gutter of the viewport edge is not a field, it is a bleed,
+     and it read as one next to the masthead rule. Capped by the room
+     actually outside the column, so a plate never crosses the 1.5rem
+     edge; when it cannot fit it scrolls, as it always did. Two
+     variables rather than one rule per breakpoint: every consumer reads
+     the same pair and none of them has to care about source order. */
+  --hang-room: max(0px, calc(var(--gutter) - 1.5rem));
+  --hang-l: 0px;
+  --hang-r: 0px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -46,18 +140,15 @@
        stay proportionally quiet so night is not louder than day. */
     --paper: #131311;
     --ink: #dcd8ce;
-    --mute: #8a857c;
+    --mute: #96928a;
     --accent: #7e9ce6;
     --wash: #1e1d1a;
     --mark: #4a4433;
     --rule: rgba(221, 216, 206, 0.2);
     --rule-fine: rgba(221, 216, 206, 0.1);
 
-    /* Light strokes on a dark plate bloom outward — the same irradiation
-       that makes reversed type look a half-weight heavy than it is. The
-       variable axis lets a listing be set back to the colour it has by
-       day instead of glaring. */
-    --code-weight: 370;
+    /* Night needs no weight compensation any more: Plex Mono ships
+       static faces only, so there is no lighter grade to step down to. */
   }
 
   body {
@@ -92,13 +183,22 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--serif);
-  font-size: 1.0625rem;
-  line-height: 1.5;
+  font-size: var(--text);
+  /* Butterick / Calvez: leading 120–145% of the point size. */
+  line-height: 1.45;
   font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+  font-variant-numeric: oldstyle-nums;
+  hanging-punctuation: first last allow-end;
 }
 
 p,
-li {
+li,
+dd,
+blockquote,
+figcaption,
+.excerpt p,
+.cv-sum {
   orphans: 3;
   widows: 3;
   text-wrap: pretty;
@@ -132,16 +232,30 @@ a:hover {
 header.site,
 main,
 footer.site {
+  /* The text column is what gets centred — the reader's eye measures
+     the page off the prose, not off the apparatus hanging beside it, so
+     the column sits in the middle of the viewport and the notes ride
+     out into the right margin from there. --gutter is that leftover
+     daylight on one side, and everything allowed past the measure is
+     capped by it. */
   margin-inline: auto;
-  width: min(46rem, calc(100% - 3rem));
+  width: min(var(--measure), calc(100% - 3rem));
 }
 
+/* Every structural hairline on the page — this one, the rule under the
+   title block, the rule over each section, <hr>, the bibliography and
+   the comments — spans the field, while the words inside it stay in the
+   column. One left edge for all of them, shared with the listings; the
+   alternative is hairlines of identical weight starting at two
+   different places, which reads as a mistake rather than as a frame. */
 header.site {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
   gap: 0.85rem;
+  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
   padding-block: 1.4rem 1.2rem;
+  padding-inline: var(--hang-l) var(--hang-r);
   border-bottom: 1px solid var(--rule);
 }
 
@@ -166,6 +280,7 @@ header.site {
 
 main {
   flex: 1;
+  counter-reset: sidenote-counter;
   padding-block: 4rem 5rem;
 }
 
@@ -175,37 +290,71 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 500;
+  /* Titles are airport signage. The letterforms are Hind — the Indian
+     Type Foundry's Latin, adapted from Frutiger Next, the face Adrian
+     Frutiger drew for Charles de Gaulle's wayfinding — and the setting
+     follows the signage conventions that face was drawn for: bold,
+     capitals, tracked out. Research for screen headings converges on
+     weights 600–700 with leading 1.1–1.3; caps signage adds positive
+     tracking where display serifs take negative. Fallbacks stay in the
+     Frutiger lineage: Carter's Verdana, Segoe's humanist sans. */
+  font-family: "Hind", "Segoe UI", Verdana, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   line-height: 1.15;
-  text-wrap: balance;
+  hyphens: none;
+  font-variant-numeric: lining-nums;
   margin: 0 0 1rem;
 }
 
+/* WebKit: balance equalizes line lengths and leaves the box; pretty
+   fills the measure while still killing a short last line. The title
+   can sit as a block; section heads should occupy the column. */
 h1 {
-  font-size: clamp(2.1rem, 6vw, 2.55rem);
-  letter-spacing: -0.015em;
+  text-wrap: balance;
+  font-size: clamp(calc(var(--text) * 1.85), 6vw, calc(var(--text) * 2.2));
+  letter-spacing: 0.03em;
   margin-block: 0 1.4rem;
 }
 
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: pretty;
+}
+
+/* The section rule is what declares the field. A plate one module wider
+   than the prose reads as an accident if nothing else on the page knows
+   about that width; so the hairline over every section — and the rule
+   under the title block, and every <hr> — runs the full plate field
+   while the words stay in the column. Classical practice for exactly
+   this problem: a string course or stylobate states the bay, and the
+   members inside it are then free to differ. Below the sidenote
+   breakpoint --hang-l is 0 and all of this collapses to the column. */
 h2 {
-  font-size: 1.7rem;
-  letter-spacing: -0.008em;
+  font-size: calc(var(--text) * 1.55);
+  letter-spacing: 0.045em;
   margin-top: 2.6rem;
+  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
   padding-top: 1.1rem;
+  padding-inline: var(--hang-l) var(--hang-r);
   border-top: 1px solid var(--rule-fine);
 }
 
 h3 {
-  font-size: 1.35rem;
-  font-weight: 600;
+  font-size: calc(var(--text) * 1.3);
+  font-weight: inherit;
   margin-top: 2rem;
 }
 
 h4,
 h5,
 h6 {
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: calc(var(--text) * 1.12);
+  font-weight: inherit;
   margin-top: 1.6rem;
 }
 
@@ -213,7 +362,8 @@ p,
 ul,
 ol,
 dl {
-  margin: 0 0 1.15rem;
+  /* WebKit: pair pretty wrapping with a one-line paragraph gap. */
+  margin: 0 0 1lh;
 }
 
 li {
@@ -232,7 +382,7 @@ strong {
 hr {
   border: 0;
   border-top: 1px solid var(--rule-fine);
-  margin: 2.4rem 0;
+  margin: 2.4rem calc(-1 * var(--hang-r)) 2.4rem calc(-1 * var(--hang-l));
 }
 
 blockquote {
@@ -246,6 +396,22 @@ blockquote {
 
 blockquote p:last-child {
   margin-bottom: 0;
+}
+
+/* Chapter epigraphs, as in Beautiful Evidence: italic quotes whose
+   attribution rides in a <footer> inside the blockquote. */
+div.epigraph > blockquote,
+div.epigraph > blockquote > p {
+  font-style: italic;
+}
+
+div.epigraph > blockquote > footer {
+  font-style: normal;
+  text-align: right;
+}
+
+div.epigraph > blockquote > footer > cite {
+  font-style: italic;
 }
 
 small {
@@ -291,7 +457,9 @@ dd {
 }
 
 article > .meta:first-child {
+  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
   padding-bottom: 0.9rem;
+  padding-inline: var(--hang-l) var(--hang-r);
   border-bottom: 1px solid var(--rule-fine);
 }
 
@@ -394,6 +562,15 @@ ul.index .meta {
 code,
 kbd,
 samp,
+pre,
+time,
+.fig-control output {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+code,
+kbd,
+samp,
 pre {
   font-family: var(--mono-code);
   /* Weight is deliberately left to inherit here: a `path` inside a bold
@@ -410,11 +587,12 @@ pre {
 
 code,
 samp {
-  /* Matched on x-height, not on em: STIX Two Text sits at ~0.468em,
-     JetBrains Mono at 0.550em, so 0.85em puts the two lowercases on the
-     same optical line. The old 0.82em left inline code visibly shorter
-     than the prose it interrupts. */
-  font-size: 0.85em;
+  /* Matched on x-height, not on em: the serif sits at 0.473em (Georgia
+     0.481em), IBM Plex Mono at 0.516em, so 0.9em puts the two
+     lowercases within 2% of one optical line. The old 0.85em was tuned
+     against a mono with a taller x-height and left inline code visibly
+     shorter than the prose it interrupts. */
+  font-size: 0.9em;
   background: var(--wash);
   /* Vertical padding stays under the serif's leading so a wrapped
      paragraph never has two plates touching. */
@@ -438,12 +616,12 @@ kbd {
 pre {
   background: var(--wash);
   border: 1px solid var(--rule-fine);
-  /* 1.15rem of gutter against a 46rem measure leaves 697px of text —
-     80 columns of JetBrains Mono at 14.4px, to within half a character.
-     The classic limit is not nostalgia: it is what most code is written
-     against, so honouring it is what keeps listings from wrapping. */
+  /* The listing keeps its 80 columns even though the prose column is no
+     longer 80 columns wide: it hangs out of the column by --hang, and
+     nothing else on the page is allowed past the measure without
+     opting in. */
   padding: 1rem 1.15rem;
-  margin: 1.5rem 0;
+  margin: 1.5rem calc(-1 * var(--hang-r)) 1.5rem calc(-1 * var(--hang-l));
   font-size: var(--code-size);
   font-weight: var(--code-weight);
   /* Looser than the 1.5 of the prose. Code is scanned down the indent
@@ -456,6 +634,16 @@ pre {
   overscroll-behavior-x: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--rule) transparent;
+}
+
+@media (min-width: 1152px) {
+  /* Here the margins exist: the right one is the note channel, so the
+     field opens one module to the left — far enough to carry 80 columns
+     of listing, never far enough to slide under a note. */
+  :root {
+    --hang-l: min(var(--module), var(--hang-room));
+    --hang-r: 0px;
+  }
 }
 
 pre code {
@@ -600,18 +788,79 @@ video {
   margin-inline: auto;
 }
 
+/* A hand-written embed arrives with pixel width and height attributes —
+   here a 720px box, which panned the whole page sideways on a phone
+   because nothing was constraining it to the column. Unlike img and
+   video, an iframe's attributes do not give it an intrinsic ratio, so
+   the ratio has to be restated for the two hosts that actually appear
+   in these posts; every other frame (giscus) only gets the cap. */
+iframe {
+  max-width: 100%;
+  border: 0;
+}
+
+iframe[src*="youtube"],
+iframe[src*="vimeo"] {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  display: block;
+  background: var(--wash);
+}
+
 figure {
   margin: 2rem 0;
 }
 
+/* Tufte's escape hatch for wide graphics: an opt-in class that lets a
+   figure or listing reach symmetrically past the column into both
+   margins, capped by the viewport gutter. */
+figure.fullwidth,
+pre.fullwidth,
+div.fullwidth {
+  --overhang: min(15rem, max(0px, calc(var(--gutter) - 1.6rem)));
+  width: calc(var(--measure) + 2 * var(--overhang));
+  margin-left: calc(-1 * var(--overhang));
+}
+
+/* The newthought: Tufte opens a section with small caps instead of a
+   heading when the prose should run unbroken beneath it. */
+span.newthought {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.03em;
+}
+
+/* Captions are margin notes for pictures — Tufte sets them beside the
+   figure in the sidenote voice, not beneath it. The float hangs off the
+   column by the same geometry as .sidenote, so text and captions stack
+   down one clear margin channel. */
 figcaption {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  float: right;
+  clear: right;
+  margin-right: calc(-1 * var(--channel));
+  width: var(--sidenote-w);
+  margin-top: 0.2rem;
+  font-size: calc(var(--text) * 0.68);
+  line-height: 1.45;
   color: var(--mute);
-  margin-top: 0.7rem;
   text-wrap: pretty;
+}
+
+figure.fullwidth figcaption {
+  /* The fullwidth figure has already spent its margin; walk the caption
+     back by the overhang so it lands where sidenotes do. */
+  margin-right: calc(var(--overhang) - var(--channel));
+}
+
+/* Without a margin there is nowhere to hang a caption: it becomes a
+   footnote under the picture, same voice. */
+@media (max-width: 1151px) {
+  figcaption {
+    float: none;
+    width: auto;
+    margin-right: 0;
+    margin-top: 0.7rem;
+  }
 }
 
 img:not(.avatar) {
@@ -769,43 +1018,36 @@ details[open] summary {
   transform: translateY(-2px);
 }
 
-/* ---------- footnotes / bibliography ---------- */
+/* ---------- bibliography ----------
+   Notes nothing refers to — citations made inside HTML comments — keep
+   the endnote idiom; everything cited inline lives in the margin. */
 
-.footnote {
+.bibliography {
   margin-top: 3rem;
+  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
   border-top: 1px solid var(--rule);
   padding-top: 0.8rem;
+  padding-inline: var(--hang-l) var(--hang-r);
   font-size: 0.85em;
   line-height: 1.35;
 }
 
-.footnote hr {
-  display: none;
-}
-
-.footnote ol {
+.bibliography ol {
   padding-left: 1.2rem;
 }
 
-.footnote li {
+.bibliography li {
   margin-bottom: 0.3rem;
-}
-
-.footnote li:target {
-  background: var(--wash);
-}
-
-.footnote-ref {
-  text-decoration: none;
-  color: var(--accent);
 }
 
 /* ---------- comments ---------- */
 
 .comments {
   margin-top: 3.2rem;
+  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
   border-top: 1px solid var(--rule);
   padding-top: 1.4rem;
+  padding-inline: var(--hang-l) var(--hang-r);
 }
 
 /* ---------- math ---------- */
@@ -823,8 +1065,10 @@ details[open] summary {
 /* ---------- footer ---------- */
 
 footer.site {
+  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
   border-top: 1px solid var(--rule);
   padding-block: 1.4rem 2.6rem;
+  padding-inline: var(--hang-l) var(--hang-r);
   font-size: 0.92em;
 }
 
@@ -937,6 +1181,16 @@ footer.site a.handle:hover {
 /* ---------- small screens ---------- */
 
 @media (max-width: 34rem) {
+  /* Phone edition: 18px ≈ 10.2pt holds ~47 characters on a 375px
+     viewport instead of the desktop's 72 — the floor of the window. */
+  :root {
+    --text: 1.125rem;
+  }
+
+  body {
+    hanging-punctuation: none;
+  }
+
   main {
     padding-block: 2.8rem 4rem;
   }
@@ -952,7 +1206,13 @@ footer.site a.handle:hover {
   dd,
   .cv-sum,
   .excerpt p {
+    /* Butterick: hyphenation optional on left-aligned; useful as lines shorten.
+       WebKit: do not hyphenate two lines in a row. */
     hyphens: auto;
+    hyphenate-limit-lines: 2;
+    hyphenate-limit-chars: 6 3 3;
+    -webkit-hyphenate-limit-before: 3;
+    -webkit-hyphenate-limit-after: 3;
   }
 
   /* On a phone the cheapest horizontal room is the indent, not the type:
@@ -987,7 +1247,7 @@ footer.site a.handle:hover {
 .cv-btn {
   font-family: var(--mono);
   font-size: 0.68rem;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   background: transparent;
   color: var(--ink);
@@ -1011,7 +1271,7 @@ footer.site a.handle:hover {
 .cv-label {
   font-family: var(--mono);
   font-size: 0.72rem;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--mute);
   margin: -0.7rem 0 1.5rem;
@@ -1113,7 +1373,7 @@ footer.site a.handle:hover {
 .cv-skill-name {
   font-family: var(--mono);
   font-size: 0.75rem;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--mute);
 }
@@ -1165,7 +1425,6 @@ footer.site a.handle:hover {
     --rule-fine: rgba(0, 0, 0, 0.22);
   }
 
-  .menu-btn,
   .menu-inline,
   footer.site,
   .cv-actions,
@@ -1187,6 +1446,7 @@ footer.site a.handle:hover {
   footer.site {
     width: auto;
     max-width: 62ch;
+    margin-inline: 0;
   }
 
   main {
@@ -1329,102 +1589,6 @@ footer.site a.handle:hover {
   cursor: ew-resize;
 }
 
-/* ---------- inline menu (same masthead line) ---------- */
-
-.menu-btn {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  background: transparent;
-  color: var(--ink);
-  border: 1px solid var(--rule);
-  padding: 0.55em 1em;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.menu-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.menu-inline {
-  position: relative;
-  counter-reset: menu;
-  display: flex;
-  align-items: center;
-  gap: 1.05rem;
-  min-width: 0;
-  max-width: 0;
-  flex: 0 1 auto;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-  transition: max-width 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
-}
-
-.menu-inline.open {
-  max-width: 28rem;
-  opacity: 1;
-  pointer-events: auto;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.menu-inline.open::-webkit-scrollbar {
-  display: none;
-}
-
-.menu-inline a {
-  font-size: 1.05rem;
-  text-decoration: none;
-  color: var(--ink);
-  position: relative;
-  z-index: 1;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.menu-inline a:hover {
-  color: var(--accent);
-}
-
-.menu-inline a::before {
-  counter-increment: menu;
-  content: "0" counter(menu);
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.13em;
-  color: var(--mute);
-  margin-right: 0.45em;
-  vertical-align: 0.12em;
-}
-
-.menu-gl {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-@media (max-width: 36rem) {
-  .menu-inline {
-    gap: 0.8rem;
-  }
-
-  .menu-inline a::before {
-    content: none;
-    margin: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .menu-inline {
-    transition: opacity 0.15s ease;
-  }
-}
-
 /* ---------- contact form ---------- */
 
 .contact-form {
@@ -1447,6 +1611,8 @@ footer.site a.handle:hover {
   padding: 0.55em 0.8em;
   width: 100%;
   resize: vertical;
+  /* WebKit: keep the original greedy wrap so glyphs do not jump while typing. */
+  text-wrap: stable;
 }
 
 .contact-form input:focus,
@@ -1479,3 +1645,340 @@ footer.site a.handle:hover {
 [data-fig="iso-cube"] { min-height: 320px; }
 [data-fig="conv-kernel"] { min-height: 240px; }
 [data-fig="attention-matrix"] { min-height: 300px; }
+
+/* ---------- sidenotes ----------
+   Tufte's mechanism, emitted at build time: each reference is a label
+   plus a hidden checkbox followed by the note itself, a floated span
+   hanging off the column into the margin — no script, so nothing
+   flashes or drifts after load. One counter numbers both ends.
+
+   The breakpoint is derived, not tuned: with the column centred, each
+   margin is half of what the viewport has left over, and a note needs
+   the whole channel (2 modules) plus a 1.5rem gutter, so the condition
+   is viewport ≥ 8 modules + 48px. At the floor module of 8.5rem that
+   comes to 1136px — which is why the query sits at 1152px, the logical
+   width of the smallest Retina MacBook ever shipped: every Mac laptop,
+   at every scaled resolution Apple offers, reads its notes in the
+   margin rather than in a drawer. Spatial contiguity (d ≈ 1.1) is the
+   largest effect in the reading literature this page is built on, and
+   it was previously being thrown away on any screen under 1400px.
+   Below 1152px the notes fold up behind their markers until asked
+   for. */
+
+.sidenote {
+  float: right;
+  clear: right;
+  margin-right: calc(-1 * var(--channel));
+  width: var(--sidenote-w);
+  margin-top: 0.2rem;
+  margin-bottom: 0.4rem;
+  /* 0.68 × prose ≈ 13.6px = 8.2pt: the classic footnote size. */
+  font-size: calc(var(--text) * 0.68);
+  line-height: 1.45;
+  color: var(--mute);
+}
+
+label.sidenote-number {
+  /* Nothing was incrementing the counter, so every marker and every note
+     printed a 0 and a reader with three notes in one margin block had no
+     way to tell which belonged to which. The increment lives on the
+     label — the first of the three elements the build emits — so the
+     ::after below and the note's ::before further down resolve to the
+     same number in document order. */
+  counter-increment: sidenote-counter;
+  cursor: default;
+}
+
+/* The same counter on marker and note ties a tap target to its margin
+   note without either knowing the other's number. */
+.sidenote-number::after,
+.sidenote::before {
+  content: counter(sidenote-counter);
+  font-family: var(--mono);
+  font-size: 0.72em;
+  color: var(--accent);
+  position: relative;
+  top: -0.45em;
+}
+
+.sidenote::before {
+  margin-right: 0.4em;
+}
+
+input.margin-toggle {
+  display: none;
+}
+
+@media (max-width: 1151px) {
+  .sidenote {
+    display: none;
+  }
+
+  label.margin-toggle {
+    display: inline;
+    cursor: pointer;
+  }
+
+  /* Kept focusable so keyboard users can reach the checkbox the label
+     toggles; visually it stays invisible. */
+  input.margin-toggle {
+    display: inline-block;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+  }
+
+  input.margin-toggle:checked + .sidenote,
+  input.margin-toggle:focus-visible + .sidenote {
+    display: block;
+    float: none;
+    clear: both;
+    width: auto;
+    margin: 0.5rem 0 0.7rem;
+    padding-left: 0.8rem;
+    border-left: 2px solid var(--rule);
+    color: var(--ink);
+  }
+}
+
+@media print {
+  label.margin-toggle,
+  input.margin-toggle {
+    display: none;
+  }
+
+  .sidenote {
+    float: none;
+    display: block;
+    width: auto;
+    margin: 0.4rem 0 0.6rem;
+    padding-left: 0.8rem;
+    border-left: 2px solid var(--rule);
+    color: var(--ink);
+  }
+}
+
+/* ---------- masthead nav ---------- */
+
+.menu-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.menu-inline::-webkit-scrollbar {
+  display: none;
+}
+
+.menu-inline a {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 0.55em 0.85em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.menu-inline a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.menu-inline a[aria-current="page"] {
+  border-color: var(--rule);
+}
+
+.menu-inline a[aria-current="page"]:hover {
+  border-color: var(--accent);
+}
+
+/* ---------- inline menu reveal ---------- */
+
+.menu-btn {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  padding: 0.55em 1em;
+  cursor: pointer;
+}
+
+.menu-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+header.site nav {
+  display: none;
+}
+
+.menu-inline {
+  counter-reset: menu;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.4rem 1.4rem;
+  width: min(60ch, calc(100% - 3rem));
+  margin-inline: auto;
+  border-bottom: 1px solid var(--rule-fine);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  padding-block: 0;
+  border-block-width: 0;
+  transition:
+    max-height 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.28s ease,
+    padding 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-inline.open {
+  max-height: 5rem;
+  opacity: 1;
+  padding-block: 0.9rem 1.1rem;
+  border-bottom-width: 1px;
+}
+
+.menu-inline a {
+  font-size: 1.2rem;
+  text-decoration: none;
+  color: var(--ink);
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+}
+
+.menu-inline a:hover {
+  color: var(--accent);
+}
+
+.menu-inline a::before {
+  counter-increment: menu;
+  content: "0" counter(menu);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.13em;
+  color: var(--mute);
+  margin-right: 0.7em;
+  vertical-align: 0.12em;
+}
+
+.menu-inline a[aria-current="page"] {
+  color: var(--accent);
+}
+
+.menu-gl {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-inline {
+    transition: opacity 0.15s ease;
+  }
+}
+
+/* ---------- inline menu reveal ---------- */
+
+.menu-btn {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  padding: 0.55em 1em;
+  cursor: pointer;
+}
+
+.menu-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+header.site nav {
+  display: none;
+}
+
+.menu-inline {
+  counter-reset: menu;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.4rem 1.4rem;
+  width: min(60ch, calc(100% - 3rem));
+  margin-inline: auto;
+  border-bottom: 1px solid var(--rule-fine);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  padding-block: 0;
+  border-block-width: 0;
+  transition:
+    max-height 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.28s ease,
+    padding 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-inline.open {
+  max-height: 5rem;
+  opacity: 1;
+  padding-block: 0.9rem 1.1rem;
+  border-bottom-width: 1px;
+}
+
+.menu-inline a {
+  font-size: 1.2rem;
+  text-decoration: none;
+  color: var(--ink);
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+}
+
+.menu-inline a:hover {
+  color: var(--accent);
+}
+
+.menu-inline a::before {
+  counter-increment: menu;
+  content: "0" counter(menu);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.13em;
+  color: var(--mute);
+  margin-right: 0.7em;
+  vertical-align: 0.12em;
+}
+
+.menu-inline a[aria-current="page"] {
+  color: var(--accent);
+}
+
+.menu-gl {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-inline {
+    transition: opacity 0.15s ease;
+  }
+}

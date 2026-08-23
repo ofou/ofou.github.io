@@ -12,7 +12,7 @@
     const script = [
       "omar@olivares:~$ ls",
       "blog        projects     cv",
-      "lab         fig.js       menu.js",
+      "lab         fig.js       style.css",
       "explainables/           components/",
       "omar@olivares:~$ ",
     ];
