@@ -1,5 +1,7 @@
 _site/
 dist/
 __pycache__/
+.vendor-cache/
+src/static/vendor/
 .*
 !.python-version

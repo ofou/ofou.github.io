@@ -8,9 +8,15 @@ import re
 
 ROOT = os.environ.get("STATIC_ROOT", "/srv/site")
 
+# .mjs is an ES module; some Python builds still guess it as octet-stream.
+mimetypes.add_type("application/javascript", ".mjs")
+
 
 def ctype_for(path):
     ct = mimetypes.guess_type(path)[0] or "application/octet-stream"
+    # Compressible JS MIME must stay application/javascript (see COMPRESSIBLE).
+    if ct in ("text/javascript", "application/javascript"):
+        ct = "application/javascript"
     return ct + "; charset=utf-8" if ct.startswith("text/") else ct
 
 

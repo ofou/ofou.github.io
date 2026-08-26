@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 # /// script
 # requires-python = ">=3.14"
-# dependencies = ["markdown", "pyyaml"]
+# dependencies = ["markdown", "pyyaml", "pygments"]
 # ///
 
 from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import shutil
 import sys
+import tarfile
 import unicodedata
+import urllib.error
+import urllib.request
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 from email.utils import format_datetime
@@ -25,6 +29,44 @@ import yaml
 ROOT = Path(__file__).parent
 SRC = ROOT / "src"
 OUT = ROOT / "_site"
+VENDOR_CACHE = ROOT / ".vendor-cache"
+
+# Front-end vendors are fetched at build time (never committed). Default:
+# resolve npm dist-tags "latest", cache tarballs under .vendor-cache/, install
+# into _site/static/vendor/. Set VENDOR_OFFLINE=1 to reuse .vendor-cache/versions.lock
+# without hitting the registry. Optional pins: VENDOR_KATEX / VENDOR_MERMAID
+# (exact versions). Syntax colouring is Pygments at build time (CodeHilite).
+VENDOR_SPECS: dict[str, dict] = {
+    "katex": {
+        "npm": "katex",
+        "env": "VENDOR_KATEX",
+        "dest": "katex",
+        "keep": lambda n: (
+            n
+            in {
+                "package/dist/katex.min.js",
+                "package/dist/katex.min.css",
+                "package/dist/contrib/auto-render.min.js",
+            }
+            or n.startswith("package/dist/fonts/")
+        ),
+    },
+    "mermaid": {
+        "npm": "mermaid",
+        "env": "VENDOR_MERMAID",
+        "dest": "mermaid",
+        "keep": lambda n: (
+            n == "package/dist/mermaid.esm.min.mjs"
+            or (
+                n.startswith("package/dist/chunks/mermaid.esm.min/")
+                and not n.endswith(".map")
+            )
+        ),
+    },
+}
+
+# Resolved npm versions for this build (filled by ensure_vendors).
+VENDOR_VERSIONS: dict[str, str] = {}
 
 SITE = {
     "title": "Omar Olivares Urrutia",
@@ -65,18 +107,98 @@ def load_icon(slug: str) -> str:
 
 GISCUS = f"""<section class="comments">
 <h2 id="comments">Comments</h2>
-<script src="https://giscus.app/client.js" data-repo="ofou/ofou.github.io"
-  data-repo-id="MDEwOlJlcG9zaXRvcnkzNzQxNDAxMDM=" data-category="General"
-  data-category-id="DIC_kwDOFkzsx84CtY2c" data-mapping="pathname" data-strict="0"
-  data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom"
-  data-theme="{SITE["url"]}/static/giscus.css" data-lang="en" crossorigin="anonymous" async>
+<script>
+(() => {{
+  const host = document.currentScript.closest("section.comments");
+  if (!host) return;
+  const load = () => {{
+    if (host.dataset.giscusLoaded) return;
+    host.dataset.giscusLoaded = "1";
+    const s = document.createElement("script");
+    s.src = "https://giscus.app/client.js";
+    s.async = true;
+    s.crossOrigin = "anonymous";
+    s.dataset.repo = "ofou/ofou.github.io";
+    s.dataset.repoId = "MDEwOlJlcG9zaXRvcnkzNzQxNDAxMDM=";
+    s.dataset.category = "General";
+    s.dataset.categoryId = "DIC_kwDOFkzsx84CtY2c";
+    s.dataset.mapping = "pathname";
+    s.dataset.strict = "0";
+    s.dataset.reactionsEnabled = "1";
+    s.dataset.emitMetadata = "0";
+    s.dataset.inputPosition = "bottom";
+    s.dataset.theme = "{SITE["url"]}/static/giscus.css";
+    s.dataset.lang = "en";
+    host.appendChild(s);
+  }};
+  if (!("IntersectionObserver" in window)) {{ load(); return; }}
+  const io = new IntersectionObserver((entries) => {{
+    if (entries.some((e) => e.isIntersecting)) {{ io.disconnect(); load(); }}
+  }}, {{ rootMargin: "240px 0px" }});
+  io.observe(host);
+}})();
 </script>
 </section>"""
 
-KATEX = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
-  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\\\(',right:'\\\\)',display:false},{left:'\\\\[',right:'\\\\]',display:true}]})"></script>"""
+# KaTeX — self-hosted under /static/vendor/katex/ by default (fetched at build).
+# Pass ?cdn=1 to A/B against jsDelivr (same resolved version).
+_KATEX_DELIMS = (
+    "renderMathInElement(document.body,{delimiters:["
+    "{left:'$$',right:'$$',display:true},"
+    "{left:'$',right:'$',display:false},"
+    "{left:'\\\\(',right:'\\\\)',display:false},"
+    "{left:'\\\\[',right:'\\\\]',display:true}"
+    "]})"
+)
+
+
+def katex_snippet() -> str:
+    ver = VENDOR_VERSIONS.get("katex", "latest")
+    return f"""<script>
+(() => {{
+  const cdn = new URLSearchParams(location.search).has("cdn");
+  const base = cdn
+    ? "https://cdn.jsdelivr.net/npm/katex@{ver}/dist"
+    : "/static/vendor/katex";
+  const css = document.createElement("link");
+  css.rel = "stylesheet";
+  css.href = base + "/katex.min.css";
+  if (cdn) css.crossOrigin = "anonymous";
+  document.head.append(css);
+  const load = (src) => new Promise((resolve, reject) => {{
+    const s = document.createElement("script");
+    s.src = src;
+    if (cdn) s.crossOrigin = "anonymous";
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.append(s);
+  }});
+  load(base + "/katex.min.js")
+    .then(() => load(base + "/contrib/auto-render.min.js"))
+    .then(() => {{ {_KATEX_DELIMS}; }})
+    .catch(() => {{}});
+}})();
+</script>"""
+
+
+# A/B for mirrored book covers: local src by default; ?cdn=1 swaps to data-cdn-src.
+COVERS_AB = """<script>
+(() => {
+  if (!new URLSearchParams(location.search).has("cdn")) return;
+  const apply = (img) => {
+    if (img.dataset.cdnSrc) img.src = img.dataset.cdnSrc;
+  };
+  const scan = (root) => {
+    if (root.nodeType !== 1) return;
+    if (root.matches?.("img[data-cdn-src]")) apply(root);
+    root.querySelectorAll?.("img[data-cdn-src]").forEach(apply);
+  };
+  scan(document.documentElement);
+  new MutationObserver((muts) => {
+    for (const m of muts) for (const n of m.addedNodes) scan(n);
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>"""
 
 RELTIME = """<script>
 (() => {
@@ -418,20 +540,42 @@ def figure_images(html: str) -> str:
     )
 
 
+MERMAID_FENCE_RE = re.compile(
+    r"^```mermaid\s*\n(.*?)^```\s*$", re.MULTILINE | re.DOTALL
+)
+MATH_RE = re.compile(r"\$\$.*?\$\$|\$[^$\n]+\$|\\\(.*?\\\)|\\\[.*?\\\]", re.DOTALL)
+
+
+def mermaid_to_html(m: re.Match) -> str:
+    """Lift mermaid fences to raw HTML so CodeHilite never sees them."""
+    body = m.group(1).rstrip("\n")
+    return f'\n\n<pre><code class="language-mermaid">{escape(body)}\n</code></pre>\n\n'
+
+
 def render_markdown(pages: list[Page]) -> None:
-    md = markdown.Markdown(extensions=["extra", "toc", "sane_lists", "smarty"])
+    md = markdown.Markdown(
+        extensions=["extra", "toc", "sane_lists", "smarty", "codehilite"],
+        extension_configs={
+            "codehilite": {
+                "guess_lang": False,
+                "linenums": True,
+                "css_class": "highlight",
+                "noclasses": False,
+            }
+        },
+    )
     stash: list[str] = []
 
-    def protect(m: re.Match) -> str:
+    def protect_math(m: re.Match) -> str:
         stash.append(m.group(0))
         return f"QQMATHSTASH{len(stash) - 1}ZQXMATH"
-
-    math_re = re.compile(r"\$\$.*?\$\$|\$[^$\n]+\$|\\\(.*?\\\)|\\\[.*?\\\]", re.DOTALL)
 
     for page in pages:
         body, _, _ = page.text.partition("<!-- more -->")
         md.reset()
-        protected = math_re.sub(protect, page.text.replace("<!-- more -->", ""))
+        source = page.text.replace("<!-- more -->", "")
+        protected = MERMAID_FENCE_RE.sub(mermaid_to_html, source)
+        protected = MATH_RE.sub(protect_math, protected)
         html_out = md.convert(protected)
         html_out = re.sub(
             r"QQMATHSTASH(\d+)ZQXMATH", lambda m: stash[int(m.group(1))], html_out
@@ -441,9 +585,15 @@ def render_markdown(pages: list[Page]) -> None:
             make_sidenotes(figure_images(drop_dead_backrefs(html_out)))
         )
         md.reset()
-        page.excerpt = strip_footnotes(
-            md.convert(re.sub(r"^#\s+.+$", "", body, count=1, flags=re.MULTILINE))
+        excerpt_src = re.sub(r"^#\s+.+$", "", body, count=1, flags=re.MULTILINE)
+        excerpt_protected = MERMAID_FENCE_RE.sub(mermaid_to_html, excerpt_src)
+        excerpt_protected = MATH_RE.sub(protect_math, excerpt_protected)
+        excerpt_html = md.convert(excerpt_protected)
+        excerpt_html = re.sub(
+            r"QQMATHSTASH(\d+)ZQXMATH", lambda m: stash[int(m.group(1))], excerpt_html
         )
+        stash.clear()
+        page.excerpt = strip_footnotes(excerpt_html)
 
 
 def human_date(value: date | None) -> str:
@@ -499,10 +649,12 @@ def layout(
 {'<script defer src="/static/fig-core.js"></script>' if "data-fig=" in body else ""}
 {'<script defer src="/static/fig.js"></script>' if "fig3d" in body else ""}
 {'<script defer src="/static/toc.js"></script>' if 'class="toc"' in body else ""}
-{'<script type="module" src="/static/highlight.js"></script>' if '<code class="language-' in body else ""}
 {'<script type="module" src="/static/mermaid.js"></script>' if "language-mermaid" in body else ""}
+{'<script defer src="/static/youtube-lite.js"></script>' if "data-youtube=" in body else ""}
 {'<script defer src="/static/sidenotes.js"></script>' if 'class="sidenote"' in body else ""}
-{KATEX if math else ""}
+{'<script defer src="/static/gallery.js"></script>' if ('class="gallery"' in body or "plate-reveal" in body) else ""}
+{katex_snippet() if math else ""}
+{COVERS_AB if "data-cdn-src=" in body else ""}
 {extra_head}
 </head>
 <body>
@@ -569,26 +721,12 @@ def place_nav(body: str) -> str:
 
 SEP = "\u00a0· "
 
-_FIG_SHAPES = ("sphere", "torus", "helix")
 _FIG_NAME = re.compile(r"^[a-z0-9-]+$")
 _THUMB_H = "72"  # matches 4.5rem project-thumb square
 
 
-def project_fig_pair(slug: str) -> tuple[str, str, str]:
-    """Stable shape pair + mix from the project slug — random-looking, not random."""
-    h = 0
-    for c in slug:
-        h = (h * 31 + ord(c)) & 0xFFFFFFFF
-    a = _FIG_SHAPES[h % 3]
-    b = _FIG_SHAPES[(h // 3) % 3]
-    if a == b:
-        b = _FIG_SHAPES[(h + 1) % 3]
-    mix = f"{0.25 + (h % 51) / 100:.2f}"
-    return a, b, mix
-
-
 def project_thumb(page: Page) -> str:
-    """Square thumb from `featured:` — lab component name, `fig3d`, or image path."""
+    """Square thumb from `featured:` — lab component name, or image path."""
     raw = page.meta.get("featured")
     if raw is None or raw is False:
         return ""
@@ -596,14 +734,7 @@ def project_thumb(page: Page) -> str:
     if not kind or kind.lower() in {"false", "0", "no"}:
         return ""
     low = kind.lower()
-    if low in {"fig3d", "webgl"}:
-        shape, morph, mix = project_fig_pair(page.path.stem)
-        inner = (
-            f'<figure class="fig3d">'
-            f'<canvas data-shape="{shape}" data-morph-to="{morph}" data-mix="{mix}"></canvas>'
-            f"</figure>"
-        )
-    elif _FIG_NAME.match(low) and "/" not in kind and "." not in kind:
+    if _FIG_NAME.match(low) and "/" not in kind and "." not in kind:
         # Any `src/static/components/<name>.js` — e.g. featured: wave
         name = escape(low)
         inner = f'<div data-fig="{name}" data-height="{_THUMB_H}" data-preview></div>'
@@ -1079,7 +1210,7 @@ def _font_fingerprints() -> dict[str, str]:
 
 FONT_HASHED = _font_fingerprints()
 
-_PRELOAD_FONTS = ("STIXTwoText-11.woff2", "STIXTwoTexti-9.woff2")
+_PRELOAD_FONTS = ("STIXTwoText.woff2", "STIXTwoText-Italic.woff2")
 
 FONT_PRELOAD = "\n".join(
     f'<link rel="preload" href="/static/fonts/{FONT_HASHED.get(name, name)}" '
@@ -1106,9 +1237,172 @@ def fingerprint_fonts() -> int:
 
 
 def _ignore_private(_directory: str, names: list[str]) -> list[str]:
+    # vendor/ is fetched at build into _site/; never copy a local tree.
     return [
-        n for n in names if n.startswith("_") or n == ".DS_Store" or n in _ROOT_STATIC
+        n
+        for n in names
+        if n.startswith("_") or n == ".DS_Store" or n == "vendor" or n in _ROOT_STATIC
     ]
+
+
+def _http_get(url: str, timeout: float = 120) -> bytes:
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "olivares.cl-build/1 (vendor fetch)"},
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return resp.read()
+
+
+def _read_vendor_lock() -> dict[str, str]:
+    lock = VENDOR_CACHE / "versions.lock"
+    if not lock.exists():
+        return {}
+    out: dict[str, str] = {}
+    for line in lock.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, val = line.partition("=")
+        out[key.strip()] = val.strip()
+    return out
+
+
+def _write_vendor_lock(versions: dict[str, str]) -> None:
+    VENDOR_CACHE.mkdir(parents=True, exist_ok=True)
+    lines = [
+        "# Resolved by build.py at fetch time. Gitignored; safe to delete.",
+        "# Re-resolve with a normal build; reuse with VENDOR_OFFLINE=1.",
+    ]
+    for key in VENDOR_SPECS:
+        lines.append(f"{key}={versions[key]}")
+    (VENDOR_CACHE / "versions.lock").write_text(
+        "\n".join(lines) + "\n", encoding="utf-8"
+    )
+
+
+def _npm_latest(package: str) -> str:
+    url = f"https://registry.npmjs.org/{quote(package, safe='@/')}"
+    meta = json.loads(_http_get(url, timeout=60))
+    return meta["dist-tags"]["latest"]
+
+
+def _npm_tarball_url(package: str, version: str) -> str:
+    url = f"https://registry.npmjs.org/{quote(package, safe='@/')}/{quote(version)}"
+    meta = json.loads(_http_get(url, timeout=60))
+    return meta["dist"]["tarball"]
+
+
+def _cache_key(package: str, version: str) -> str:
+    safe = package.lstrip("@").replace("/", "-")
+    return f"{safe}-{version}.tgz"
+
+
+def _ensure_tarball(package: str, version: str) -> Path:
+    VENDOR_CACHE.mkdir(parents=True, exist_ok=True)
+    path = VENDOR_CACHE / _cache_key(package, version)
+    if path.exists() and path.stat().st_size > 0:
+        return path
+    tarball = _npm_tarball_url(package, version)
+    print(f"  download {package}@{version}")
+    path.write_bytes(_http_get(tarball, timeout=180))
+    return path
+
+
+def _extract_vendor(tgz: Path, keep, dest: Path) -> int:
+    if dest.exists():
+        shutil.rmtree(dest)
+    dest.mkdir(parents=True, exist_ok=True)
+    count = 0
+    with tarfile.open(tgz, mode="r:gz") as tar:
+        for member in tar.getmembers():
+            if not member.isfile() or not keep(member.name):
+                continue
+            # package/dist/foo → foo
+            rel = member.name.removeprefix("package/dist/")
+            if not rel or rel.endswith("/"):
+                continue
+            target = dest / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            extracted = tar.extractfile(member)
+            if extracted is None:
+                continue
+            target.write_bytes(extracted.read())
+            count += 1
+    return count
+
+
+def _stamp_js_versions() -> None:
+    """Rewrite const VER in thin wrappers so ?cdn=1 A/B uses the same build."""
+    stamps = {
+        OUT / "static" / "mermaid.js": VENDOR_VERSIONS["mermaid"],
+    }
+    for path, ver in stamps.items():
+        text = path.read_text(encoding="utf-8")
+        updated, n = re.subn(
+            r'const VER = "[^"]*";',
+            f'const VER = "{ver}";',
+            text,
+            count=1,
+        )
+        if n != 1:
+            raise SystemExit(f"could not stamp VER in {path.relative_to(ROOT)}")
+        path.write_text(updated, encoding="utf-8")
+
+
+def ensure_vendors() -> None:
+    """Resolve versions, fetch npm tarballs into cache, install under _site/static/vendor/."""
+    offline = os.environ.get("VENDOR_OFFLINE", "").strip() in {"1", "true", "yes"}
+    locked = _read_vendor_lock()
+    versions: dict[str, str] = {}
+
+    for key, spec in VENDOR_SPECS.items():
+        pinned = os.environ.get(spec["env"], "").strip()
+        if pinned:
+            versions[key] = pinned
+        elif offline:
+            if key not in locked:
+                raise SystemExit(
+                    f"VENDOR_OFFLINE=1 but {key} missing from {VENDOR_CACHE / 'versions.lock'}"
+                )
+            versions[key] = locked[key]
+        else:
+            try:
+                versions[key] = _npm_latest(spec["npm"])
+            except (
+                urllib.error.URLError,
+                TimeoutError,
+                KeyError,
+                json.JSONDecodeError,
+            ) as e:
+                if key in locked:
+                    print(
+                        f"  warn: registry miss for {spec['npm']} ({e}); using lock {locked[key]}"
+                    )
+                    versions[key] = locked[key]
+                else:
+                    raise SystemExit(f"failed to resolve {spec['npm']}: {e}") from e
+
+    VENDOR_VERSIONS.clear()
+    VENDOR_VERSIONS.update(versions)
+    _write_vendor_lock(versions)
+
+    vendor_root = OUT / "static" / "vendor"
+    vendor_root.mkdir(parents=True, exist_ok=True)
+    parts = []
+    for key, spec in VENDOR_SPECS.items():
+        ver = versions[key]
+        tgz = _ensure_tarball(spec["npm"], ver)
+        n = _extract_vendor(tgz, spec["keep"], vendor_root / spec["dest"])
+        parts.append(f"{key}@{ver} ({n} files)")
+    (vendor_root / "VERSIONS").write_text(
+        "# Self-hosted vendors for this build. A/B with ?cdn=1 → jsDelivr/esm.sh.\n"
+        + "\n".join(f"{k}={versions[k]}" for k in VENDOR_SPECS)
+        + "\n",
+        encoding="utf-8",
+    )
+    _stamp_js_versions()
+    print("vendors " + ", ".join(parts))
 
 
 def main() -> None:
@@ -1124,6 +1418,8 @@ def main() -> None:
         shutil.copy2(SRC / name, OUT / name)
     for name in _ROOT_STATIC:
         shutil.copy2(SRC / "static" / name, OUT / name)
+
+    ensure_vendors()
 
     write(
         "index.html",
@@ -1244,7 +1540,10 @@ def serve() -> None:
 
     class DevHandler(SimpleHTTPRequestHandler):
         def end_headers(self):
-            self.send_header("Cache-Control", "no-store, must-revalidate")
+            # Match production intent: allow conditional caching via ETag
+            # (SimpleHTTPRequestHandler already emits Last-Modified/ETag).
+            # no-cache = revalidate; not no-store (which disabled 304s).
+            self.send_header("Cache-Control", "no-cache")
             super().end_headers()
 
         def send_error(self, code, message=None, explain=None):
