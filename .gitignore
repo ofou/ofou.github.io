@@ -1,5 +1,5 @@
 _site/
-.venv/
+dist/
 __pycache__/
-.DS_Store
-.claude/
+.*
+!.python-version

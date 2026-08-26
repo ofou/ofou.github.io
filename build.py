@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.14"
+# dependencies = ["markdown", "pyyaml"]
+# ///
 
 from __future__ import annotations
 
@@ -51,11 +55,13 @@ SOCIAL = [
     ("RSS", "/feed.xml", "rss"),
 ]
 
+
 def load_icon(slug: str) -> str:
     p = SRC / "static" / "icons" / f"{slug}.svg"
     return p.read_text(encoding="utf-8").replace(
         'fill="#000000"', 'fill="currentColor"'
     )
+
 
 GISCUS = f"""<section class="comments">
 <h2 id="comments">Comments</h2>
@@ -101,6 +107,7 @@ COMBINING = {
     "c": "\u0327",
 }
 
+
 def detex(value: str) -> str:
     value = re.sub(
         r"\{?\\([\"'`^~c])\s*\{?(\w)\}?\}?",
@@ -110,6 +117,7 @@ def detex(value: str) -> str:
     value = re.sub(r"\\[,;:!]|\\ ", " ", value)
     value = value.replace("\\&", "&").replace("\\%", "%").replace("\\_", "_")
     return " ".join(value.replace("{", "").replace("}", "").split())
+
 
 def parse_bib(text: str) -> dict[str, dict[str, str]]:
     entries: dict[str, dict[str, str]] = {}
@@ -126,6 +134,7 @@ def parse_bib(text: str) -> dict[str, dict[str, str]]:
             i += 1
         entries[match.group(2)] = _bib_fields(body) | {"type": match.group(1).lower()}
     return entries
+
 
 def _bib_fields(body: str) -> dict[str, str]:
     fields, i = {}, 0
@@ -153,6 +162,7 @@ def _bib_fields(body: str) -> dict[str, str]:
             i += 1
     return fields
 
+
 def format_authors(raw: str) -> str:
     people = []
     for name in re.split(r"\s+and\s+", raw):
@@ -169,6 +179,7 @@ def format_authors(raw: str) -> str:
     if len(people) > 2:
         return ", ".join(people[:-1]) + " & " + people[-1]
     return " & ".join(people)
+
 
 def format_reference(entry: dict[str, str]) -> str:
     parts = []
@@ -191,7 +202,9 @@ def format_reference(entry: dict[str, str]) -> str:
         parts.append(f"({year})")
     return " ".join(parts)
 
+
 CITATION = re.compile(r"\[@([\w:./+-]+)\]")
+
 
 def apply_citations(text: str, bib: dict[str, dict[str, str]]) -> str:
     cited: list[str] = []
@@ -221,6 +234,7 @@ def apply_citations(text: str, bib: dict[str, dict[str, str]]) -> str:
         + "\n"
     )
 
+
 @dataclass
 class Page:
     path: Path
@@ -234,9 +248,11 @@ class Page:
     kind: str = "page"
     categories: list[str] = field(default_factory=list)
 
+
 def slugify(value: str) -> str:
     value = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
     return re.sub(r"-{2,}", "-", re.sub(r"[^a-z0-9]+", "-", value.lower())).strip("-")
+
 
 def read_page(path: Path) -> tuple[dict, str]:
     raw = path.read_text(encoding="utf-8")
@@ -247,6 +263,7 @@ def read_page(path: Path) -> tuple[dict, str]:
         raise SystemExit(f"{path}: unclosed YAML front matter")
     _, front, body = parts
     return yaml.safe_load(front) or {}, body.lstrip("\n")
+
 
 def as_date(value) -> date | None:
     if isinstance(value, datetime):
@@ -261,9 +278,11 @@ def as_date(value) -> date | None:
                 continue
     return None
 
+
 def first_heading(text: str) -> str:
     m = re.search(r"^#\s+(.+)$", text, re.M)
     return m.group(1).strip() if m else ""
+
 
 def load_pages(bib: dict) -> tuple[Page, list[Page], list[Page]]:
     def build(path: Path, url_for, kind: str) -> Page:
@@ -307,6 +326,7 @@ def load_pages(bib: dict) -> tuple[Page, list[Page], list[Page]]:
     projects.sort(key=lambda p: p.date or date.min, reverse=True)
     return home, posts, projects
 
+
 def drop_dead_backrefs(html: str) -> str:
     live = set(re.findall(r'id="fnref:([^"]+)"', html))
     return re.sub(
@@ -315,9 +335,11 @@ def drop_dead_backrefs(html: str) -> str:
         html,
     )
 
+
 def strip_footnotes(html: str) -> str:
     html = re.sub(r'<sup id="fnref:.*?</sup>', "", html, flags=re.S)
     return re.sub(r'<div class="footnote">.*?</div>', "", html, flags=re.S)
+
 
 def wrap_tables(html: str) -> str:
     return re.sub(
@@ -327,14 +349,17 @@ def wrap_tables(html: str) -> str:
         flags=re.S,
     )
 
+
 SUP_REF = re.compile(r'<sup id="fnref:(?P<key>[^":]+)(?::\d+)?"[^>]*>.*?</sup>', re.S)
 FOOTNOTE_LI = re.compile(r'<li id="fn:(?P<key>[^"]+)">(?P<body>.*?)</li>', re.S)
 BACKREF = re.compile(r'\s*<a class="footnote-backref".*?</a>', re.S)
 BLOCK_IN_NOTE = re.compile(r"<(?:table|ul|ol|pre|blockquote|figure|h[1-6])\b")
 
+
 def _note_body(fragment: str) -> str:
     fragment = BACKREF.sub("", fragment)
     return re.sub(r"<p>(.*?)</p>", r"\1", fragment, flags=re.S).strip()
+
 
 def make_sidenotes(html: str) -> str:
     m = re.search(r'<div class="footnote">(.*?)</div>', html, re.S)
@@ -367,6 +392,7 @@ def make_sidenotes(html: str) -> str:
     )
     return html
 
+
 def figure_images(html: str) -> str:
     img_only = r"((?:<a\b[^>]*>)?\s*<img\b[^>]*>\s*(?:</a>)?)"
 
@@ -388,6 +414,7 @@ def figure_images(html: str) -> str:
         lambda m: f"{m.group(1)}{m.group(2).strip()}",
         html,
     )
+
 
 def render_markdown(pages: list[Page]) -> None:
     md = markdown.Markdown(extensions=["extra", "toc", "sane_lists", "smarty"])
@@ -416,8 +443,10 @@ def render_markdown(pages: list[Page]) -> None:
             md.convert(re.sub(r"^#\s+.+$", "", body, count=1, flags=re.MULTILINE))
         )
 
+
 def human_date(value: date | None) -> str:
     return value.strftime("%d %B %Y").lstrip("0") if value else ""
+
 
 def layout(
     page_title: str,
@@ -466,6 +495,7 @@ def layout(
 <link rel="stylesheet" href="/static/style.css">
 <link rel="stylesheet" href="/static/menu.css">
 {'<script defer src="/static/fig-core.js"></script>' if "data-fig=" in body else ""}
+{'<script defer src="/static/fig.js"></script>' if "fig3d" in body else ""}
 {'<script defer src="/static/toc.js"></script>' if 'class="toc"' in body else ""}
 {'<script type="module" src="/static/highlight.js"></script>' if '<code class="language-' in body else ""}
 {'<script type="module" src="/static/mermaid.js"></script>' if "language-mermaid" in body else ""}
@@ -489,9 +519,11 @@ def layout(
 </html>
 """
 
+
 H_ANCHOR = re.compile(
     r'<h(?P<lvl>[23]) id="(?P<id>[^"]+)"[^>]*>(?P<text>.*?)</h[23]>', re.S
 )
+
 
 def section_nav(html: str, *, floor: int = 7) -> str:
     heads = [
@@ -524,6 +556,7 @@ def section_nav(html: str, *, floor: int = 7) -> str:
     items = "".join(rows)
     return f'<nav class="toc" aria-label="Sections"><ul>{items}</ul></nav>\n'
 
+
 def place_nav(body: str) -> str:
     if not (nav := section_nav(body)):
         return body
@@ -531,7 +564,9 @@ def place_nav(body: str) -> str:
         return body[: m.start()] + nav + body[m.start() :]
     return body.replace("</h1>", "</h1>\n" + nav, 1) if "</h1>" in body else nav + body
 
+
 SEP = "\u00a0· "
+
 
 def article(page: Page, *, comments: bool = False) -> str:
     meta_bits = []
@@ -561,36 +596,78 @@ def article(page: Page, *, comments: bool = False) -> str:
         + (GISCUS if comments else "")
     )
 
+
 def listing(title: str, intro: str, pages: list[Page], *, dated: bool) -> str:
     def entry(page: Page) -> str:
         line = (
             f'<time datetime="{page.date.isoformat()}" data-rel-from="{page.date.isoformat()}T00:00:00">{human_date(page.date)}</time>'
-            if dated
+            if page.date
             else ""
         )
         sub = page.meta.get("subtitle") or ""
         meta = SEP.join(x for x in [line, escape(str(sub))] if x)
 
-        if dated:
-            chips = "".join(
-                f'<span class="tag">{escape(c)}</span>' for c in page.categories
+        tags = "".join(f'<span class="tag">{escape(c)}</span>' for c in page.categories)
+        stack_raw = page.meta.get("stack") if not dated else None
+        stack = ""
+        if stack_raw:
+            parts = [
+                p.strip() for p in re.split(r"\s*·\s*", str(stack_raw)) if p.strip()
+            ]
+            stack = "".join(f'<span class="stack">{escape(p)}</span>' for p in parts)
+        chips = tags + stack
+
+        featured = bool(page.meta.get("featured")) or page.path.stem == "lab"
+        cover = str(page.meta.get("cover") or "").strip()
+        preview = ""
+        if not dated and featured:
+            preview = (
+                '<div class="project-preview" aria-hidden="true">'
+                '<figure class="fig3d">'
+                '<canvas data-shape="sphere" data-morph-to="torus"></canvas>'
+                "</figure>"
+                "</div>"
             )
-        else:
-            stack = page.meta.get("stack")
-            chips = f'<span class="stack">{escape(str(stack))}</span>' if stack else ""
-        return (
-            f'<li><a class="entry" href="{page.url}">{escape(page.title)}</a>'
+        elif not dated and cover:
+            preview = (
+                f'<a class="project-cover" href="{page.url}" tabindex="-1" aria-hidden="true">'
+                f'<img src="{escape(cover)}" alt="" loading="lazy"></a>'
+            )
+
+        li_class = (
+            ' class="project-feature"'
+            if preview and featured
+            else (' class="project-row"' if preview else "")
+        )
+        body = (
+            f'<div class="project-copy">'
+            f'<a class="entry" href="{page.url}">{escape(page.title)}</a>'
             f'<p class="meta">{meta}</p>'
             + (f'<p class="meta index-tags">{chips}</p>' if chips else "")
-            + "</li>"
+            + "</div>"
+            if preview
+            else (
+                f'<a class="entry" href="{page.url}">{escape(page.title)}</a>'
+                f'<p class="meta">{meta}</p>'
+                + (f'<p class="meta index-tags">{chips}</p>' if chips else "")
+            )
         )
+        return f"<li{li_class}>{preview}{body}</li>"
 
     head = f"<h1>{escape(title)}</h1>\n{intro}\n"
     if not dated:
+        # Featured projects lead; then date order (already sorted by caller).
+        ordered = sorted(
+            pages,
+            key=lambda p: (
+                0 if (p.meta.get("featured") or p.path.stem == "lab") else 1,
+                -(p.date.toordinal() if p.date else 0),
+            ),
+        )
         return (
             head
-            + '<ul class="index">\n'
-            + "\n".join(entry(p) for p in pages)
+            + '<ul class="index index-projects">\n'
+            + "\n".join(entry(p) for p in ordered)
             + "\n</ul>\n"
         )
 
@@ -602,13 +679,16 @@ def listing(title: str, intro: str, pages: list[Page], *, dated: bool) -> str:
         )
     return head + "\n".join(out) + "\n"
 
+
 def has_math(html: str) -> bool:
     return bool(re.search(r"\$\$.+?\$\$|\$[^$\n]+\$|\\\(|\\\[", html, re.S))
+
 
 def write(path: str, content: str) -> None:
     target = OUT / path.lstrip("/")
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(content, encoding="utf-8")
+
 
 def rss(posts: list[Page]) -> str:
     now = format_datetime(datetime.now(timezone.utc))
@@ -634,6 +714,7 @@ def rss(posts: list[Page]) -> str:
         + "</channel></rss>"
     )
 
+
 def sitemap(urls: list[str]) -> str:
     today = date.today().isoformat()
     body = "".join(
@@ -641,6 +722,7 @@ def sitemap(urls: list[str]) -> str:
         for u in urls
     )
     return f'<?xml version="1.0" encoding="utf-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{body}</urlset>\n'
+
 
 def month_yr(iso: str | None) -> str:
     if not iso:
@@ -650,10 +732,12 @@ def month_yr(iso: str | None) -> str:
     except ValueError:
         return iso
 
+
 def span(start: str | None, end: str | None) -> str:
     s = month_yr(start)
     e = month_yr(end) or "Present"
     return s if s == e else (f"{s} — {e}" if s else e)
+
 
 def cv_page(cv: dict) -> str:
     b = cv.get("basics", {})
@@ -919,6 +1003,7 @@ def cv_page(cv: dict) -> str:
 <p class="cv-sum">{langs}<br>{ints}</p>
 <script>{copy_js}"""
 
+
 def contact_page() -> str:
     return """
 <h1>Contact</h1>
@@ -952,7 +1037,9 @@ def contact_page() -> str:
 })();
 </script>"""
 
+
 _ROOT_STATIC = {"cv.json", "cv.pdf", "thesis.pdf"}
+
 
 def _font_fingerprints() -> dict[str, str]:
     fonts = SRC / "static" / "fonts"
@@ -963,6 +1050,7 @@ def _font_fingerprints() -> dict[str, str]:
         for p in sorted(fonts.glob("*.woff2"))
     }
 
+
 FONT_HASHED = _font_fingerprints()
 
 _PRELOAD_FONTS = ("STIXTwoText-11.woff2", "STIXTwoTexti-9.woff2")
@@ -972,6 +1060,7 @@ FONT_PRELOAD = "\n".join(
     f'as="font" type="font/woff2" crossorigin>'
     for name in _PRELOAD_FONTS
 )
+
 
 def fingerprint_fonts() -> int:
     if not FONT_HASHED:
@@ -989,10 +1078,12 @@ def fingerprint_fonts() -> int:
         css.write_text(text, encoding="utf-8")
     return len(FONT_HASHED)
 
+
 def _ignore_private(_directory: str, names: list[str]) -> list[str]:
     return [
         n for n in names if n.startswith("_") or n == ".DS_Store" or n in _ROOT_STATIC
     ]
+
 
 def main() -> None:
     bib = parse_bib((SRC / "references.bib").read_text(encoding="utf-8"))
@@ -1003,7 +1094,7 @@ def main() -> None:
         shutil.rmtree(OUT)
     shutil.copytree(SRC / "static", OUT / "static", ignore=_ignore_private)
     fingerprint_fonts()
-    for name in ("favicon.ico", "robots.txt"):
+    for name in ("favicon.ico", "robots.txt", "llms.txt"):
         shutil.copy2(SRC / name, OUT / name)
     for name in _ROOT_STATIC:
         shutil.copy2(SRC / "static" / name, OUT / name)
@@ -1020,11 +1111,6 @@ def main() -> None:
     )
 
     for post in posts:
-        extra = (
-            '<script defer src="/static/fig.js"></script>'
-            if "fig3d" in post.html
-            else ""
-        )
         write(
             post.url + "index.html",
             layout(
@@ -1033,7 +1119,6 @@ def main() -> None:
                 url=post.url,
                 description=str(post.meta.get("description") or ""),
                 math=has_math(post.html),
-                extra_head=extra,
             ),
         )
     for project in projects:
@@ -1120,8 +1205,10 @@ def main() -> None:
         f"built {len(posts)} posts, {len(projects)} projects → {OUT.relative_to(ROOT)}/"
     )
 
+
 def _src_mtime() -> dict[Path, float]:
     return {p: p.stat().st_mtime for p in SRC.rglob("*") if p.is_file()}
+
 
 def serve() -> None:
     from functools import partial
@@ -1169,6 +1256,7 @@ def serve() -> None:
                     print(f"build failed: {e}")
     except KeyboardInterrupt:
         print()
+
 
 if __name__ == "__main__":
     main()
