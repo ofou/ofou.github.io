@@ -1,4 +1,5 @@
 """Static site server for olivares.cl: preloaded bytes, boot-time gzip, WSGI."""
+
 import gzip
 import hashlib
 import mimetypes
@@ -30,11 +31,18 @@ for p, b in FILES.items():
         if stem:
             ROUTES[stem] = (b, html)
 
-COMPRESSIBLE = {"application/xml", "application/javascript",
-                "application/json", "image/svg+xml"}
-GZ = {p: gzip.compress(b, 6) for p, (b, ct) in ROUTES.items()
-      if len(b) > 200 and (ct.split(";")[0].startswith("text/")
-                           or ct.split(";")[0] in COMPRESSIBLE)}
+COMPRESSIBLE = {
+    "application/xml",
+    "application/javascript",
+    "application/json",
+    "image/svg+xml",
+}
+GZ = {
+    p: gzip.compress(b, 6)
+    for p, (b, ct) in ROUTES.items()
+    if len(b) > 200
+    and (ct.split(";")[0].startswith("text/") or ct.split(";")[0] in COMPRESSIBLE)
+}
 
 NOT_FOUND = ROUTES.get("/404.html", (b"Not Found",))[0]
 
@@ -58,9 +66,13 @@ def app(environ, start_response):
     path = environ.get("PATH_INFO", "/")
     hit = ROUTES.get(path)
     if hit is None:
-        start_response("404 Not Found", [
-            ("Content-Type", "text/html; charset=utf-8"),
-            ("Content-Length", str(len(NOT_FOUND)))])
+        start_response(
+            "404 Not Found",
+            [
+                ("Content-Type", "text/html; charset=utf-8"),
+                ("Content-Length", str(len(NOT_FOUND))),
+            ],
+        )
         return [b""] if environ.get("REQUEST_METHOD") == "HEAD" else [NOT_FOUND]
     body, ctype = hit
     if path in GZ and "gzip" in environ.get("HTTP_ACCEPT_ENCODING", ""):
@@ -69,9 +81,13 @@ def app(environ, start_response):
     else:
         encoding = "identity"
     etag = f'W/"{hashlib.md5(body).hexdigest()}"'
-    headers = [("Content-Type", ctype), ("Content-Length", str(len(body))),
-               ("ETag", etag), ("Cache-Control", cache_control_for(path)),
-               ("Vary", "Accept-Encoding")]
+    headers = [
+        ("Content-Type", ctype),
+        ("Content-Length", str(len(body))),
+        ("ETag", etag),
+        ("Cache-Control", cache_control_for(path)),
+        ("Vary", "Accept-Encoding"),
+    ]
     if environ.get("HTTP_IF_NONE_MATCH") == etag:
         headers[1] = ("Content-Length", "0")
         start_response("304 Not Modified", headers)

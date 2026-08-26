@@ -6,14 +6,29 @@
     const logits = [-2, -1, 0, 1, 2];
     const labels = ["w1", "w2", "w3", "w4", "w5"];
     let T = 1;
-    Fig.controls(el, [{ key: "T", label: "Temperature", min: 0.05, max: 4, step: 0.05, value: T }],
-      (k, v) => { T = v; draw(); });
+    Fig.controls(
+      el,
+      [
+        {
+          key: "T",
+          label: "Temperature",
+          min: 0.05,
+          max: 4,
+          step: 0.05,
+          value: T,
+        },
+      ],
+      (k, v) => {
+        T = v;
+        draw();
+      },
+    );
     Fig.caption(el, "softmax(z / T) over five logits");
     function probs() {
       const m = Math.max(...logits);
-      const e = logits.map(z => Math.exp((z - m) / T));
+      const e = logits.map((z) => Math.exp((z - m) / T));
       const s = e.reduce((a, b) => a + b, 0);
-      return e.map(v => v / s);
+      return e.map((v) => v / s);
     }
     const draw = () => {
       const P = Fig.palette();

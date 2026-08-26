@@ -15,10 +15,11 @@
 
     function mulberry32(a) {
       return () => {
-        a |= 0; a = a + 0x6D2B79F5 | 0;
-        let t = Math.imul(a ^ a >>> 15, 1 | a);
-        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        a |= 0;
+        a = (a + 0x6d2b79f5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
       };
     }
 
@@ -40,10 +41,13 @@
       if (explore) {
         arm = Math.floor(rnd() * 3);
       } else {
-        let best = -Infinity, ties = [];
+        let best = -Infinity,
+          ties = [];
         for (let i = 0; i < 3; i++) {
-          if (est[i] > best + 1e-12) { best = est[i]; ties = [i]; }
-          else if (Math.abs(est[i] - best) <= 1e-12) ties.push(i);
+          if (est[i] > best + 1e-12) {
+            best = est[i];
+            ties = [i];
+          } else if (Math.abs(est[i] - best) <= 1e-12) ties.push(i);
         }
         arm = ties[Math.floor(rnd() * ties.length)];
       }
@@ -52,7 +56,8 @@
       sum[arm] += reward;
       est[arm] = sum[arm] / count[arm];
       pulls++;
-      lastChoice = "ARM " + NAMES[arm] + (explore ? " · EXPLORE" : " · EXPLOIT");
+      lastChoice =
+        "ARM " + NAMES[arm] + (explore ? " · EXPLORE" : " · EXPLOIT");
     }
 
     /* Controls: chips + ε slider + live readout */
@@ -66,28 +71,49 @@
     chipRow.append(runChip, resetChip);
     el.appendChild(chipRow);
 
-    Fig.controls(el, [{ key: "eps", label: "Epsilon", min: 0, max: 1, step: 0.01, value: eps }],
-      (k, v) => { eps = v; });
+    Fig.controls(
+      el,
+      [
+        {
+          key: "eps",
+          label: "Epsilon",
+          min: 0,
+          max: 1,
+          step: 0.01,
+          value: eps,
+        },
+      ],
+      (k, v) => {
+        eps = v;
+      },
+    );
 
     const readout = document.createElement("p");
     readout.className = "meta";
     readout.style.margin = "0.25rem 0 0";
     el.appendChild(readout);
 
-    Fig.caption(el, "each tick: explore with prob ε, otherwise pull the current best arm");
+    Fig.caption(
+      el,
+      "each tick: explore with prob ε, otherwise pull the current best arm",
+    );
 
     function draw() {
       const P = Fig.palette();
       ctx.clearRect(0, 0, cv.w, cv.h);
       const m = { l: 14, r: 14, t: 20, b: 36 };
-      const iw = cv.w - m.l - m.r, ih = cv.h - m.t - m.b;
-      const Y = v => m.t + (1 - Math.min(v, 1)) * ih;
+      const iw = cv.w - m.l - m.r,
+        ih = cv.h - m.t - m.b;
+      const Y = (v) => m.t + (1 - Math.min(v, 1)) * ih;
       const font = "10px ui-monospace, Menlo, monospace";
 
       /* baseline */
       ctx.lineWidth = 1;
       ctx.strokeStyle = P.rule;
-      ctx.beginPath(); ctx.moveTo(m.l, Y(0)); ctx.lineTo(cv.w - m.r, Y(0)); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(m.l, Y(0));
+      ctx.lineTo(cv.w - m.r, Y(0));
+      ctx.stroke();
 
       const slot = iw / 3;
       for (let i = 0; i < 3; i++) {
@@ -117,7 +143,10 @@
 
       /* legend */
       ctx.strokeStyle = P.accent;
-      ctx.beginPath(); ctx.moveTo(m.l, 11); ctx.lineTo(m.l + 14, 11); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(m.l, 11);
+      ctx.lineTo(m.l + 14, 11);
+      ctx.stroke();
       ctx.fillStyle = P.mute;
       ctx.fillText("TRUE MEAN", m.l + 19, 14);
 
@@ -129,7 +158,9 @@
     reset();
 
     Fig.animate(cv, () => {
-      if (running) { tick(); }
+      if (running) {
+        tick();
+      }
       draw();
     });
   });

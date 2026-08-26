@@ -6,7 +6,8 @@
    legible monospace — never blank, never half-lit. */
 
 const MODULE = "https://esm.sh/@speed-highlight/core@2.0.0";
-const THEME = "https://cdn.jsdelivr.net/npm/@speed-highlight/core@2.0.0/dist/themes/default.css";
+const THEME =
+  "https://cdn.jsdelivr.net/npm/@speed-highlight/core@2.0.0/dist/themes/default.css";
 
 /* Fence names as they are written in the posts, mapped onto the names
    speed-highlight actually bundles: it calls Python `py`, and every

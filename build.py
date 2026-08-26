@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import shutil
 import sys
@@ -15,11 +16,10 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 from email.utils import format_datetime
 from pathlib import Path
-from xml.sax.saxutils import escape
 from urllib.parse import quote
+from xml.sax.saxutils import escape
 
 import markdown
-import json
 import yaml
 
 ROOT = Path(__file__).parent
@@ -273,14 +273,14 @@ def as_date(value) -> date | None:
     if isinstance(value, str):
         for fmt in ("%Y-%m-%d", "%Y-%m", "%Y"):
             try:
-                return datetime.strptime(value, fmt).date()
+                return datetime.strptime(value, fmt).replace(tzinfo=timezone.utc).date()
             except ValueError:
                 continue
     return None
 
 
 def first_heading(text: str) -> str:
-    m = re.search(r"^#\s+(.+)$", text, re.M)
+    m = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
     return m.group(1).strip() if m else ""
 
 
@@ -337,8 +337,8 @@ def drop_dead_backrefs(html: str) -> str:
 
 
 def strip_footnotes(html: str) -> str:
-    html = re.sub(r'<sup id="fnref:.*?</sup>', "", html, flags=re.S)
-    return re.sub(r'<div class="footnote">.*?</div>', "", html, flags=re.S)
+    html = re.sub(r'<sup id="fnref:.*?</sup>', "", html, flags=re.DOTALL)
+    return re.sub(r'<div class="footnote">.*?</div>', "", html, flags=re.DOTALL)
 
 
 def wrap_tables(html: str) -> str:
@@ -346,23 +346,25 @@ def wrap_tables(html: str) -> str:
         r"<table>.*?</table>",
         lambda m: f'<div class="scroll-x">{m.group(0)}</div>',
         html,
-        flags=re.S,
+        flags=re.DOTALL,
     )
 
 
-SUP_REF = re.compile(r'<sup id="fnref:(?P<key>[^":]+)(?::\d+)?"[^>]*>.*?</sup>', re.S)
-FOOTNOTE_LI = re.compile(r'<li id="fn:(?P<key>[^"]+)">(?P<body>.*?)</li>', re.S)
-BACKREF = re.compile(r'\s*<a class="footnote-backref".*?</a>', re.S)
+SUP_REF = re.compile(
+    r'<sup id="fnref:(?P<key>[^":]+)(?::\d+)?"[^>]*>.*?</sup>', re.DOTALL
+)
+FOOTNOTE_LI = re.compile(r'<li id="fn:(?P<key>[^"]+)">(?P<body>.*?)</li>', re.DOTALL)
+BACKREF = re.compile(r'\s*<a class="footnote-backref".*?</a>', re.DOTALL)
 BLOCK_IN_NOTE = re.compile(r"<(?:table|ul|ol|pre|blockquote|figure|h[1-6])\b")
 
 
 def _note_body(fragment: str) -> str:
     fragment = BACKREF.sub("", fragment)
-    return re.sub(r"<p>(.*?)</p>", r"\1", fragment, flags=re.S).strip()
+    return re.sub(r"<p>(.*?)</p>", r"\1", fragment, flags=re.DOTALL).strip()
 
 
 def make_sidenotes(html: str) -> str:
-    m = re.search(r'<div class="footnote">(.*?)</div>', html, re.S)
+    m = re.search(r'<div class="footnote">(.*?)</div>', html, re.DOTALL)
     if not m or "<div" in m.group(1):
         return html
     notes = {
@@ -424,7 +426,7 @@ def render_markdown(pages: list[Page]) -> None:
         stash.append(m.group(0))
         return f"QQMATHSTASH{len(stash) - 1}ZQXMATH"
 
-    math_re = re.compile(r"\$\$.*?\$\$|\$[^$\n]+\$|\\\(.*?\\\)|\\\[.*?\\\]", re.S)
+    math_re = re.compile(r"\$\$.*?\$\$|\$[^$\n]+\$|\\\(.*?\\\)|\\\[.*?\\\]", re.DOTALL)
 
     for page in pages:
         body, _, _ = page.text.partition("<!-- more -->")
@@ -521,7 +523,7 @@ def layout(
 
 
 H_ANCHOR = re.compile(
-    r'<h(?P<lvl>[23]) id="(?P<id>[^"]+)"[^>]*>(?P<text>.*?)</h[23]>', re.S
+    r'<h(?P<lvl>[23]) id="(?P<id>[^"]+)"[^>]*>(?P<text>.*?)</h[23]>', re.DOTALL
 )
 
 
@@ -566,6 +568,52 @@ def place_nav(body: str) -> str:
 
 
 SEP = "\u00a0· "
+
+_FIG_SHAPES = ("sphere", "torus", "helix")
+_FIG_NAME = re.compile(r"^[a-z0-9-]+$")
+_THUMB_H = "72"  # matches 4.5rem project-thumb square
+
+
+def project_fig_pair(slug: str) -> tuple[str, str, str]:
+    """Stable shape pair + mix from the project slug — random-looking, not random."""
+    h = 0
+    for c in slug:
+        h = (h * 31 + ord(c)) & 0xFFFFFFFF
+    a = _FIG_SHAPES[h % 3]
+    b = _FIG_SHAPES[(h // 3) % 3]
+    if a == b:
+        b = _FIG_SHAPES[(h + 1) % 3]
+    mix = f"{0.25 + (h % 51) / 100:.2f}"
+    return a, b, mix
+
+
+def project_thumb(page: Page) -> str:
+    """Square thumb from `featured:` — lab component name, `fig3d`, or image path."""
+    raw = page.meta.get("featured")
+    if raw is None or raw is False:
+        return ""
+    kind = str(raw).strip()
+    if not kind or kind.lower() in {"false", "0", "no"}:
+        return ""
+    low = kind.lower()
+    if low in {"fig3d", "webgl"}:
+        shape, morph, mix = project_fig_pair(page.path.stem)
+        inner = (
+            f'<figure class="fig3d">'
+            f'<canvas data-shape="{shape}" data-morph-to="{morph}" data-mix="{mix}"></canvas>'
+            f"</figure>"
+        )
+    elif _FIG_NAME.match(low) and "/" not in kind and "." not in kind:
+        # Any `src/static/components/<name>.js` — e.g. featured: wave
+        name = escape(low)
+        inner = f'<div data-fig="{name}" data-height="{_THUMB_H}" data-preview></div>'
+    else:
+        src = escape(kind)
+        inner = f'<img src="{src}" alt="" loading="lazy">'
+    return (
+        f'<a class="project-thumb" href="{page.url}" tabindex="-1" aria-hidden="true">'
+        f"{inner}</a>"
+    )
 
 
 def article(page: Page, *, comments: bool = False) -> str:
@@ -617,50 +665,28 @@ def listing(title: str, intro: str, pages: list[Page], *, dated: bool) -> str:
             stack = "".join(f'<span class="stack">{escape(p)}</span>' for p in parts)
         chips = tags + stack
 
-        featured = bool(page.meta.get("featured")) or page.path.stem == "lab"
-        cover = str(page.meta.get("cover") or "").strip()
-        preview = ""
-        if not dated and featured:
-            preview = (
-                '<div class="project-preview" aria-hidden="true">'
-                '<figure class="fig3d">'
-                '<canvas data-shape="sphere" data-morph-to="torus"></canvas>'
-                "</figure>"
-                "</div>"
-            )
-        elif not dated and cover:
-            preview = (
-                f'<a class="project-cover" href="{page.url}" tabindex="-1" aria-hidden="true">'
-                f'<img src="{escape(cover)}" alt="" loading="lazy"></a>'
-            )
-
-        li_class = (
-            ' class="project-feature"'
-            if preview and featured
-            else (' class="project-row"' if preview else "")
-        )
-        body = (
-            f'<div class="project-copy">'
+        thumb = "" if dated else project_thumb(page)
+        copy = (
             f'<a class="entry" href="{page.url}">{escape(page.title)}</a>'
             f'<p class="meta">{meta}</p>'
             + (f'<p class="meta index-tags">{chips}</p>' if chips else "")
-            + "</div>"
-            if preview
-            else (
-                f'<a class="entry" href="{page.url}">{escape(page.title)}</a>'
-                f'<p class="meta">{meta}</p>'
-                + (f'<p class="meta index-tags">{chips}</p>' if chips else "")
-            )
         )
-        return f"<li{li_class}>{preview}{body}</li>"
+        if thumb:
+            return (
+                f'<li class="project-row">{thumb}'
+                f'<div class="project-copy">{copy}</div></li>'
+            )
+        return f"<li>{copy}</li>"
 
     head = f"<h1>{escape(title)}</h1>\n{intro}\n"
     if not dated:
-        # Featured projects lead; then date order (already sorted by caller).
+        # Featured rows (those with a thumb) lead; then date order.
         ordered = sorted(
             pages,
             key=lambda p: (
-                0 if (p.meta.get("featured") or p.path.stem == "lab") else 1,
+                0
+                if p.meta.get("featured") not in (None, False, "", "false", "0", "no")
+                else 1,
                 -(p.date.toordinal() if p.date else 0),
             ),
         )
@@ -681,7 +707,7 @@ def listing(title: str, intro: str, pages: list[Page], *, dated: bool) -> str:
 
 
 def has_math(html: str) -> bool:
-    return bool(re.search(r"\$\$.+?\$\$|\$[^$\n]+\$|\\\(|\\\[", html, re.S))
+    return bool(re.search(r"\$\$.+?\$\$|\$[^$\n]+\$|\\\(|\\\[", html, re.DOTALL))
 
 
 def write(path: str, content: str) -> None:
@@ -716,7 +742,7 @@ def rss(posts: list[Page]) -> str:
 
 
 def sitemap(urls: list[str]) -> str:
-    today = date.today().isoformat()
+    today = datetime.now(tz=timezone.utc).date().isoformat()
     body = "".join(
         f"<url><loc>{SITE['url']}{u}</loc><lastmod>{today}</lastmod></url>\n"
         for u in urls
@@ -1211,10 +1237,10 @@ def _src_mtime() -> dict[Path, float]:
 
 
 def serve() -> None:
-    from functools import partial
-    from http.server import HTTPServer, SimpleHTTPRequestHandler
     import threading
     import time
+    from functools import partial
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
 
     class DevHandler(SimpleHTTPRequestHandler):
         def end_headers(self):
@@ -1252,7 +1278,7 @@ def serve() -> None:
                     main()
                 except SystemExit as e:
                     print(e)
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 — rebuild loop must keep serving
                     print(f"build failed: {e}")
     except KeyboardInterrupt:
         print()

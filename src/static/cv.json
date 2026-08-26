@@ -220,11 +220,7 @@
     },
     {
       "name": "Languages",
-      "keywords": [
-        "Python",
-        "SQL",
-        "TypeScript"
-      ]
+      "keywords": ["Python", "SQL", "TypeScript"]
     }
   ],
   "languages": [
@@ -240,18 +236,11 @@
   "interests": [
     {
       "name": "Technology",
-      "keywords": [
-        "Frontier LLMs",
-        "Neurotechnology / BCI",
-        "Open source"
-      ]
+      "keywords": ["Frontier LLMs", "Neurotechnology / BCI", "Open source"]
     },
     {
       "name": "Creative",
-      "keywords": [
-        "Music production",
-        "Technical writing"
-      ]
+      "keywords": ["Music production", "Technical writing"]
     }
   ],
   "projects": [
@@ -263,10 +252,7 @@
         "Pipeline processing 200+ essays into EPUB",
         "800+ GitHub stars"
       ],
-      "keywords": [
-        "Python",
-        "Open Source"
-      ],
+      "keywords": ["Python", "Open Source"],
       "startDate": "2022-07-01",
       "url": "https://github.com/ofou/graham-essays",
       "type": "application"
@@ -277,11 +263,7 @@
       "highlights": [
         "Claude agent + FastAPI backend connected to bank accounts via Fintoc"
       ],
-      "keywords": [
-        "Anthropic API",
-        "Agents",
-        "FastAPI"
-      ],
+      "keywords": ["Anthropic API", "Agents", "FastAPI"],
       "startDate": "2025-11-21",
       "url": "https://github.com/platanus-hack/platanus-hack-25-team-29",
       "type": "application"

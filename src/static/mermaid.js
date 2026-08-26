@@ -1,18 +1,111 @@
 /* mermaid.js — render ```mermaid fences as diagrams.
    Python-Markdown leaves them as <pre><code class="language-mermaid">;
-   this module swaps each block for an SVG. Same library and theme pairing
-   Cursor's Markdown Preview Mermaid Support uses (mermaid 11, light
-   "default" / dark "dark"). If the CDN is unreachable the fences stay as
-   plain source — never blank. */
+   this module swaps each block for an SVG. Theme is the site palette
+   (--paper, --ink, --wash, --mute, --accent, …) via Mermaid's base
+   theme + themeVariables, not default/dark. If the CDN is unreachable
+   the fences stay as plain source — never blank. */
 
-const MODULE = "https://cdn.jsdelivr.net/npm/mermaid@11.12.2/dist/mermaid.esm.min.mjs";
+const MODULE =
+  "https://cdn.jsdelivr.net/npm/mermaid@11.12.2/dist/mermaid.esm.min.mjs";
 
-const blocks = [
-  ...document.querySelectorAll("pre code.language-mermaid"),
-].map((el) => ({
-  pre: el.closest("pre"),
-  code: el.textContent.replace(/\n$/, ""),
-}));
+const blocks = [...document.querySelectorAll("pre code.language-mermaid")].map(
+  (el) => ({
+    pre: el.closest("pre"),
+    code: el.textContent.replace(/\n$/, ""),
+  }),
+);
+
+const css = (name) =>
+  getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+const brandTheme = () => {
+  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  const paper = css("--paper");
+  const ink = css("--ink");
+  const mute = css("--mute");
+  const wash = css("--wash");
+  const mark = css("--mark");
+  const accent = css("--accent");
+  const ok = css("--ok");
+  const fail = css("--fail");
+  const warn = css("--warn");
+  /* Serif at init so dagre measures labels with the face that ships —
+     overriding font in CSS after render clips text inside fixed boxes. */
+  const fontFamily = css("--serif").replace(/"/g, "") || "Georgia, serif";
+
+  return {
+    darkMode: dark,
+    background: paper,
+    fontFamily,
+    fontSize: "15px",
+    primaryColor: wash,
+    primaryTextColor: ink,
+    primaryBorderColor: mute,
+    secondaryColor: mark,
+    secondaryTextColor: ink,
+    secondaryBorderColor: mute,
+    tertiaryColor: paper,
+    tertiaryTextColor: ink,
+    tertiaryBorderColor: mute,
+    lineColor: mute,
+    textColor: ink,
+    mainBkg: wash,
+    nodeBorder: mute,
+    clusterBkg: paper,
+    clusterBorder: mute,
+    titleColor: ink,
+    edgeLabelBackground: paper,
+    nodeTextColor: ink,
+    defaultLinkColor: mute,
+    /* Sequence */
+    actorBkg: wash,
+    actorBorder: mute,
+    actorTextColor: ink,
+    actorLineColor: mute,
+    signalColor: ink,
+    signalTextColor: ink,
+    labelBoxBkgColor: wash,
+    labelBoxBorderColor: mute,
+    labelTextColor: ink,
+    loopTextColor: ink,
+    noteBkgColor: mark,
+    noteTextColor: ink,
+    noteBorderColor: mute,
+    activationBkgColor: wash,
+    activationBorderColor: accent,
+    /* State / class */
+    labelColor: ink,
+    altBackground: wash,
+    /* Pie — brand spectrum, not Mermaid's defaults */
+    pie1: accent,
+    pie2: mute,
+    pie3: ok,
+    pie4: warn,
+    pie5: fail,
+    pie6: mark,
+    pie7: wash,
+    pieTitleTextColor: ink,
+    pieSectionTextColor: ink,
+    pieLegendTextColor: ink,
+    pieStrokeColor: paper,
+    /* Git graph */
+    git0: accent,
+    git1: ok,
+    git2: warn,
+    git3: fail,
+    git4: mute,
+    git5: mark,
+    gitBranchLabel0: paper,
+    gitBranchLabel1: paper,
+    gitBranchLabel2: ink,
+    gitBranchLabel3: paper,
+    gitBranchLabel4: paper,
+    gitBranchLabel5: ink,
+    commitLabelColor: ink,
+    commitLabelBackground: wash,
+    commitLabelFontSize: "12px",
+  };
+};
 
 if (!blocks.length) {
   /* nothing to do */
@@ -20,23 +113,18 @@ if (!blocks.length) {
   try {
     const { default: mermaid } = await import(MODULE);
 
-    const theme = () =>
-      matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "default";
-
     const mount = async () => {
-      /* Match Cursor's Markdown Preview Mermaid Support defaults:
-         theme default/dark, classic look, dagre layout, trebuchet stack.
-         Do not override fontFamily — a site serif reflows every node. */
       mermaid.initialize({
         startOnLoad: false,
-        theme: theme(),
+        theme: "base",
+        themeVariables: brandTheme(),
         look: "classic",
         layout: "dagre",
         securityLevel: "strict",
         flowchart: {
           htmlLabels: true,
-          // "basis" (Cursor default) draws soft Béziers; linear keeps
-          // mostly straight segments with sharp corners at waypoints.
+          // "basis" draws soft Béziers; linear keeps mostly straight
+          // segments with sharp corners at waypoints.
           curve: "linear",
           padding: 15,
           nodeSpacing: 50,

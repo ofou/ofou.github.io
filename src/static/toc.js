@@ -50,7 +50,7 @@
           measure();
         });
     },
-    { passive: true }
+    { passive: true },
   );
   addEventListener("resize", measure);
   measure();

@@ -18,12 +18,24 @@
 (() => {
   const MQ = matchMedia("(min-width: 1152px)");
   const GAP = 9.6; // px — the 0.4rem rhythm the floated notes kept
-  let article, notes, floats, tiers, raf = 0;
+  let article,
+    notes,
+    floats,
+    tiers,
+    raf = 0;
 
   const measure = () => {
     const aTop = article.getBoundingClientRect().top;
     floats = [...article.querySelectorAll("figure.margin, figcaption")]
-      .filter((el) => getComputedStyle(el).float === "right")
+      .filter((el) => {
+        const s = getComputedStyle(el);
+        // Floated channel occupants, plus bare-figure captions that are
+        // absolutely centred on the picture mid-line (float is none).
+        return (
+          s.float === "right" ||
+          (el.localName === "figcaption" && s.position === "absolute")
+        );
+      })
       .map((el) => {
         const r = el.getBoundingClientRect();
         return { fixed: true, top: r.top - aTop, bottom: r.bottom - aTop };
@@ -32,9 +44,11 @@
     // a note. Hang-only plates, listings and section rules stop at
     // hang-l/2; notes start past that hang, so they never share
     // vertical with one.
-    tiers = [...article.querySelectorAll(
-      "figure.fullwidth, pre.fullwidth, div.fullwidth"
-    )].map((el) => {
+    tiers = [
+      ...article.querySelectorAll(
+        "figure.fullwidth, pre.fullwidth, div.fullwidth",
+      ),
+    ].map((el) => {
       const r = el.getBoundingClientRect();
       return { fixed: true, top: r.top - aTop, bottom: r.bottom - aTop };
     });
@@ -44,7 +58,13 @@
       const input = el.previousElementSibling;
       const marker = (input && input.previousElementSibling) || input || el;
       const m = marker.getBoundingClientRect();
-      return { el, desired: m.top - aTop, top: -1, bottom: 0, height: el.offsetHeight };
+      return {
+        el,
+        desired: m.top - aTop,
+        top: -1,
+        bottom: 0,
+        height: el.offsetHeight,
+      };
     });
   };
 
@@ -110,12 +130,14 @@
     MQ.addEventListener("change", on);
     addEventListener("resize", schedule);
     addEventListener("load", schedule);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
+    if (document.fonts && document.fonts.ready)
+      document.fonts.ready.then(schedule);
     // Images and canvases change line positions under the markers; the
     // observer cannot loop — absolute notes add nothing to article's height.
     new ResizeObserver(schedule).observe(article);
   };
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", boot);
   else boot();
 })();

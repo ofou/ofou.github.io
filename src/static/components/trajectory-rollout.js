@@ -14,10 +14,11 @@
 
     function mulberry32(a) {
       return function () {
-        a |= 0; a = a + 0x6d2b79f5 | 0;
-        let t = Math.imul(a ^ a >>> 15, 1 | a);
-        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        a |= 0;
+        a = (a + 0x6d2b79f5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
       };
     }
 
@@ -66,7 +67,8 @@
 
     const draw = () => {
       const P = Fig.palette();
-      const w = cv.w, h = cv.h;
+      const w = cv.w,
+        h = cv.h;
       ctx.clearRect(0, 0, w, h);
 
       const padX = Math.max(20, w * 0.04);
@@ -94,7 +96,8 @@
       /* State cells (ghosted ahead of the reveal frontier) */
       for (let i = 0; i < N; i++) {
         const cx = padX + pitch * (i + 0.5);
-        const x = cx - size / 2, y = cy - size / 2;
+        const x = cx - size / 2,
+          y = cy - size / 2;
         const isCur = i === cur;
         const seen = i <= cur;
 
@@ -153,8 +156,10 @@
         const label = fmtReward(r);
         ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
         const tw = ctx.measureText(label).width;
-        const bw = tw + 12, bh = 16;
-        const bx = mid - bw / 2, by = cy + size / 2 + 10;
+        const bw = tw + 12,
+          bh = 16;
+        const bx = mid - bw / 2,
+          by = cy + size / 2 + 10;
         if (terminal) {
           ctx.fillStyle = P.accent;
           roundRect(bx, by, bw, bh, bh / 2);
@@ -170,8 +175,14 @@
       }
     };
 
-    Fig.controls(el, [{ key: "step", label: "Step", min: 1, max: N, step: 1, value: step }],
-      (k, v) => { step = Math.round(v); draw(); });
+    Fig.controls(
+      el,
+      [{ key: "step", label: "Step", min: 1, max: N, step: 1, value: step }],
+      (k, v) => {
+        step = Math.round(v);
+        draw();
+      },
+    );
 
     draw();
     cv.redraw = draw;

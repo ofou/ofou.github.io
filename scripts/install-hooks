@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Install repo git hooks (symlink into .git/hooks).
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+HOOKS_DIR="${ROOT}/.git/hooks"
+mkdir -p "${HOOKS_DIR}"
+ln -sf ../../scripts/pre-commit "${HOOKS_DIR}/pre-commit"
+chmod +x "${ROOT}/scripts/pre-commit"
+echo "Installed pre-commit → .git/hooks/pre-commit"

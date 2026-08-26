@@ -11,16 +11,20 @@
 
   const palette = () => {
     const s = getComputedStyle(document.documentElement);
-    const g = n => s.getPropertyValue(n).trim();
+    const g = (n) => s.getPropertyValue(n).trim();
     return {
-      paper: g("--paper"), ink: g("--ink"), mute: g("--mute"),
-      accent: g("--accent"), wash: g("--wash"), rule: g("--rule"),
+      paper: g("--paper"),
+      ink: g("--ink"),
+      mute: g("--mute"),
+      accent: g("--accent"),
+      wash: g("--wash"),
+      rule: g("--rule"),
       dark: mqDark.matches,
     };
   };
 
-  const onScheme = f => schemeWatchers.add(f);
-  const fireScheme = () => schemeWatchers.forEach(f => f());
+  const onScheme = (f) => schemeWatchers.add(f);
+  const fireScheme = () => schemeWatchers.forEach((f) => f());
   mqDark.addEventListener?.("change", fireScheme);
 
   /* HiDPI canvas. state.redraw is set by the component (or by animate)
@@ -30,7 +34,14 @@
     c.style.width = "100%";
     c.style.display = "block";
     el.appendChild(c);
-    const state = { el: c, ctx: c.getContext("2d"), w: 0, h: 0, dpr: 1, redraw: null };
+    const state = {
+      el: c,
+      ctx: c.getContext("2d"),
+      w: 0,
+      h: 0,
+      dpr: 1,
+      redraw: null,
+    };
     const fit = () => {
       state.dpr = Math.min(devicePixelRatio || 1, 2);
       state.w = el.clientWidth || 600;
@@ -45,7 +56,11 @@
     const ro = new ResizeObserver(() => {
       if (queued) return;
       queued = true;
-      requestAnimationFrame(() => { queued = false; fit(); state.redraw && state.redraw(); });
+      requestAnimationFrame(() => {
+        queued = false;
+        fit();
+        state.redraw && state.redraw();
+      });
     });
     ro.observe(el);
     return state;
@@ -55,38 +70,69 @@
      immune to double-scheduling, and wires state.redraw to restart. */
   function animate(cvState, drawFn) {
     const epoch = { alive: true };
-    let raf = 0, visible = true;
+    let raf = 0,
+      visible = true;
     const tick = () => {
       if (!epoch.alive) return;
       drawFn();
-      if (epoch.alive && visible && !document.hidden && !reduced()) raf = requestAnimationFrame(tick);
+      if (epoch.alive && visible && !document.hidden && !reduced())
+        raf = requestAnimationFrame(tick);
       else raf = 0;
     };
     const start = () => {
       epoch.alive = true;
       cancelAnimationFrame(raf);
-      if (!reduced() && visible && !document.hidden) raf = requestAnimationFrame(tick);
+      if (!reduced() && visible && !document.hidden)
+        raf = requestAnimationFrame(tick);
       else drawFn();
     };
-    const stop = () => { epoch.alive = false; cancelAnimationFrame(raf); };
+    const stop = () => {
+      epoch.alive = false;
+      cancelAnimationFrame(raf);
+    };
     cvState.redraw = start;
     if ("IntersectionObserver" in window) {
-      new IntersectionObserver(es => es.forEach(e => {
-        visible = e.isIntersecting;
-        visible ? start() : stop();
-      }), { threshold: 0.05 }).observe(cvState.el);
+      new IntersectionObserver(
+        (es) =>
+          es.forEach((e) => {
+            visible = e.isIntersecting;
+            visible ? start() : stop();
+          }),
+        { threshold: 0.05 },
+      ).observe(cvState.el);
     }
-    document.addEventListener("visibilitychange", () => (visible && !document.hidden ? start() : stop()));
-    mqReduced.addEventListener?.("change", () => (reduced() ? stop() : start()));
+    document.addEventListener("visibilitychange", () =>
+      visible && !document.hidden ? start() : stop(),
+    );
+    mqReduced.addEventListener?.("change", () =>
+      reduced() ? stop() : start(),
+    );
     start();
     return () => stop();
   }
 
+  /* Project index thumbs (and explicit data-preview) skip chrome. */
+  const isPreview = (el) =>
+    !!(el && (el.closest?.(".project-thumb") || el.dataset?.preview != null));
+
   /* Mono-labelled slider row. */
   function controls(el, defs, onChange) {
+    const handles = {};
+    if (isPreview(el)) {
+      for (const d of defs) {
+        let v = d.value;
+        handles[d.key] = {
+          set(n) {
+            v = n;
+          },
+          get: () => v,
+          input: null,
+        };
+      }
+      return handles;
+    }
     const wrap = document.createElement("div");
     wrap.className = "fig-controls";
-    const handles = {};
     for (const d of defs) {
       const row = document.createElement("label");
       row.className = "fig-control";
@@ -96,7 +142,9 @@
       val.textContent = d.value;
       const input = document.createElement("input");
       input.type = "range";
-      input.min = d.min; input.max = d.max; input.step = d.step ?? 0.01;
+      input.min = d.min;
+      input.max = d.max;
+      input.step = d.step ?? 0.01;
       input.value = d.value;
       input.setAttribute("aria-label", d.label);
       input.addEventListener("input", () => {
@@ -107,7 +155,10 @@
       row.append(name, input, val);
       wrap.appendChild(row);
       handles[d.key] = {
-        set(v) { input.value = v; val.textContent = Math.round(v * 100) / 100; },
+        set(v) {
+          input.value = v;
+          val.textContent = Math.round(v * 100) / 100;
+        },
         get: () => parseFloat(input.value),
         input,
       };
@@ -126,6 +177,7 @@
   }
 
   function caption(el, text) {
+    if (isPreview(el)) return null;
     const p = document.createElement("p");
     p.className = "meta";
     p.style.margin = "0.5rem 0 0";
@@ -135,6 +187,7 @@
   }
 
   function frame(cvState) {
+    if (isPreview(cvState.el.parentElement)) return;
     cvState.el.style.border = "1px solid var(--rule-fine)";
   }
 
@@ -150,7 +203,7 @@
     }
     if (!registry[name]) {
       if (!pending[name]) {
-        pending[name] = new Promise(res => {
+        pending[name] = new Promise((res) => {
           const s = document.createElement("script");
           s.src = "/static/components/" + name + ".js";
           s.onload = s.onerror = res;
@@ -160,7 +213,10 @@
       await pending[name];
     }
     const factory = registry[name];
-    if (!factory) { el.dataset.error = "unknown component: " + name; return; }
+    if (!factory) {
+      el.dataset.error = "unknown component: " + name;
+      return;
+    }
     try {
       factory(el, { ...el.dataset });
     } catch (e) {
@@ -174,18 +230,36 @@
       document.querySelectorAll("[data-fig]").forEach(mount);
       return;
     }
-    const near = new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting) { near.unobserve(e.target); mount(e.target); }
-    }), { rootMargin: "60% 0px" });
-    document.querySelectorAll("[data-fig]").forEach(el => near.observe(el));
+    const near = new IntersectionObserver(
+      (es) =>
+        es.forEach((e) => {
+          if (e.isIntersecting) {
+            near.unobserve(e.target);
+            mount(e.target);
+          }
+        }),
+      { rootMargin: "60% 0px" },
+    );
+    document.querySelectorAll("[data-fig]").forEach((el) => near.observe(el));
   }
 
   window.Fig = {
-    register: (n, f) => { registry[n] = f; },
-    palette, canvas, animate, controls, caption, frame,
-    chip, reduced, onScheme,
+    register: (n, f) => {
+      registry[n] = f;
+    },
+    palette,
+    canvas,
+    animate,
+    controls,
+    caption,
+    frame,
+    chip,
+    reduced,
+    onScheme,
+    isPreview,
   };
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", boot);
   else boot();
 })();

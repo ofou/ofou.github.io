@@ -2,16 +2,46 @@
   Fig.register("next-token", function (el, opts) {
     const vocab = ["The", "cat", "sat", "on", "mat", "again", "today"];
     const bigram = {
-      The: [["cat", 6], ["mat", 2], ["today", 1]],
-      cat: [["sat", 7], ["again", 1]],
-      sat: [["on", 8], ["today", 1]],
-      on: [["the", 5], ["a", 4], ["mat", 1]],
-      the: [["mat", 6], ["cat", 3]],
-      mat: [["again", 3], ["today", 3], [".", 4]],
-      again: [["today", 2], [".", 2]],
-      today: [[".", 6], ["The", 2]],
+      The: [
+        ["cat", 6],
+        ["mat", 2],
+        ["today", 1],
+      ],
+      cat: [
+        ["sat", 7],
+        ["again", 1],
+      ],
+      sat: [
+        ["on", 8],
+        ["today", 1],
+      ],
+      on: [
+        ["the", 5],
+        ["a", 4],
+        ["mat", 1],
+      ],
+      the: [
+        ["mat", 6],
+        ["cat", 3],
+      ],
+      mat: [
+        ["again", 3],
+        ["today", 3],
+        [".", 4],
+      ],
+      again: [
+        ["today", 2],
+        [".", 2],
+      ],
+      today: [
+        [".", 6],
+        ["The", 2],
+      ],
       ".": [["The", 4]],
-      a: [["cat", 5], ["mat", 3]],
+      a: [
+        ["cat", 5],
+        ["mat", 3],
+      ],
     };
     let ctxWords = ["The"];
     el.style.userSelect = "none";
@@ -22,11 +52,14 @@
     function dist(w) {
       const rows = bigram[w] || [[".", 1]];
       const tot = rows.reduce((s, r) => s + r[1], 0);
-      return rows.map(([t, c]) => [t, c / tot]).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      return rows
+        .map(([t, c]) => [t, c / tot])
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
     }
     function chips() {
       chipRow.innerHTML = "";
-      ctxWords.forEach(w => {
+      ctxWords.forEach((w) => {
         const c = document.createElement("span");
         c.className = "chip";
         c.textContent = w;
@@ -48,10 +81,15 @@
         ctx.fillRect(10 + i * bw + 5, cv.h - 26 - h, bw - 10, h);
         ctx.globalAlpha = 1;
         ctx.font = "10px ui-monospace, Menlo, monospace";
-        ctx.fillStyle = P.mute; ctx.textAlign = "center";
+        ctx.fillStyle = P.mute;
+        ctx.textAlign = "center";
         ctx.fillText(w, 10 + i * bw + bw / 2, cv.h - 10);
         ctx.fillStyle = P.ink;
-        ctx.fillText(Math.round(p * 100) + "%", 10 + i * bw + bw / 2, cv.h - 32 - h);
+        ctx.fillText(
+          Math.round(p * 100) + "%",
+          10 + i * bw + bw / 2,
+          cv.h - 32 - h,
+        );
         ctx.textAlign = "left";
       });
     };
@@ -68,12 +106,15 @@
       ctxWords.push(w);
       renderBars();
     }
-    cv.el.addEventListener("pointerdown", e => {
+    cv.el.addEventListener("pointerdown", (e) => {
       const r = cv.el.getBoundingClientRect();
       const d = dist(ctxWords[ctxWords.length - 1]);
       const bw = (cv.w - 20) / d.length;
       const idx = Math.floor((e.clientX - r.left - 10) / bw);
-      if (idx >= 0 && idx < d.length) { ctxWords.push(d[idx][0]); renderBars(); }
+      if (idx >= 0 && idx < d.length) {
+        ctxWords.push(d[idx][0]);
+        renderBars();
+      }
     });
     el.addEventListener("click", clickHandler);
     const resetRow = document.createElement("div");
@@ -82,7 +123,10 @@
     reset.className = "chip";
     reset.textContent = "↺ reset";
     reset.style.cursor = "pointer";
-    reset.addEventListener("click", () => { ctxWords = ["The"]; renderBars(); });
+    reset.addEventListener("click", () => {
+      ctxWords = ["The"];
+      renderBars();
+    });
     resetRow.appendChild(reset);
     el.appendChild(resetRow);
     renderBars();

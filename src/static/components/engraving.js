@@ -14,8 +14,14 @@
     let gl;
     try {
       gl = c.getContext("webgl2", { antialias: false, alpha: false });
-    } catch (e) { /* fall through */ }
-    if (!gl) { el.dataset.error = "1"; c.remove(); return; }
+    } catch (e) {
+      /* fall through */
+    }
+    if (!gl) {
+      el.dataset.error = "1";
+      c.remove();
+      return;
+    }
 
     const VERT = `#version 300 es
 layout(location=0) in vec2 aPos;
@@ -172,27 +178,47 @@ void main(){
   outColor = vec4(col, 1.0);
 }`;
 
-    function sh(type, src){
+    function sh(type, src) {
       const o = gl.createShader(type);
-      gl.shaderSource(o, src); gl.compileShader(o);
-      if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o));
+      gl.shaderSource(o, src);
+      gl.compileShader(o);
+      if (!gl.getShaderParameter(o, gl.COMPILE_STATUS))
+        throw new Error(gl.getShaderInfoLog(o));
       return o;
     }
     const prog = gl.createProgram();
     gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT));
     gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FRAG));
     gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
+      throw new Error(gl.getProgramInfoLog(prog));
     gl.useProgram(prog);
 
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW,
+    );
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
     const U = {};
-    for (const n of ["uTex", "uRes", "uPeriod", "uContrast", "uExposure", "uCross", "uWobble", "uStipple", "uPaper", "uInk", "uLoupe", "uZoom"])
+    for (const n of [
+      "uTex",
+      "uRes",
+      "uPeriod",
+      "uContrast",
+      "uExposure",
+      "uCross",
+      "uWobble",
+      "uStipple",
+      "uPaper",
+      "uInk",
+      "uLoupe",
+      "uZoom",
+    ])
       U[n] = gl.getUniformLocation(prog, n);
 
     const tex = gl.createTexture();
@@ -202,10 +228,21 @@ void main(){
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
-    const params = { period: 7, contrast: 1.15, exposure: 1.5, cross: 1, wobble: 0.35, stipple: 0.35 };
-    let imgW = 1, imgH = 1, texReady = false, queued = false, loupe = [0, 0, 0];
+    const params = {
+      period: 7,
+      contrast: 1.15,
+      exposure: 1.5,
+      cross: 1,
+      wobble: 0.35,
+      stipple: 0.35,
+    };
+    let imgW = 1,
+      imgH = 1,
+      texReady = false,
+      queued = false,
+      loupe = [0, 0, 0];
 
-    function fit(){
+    function fit() {
       const dpr = Math.min(devicePixelRatio || 1, 2);
       const w = el.clientWidth || 600;
       const s = Math.min(w / imgW, boxHeight / imgH);
@@ -215,12 +252,12 @@ void main(){
       gl.viewport(0, 0, c.width, c.height);
     }
 
-    function rgb(hex){
+    function rgb(hex) {
       const n = parseInt(hex.replace("#", ""), 16);
       return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
     }
 
-    function render(){
+    function render() {
       if (!texReady) return;
       const P = Fig.palette();
       gl.uniform1i(U.uTex, 0);
@@ -238,33 +275,61 @@ void main(){
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     }
 
-    function setImage(source, w, h){
-      imgW = w; imgH = h;
+    function setImage(source, w, h) {
+      imgW = w;
+      imgH = h;
       gl.bindTexture(gl.TEXTURE_2D, tex);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        source,
+      );
       texReady = true;
-      fit(); render();
+      fit();
+      render();
     }
 
     // self-contained fallback so the figure never ships blank
-    function procedural(){
+    function procedural() {
       const off = document.createElement("canvas");
-      off.width = 900; off.height = 900;
+      off.width = 900;
+      off.height = 900;
       const x = off.getContext("2d");
-      x.fillStyle = "#202020"; x.fillRect(0, 0, 900, 900);
-      const blobs = [[300,320,300,.95],[620,380,240,.8],[450,640,280,.7],[700,700,180,.55],[180,680,160,.5],[520,180,150,.6]];
-      for (const [bx, by, r, a] of blobs){
-        const g = x.createRadialGradient(bx - r * 0.35, by - r * 0.35, r * 0.05, bx, by, r);
+      x.fillStyle = "#202020";
+      x.fillRect(0, 0, 900, 900);
+      const blobs = [
+        [300, 320, 300, 0.95],
+        [620, 380, 240, 0.8],
+        [450, 640, 280, 0.7],
+        [700, 700, 180, 0.55],
+        [180, 680, 160, 0.5],
+        [520, 180, 150, 0.6],
+      ];
+      for (const [bx, by, r, a] of blobs) {
+        const g = x.createRadialGradient(
+          bx - r * 0.35,
+          by - r * 0.35,
+          r * 0.05,
+          bx,
+          by,
+          r,
+        );
         g.addColorStop(0, `rgba(255,255,255,${a})`);
         g.addColorStop(0.7, `rgba(140,140,140,${a * 0.7})`);
         g.addColorStop(1, "rgba(20,20,20,0)");
-        x.fillStyle = g; x.beginPath(); x.arc(bx, by, r, 0, 7); x.fill();
+        x.fillStyle = g;
+        x.beginPath();
+        x.arc(bx, by, r, 0, 7);
+        x.fill();
       }
       setImage(off, 900, 900);
     }
 
-    function loadURL(url){
+    function loadURL(url) {
       const im = new Image();
       im.onload = () => setImage(im, im.naturalWidth, im.naturalHeight);
       im.onerror = procedural;
@@ -274,7 +339,11 @@ void main(){
     new ResizeObserver(() => {
       if (queued || !texReady) return;
       queued = true;
-      requestAnimationFrame(() => { queued = false; fit(); render(); });
+      requestAnimationFrame(() => {
+        queued = false;
+        fit();
+        render();
+      });
     }).observe(el);
 
     // hover loupe: re-evaluates the field at the magnified source point
@@ -282,25 +351,79 @@ void main(){
     c.addEventListener("pointermove", (e) => {
       const r = c.getBoundingClientRect();
       loupe = [
-        (e.clientX - r.left) / r.width * c.width,
-        c.height - (e.clientY - r.top) / r.height * c.height,
+        ((e.clientX - r.left) / r.width) * c.width,
+        c.height - ((e.clientY - r.top) / r.height) * c.height,
         Math.min(c.width, c.height) * 0.28,
       ];
       render();
     });
-    c.addEventListener("pointerleave", () => { loupe = [0, 0, 0]; render(); });
+    c.addEventListener("pointerleave", () => {
+      loupe = [0, 0, 0];
+      render();
+    });
 
-    Fig.controls(el, [
-      { key: "period",   label: "Period",     min: 2.5, max: 14,  step: 0.1,  value: params.period },
-      { key: "contrast", label: "Contrast",   min: 0.5, max: 3,   step: 0.05, value: params.contrast },
-      { key: "exposure", label: "Exposure",   min: 0.4, max: 2.2, step: 0.05, value: params.exposure },
-      { key: "cross",    label: "Cross-hatch", min: 0,  max: 1,   step: 0.05, value: params.cross },
-      { key: "wobble",   label: "Wobble",     min: 0,   max: 1,   step: 0.05, value: params.wobble },
-      { key: "stipple",  label: "Stipple",    min: 0,   max: 1,   step: 0.05, value: params.stipple },
-    ], (k, v) => { params[k] = v; render(); });
+    Fig.controls(
+      el,
+      [
+        {
+          key: "period",
+          label: "Period",
+          min: 2.5,
+          max: 14,
+          step: 0.1,
+          value: params.period,
+        },
+        {
+          key: "contrast",
+          label: "Contrast",
+          min: 0.5,
+          max: 3,
+          step: 0.05,
+          value: params.contrast,
+        },
+        {
+          key: "exposure",
+          label: "Exposure",
+          min: 0.4,
+          max: 2.2,
+          step: 0.05,
+          value: params.exposure,
+        },
+        {
+          key: "cross",
+          label: "Cross-hatch",
+          min: 0,
+          max: 1,
+          step: 0.05,
+          value: params.cross,
+        },
+        {
+          key: "wobble",
+          label: "Wobble",
+          min: 0,
+          max: 1,
+          step: 0.05,
+          value: params.wobble,
+        },
+        {
+          key: "stipple",
+          label: "Stipple",
+          min: 0,
+          max: 1,
+          step: 0.05,
+          value: params.stipple,
+        },
+      ],
+      (k, v) => {
+        params[k] = v;
+        render();
+      },
+    );
 
     const file = document.createElement("input");
-    file.type = "file"; file.accept = "image/*"; file.style.display = "none";
+    file.type = "file";
+    file.accept = "image/*";
+    file.style.display = "none";
     file.addEventListener("change", () => {
       const f = file.files[0];
       if (!f) return;
@@ -314,7 +437,10 @@ void main(){
     btnRow.appendChild(Fig.chip("Load image…", () => file.click()));
     el.appendChild(btnRow);
 
-    Fig.caption(el, "flow-guided hatching · hover to zoom · WebGL2, single pass");
+    Fig.caption(
+      el,
+      "flow-guided hatching · hover to zoom · WebGL2, single pass",
+    );
 
     loadURL("/static/images/engraving-rembrandt.jpg");
     Fig.onScheme(render);

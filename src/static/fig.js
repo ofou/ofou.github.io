@@ -31,73 +31,140 @@ void main() {
     sphere(N) {
       const o = new Float32Array(N * 3);
       for (let i = 0; i < N; i++) {
-        const y = 1 - (2 * i) / (N - 1), r = Math.sqrt(1 - y * y), t = i * 2.399963;
-        o[i*3] = Math.cos(t) * r * 1.05; o[i*3+1] = y * 1.05; o[i*3+2] = Math.sin(t) * r * 1.05;
+        const y = 1 - (2 * i) / (N - 1),
+          r = Math.sqrt(1 - y * y),
+          t = i * 2.399963;
+        o[i * 3] = Math.cos(t) * r * 1.05;
+        o[i * 3 + 1] = y * 1.05;
+        o[i * 3 + 2] = Math.sin(t) * r * 1.05;
       }
       return o;
     },
     torus(N) {
-      const o = new Float32Array(N * 3), R = 0.78, r = 0.32;
+      const o = new Float32Array(N * 3),
+        R = 0.78,
+        r = 0.32;
       for (let i = 0; i < N; i++) {
-        const u = Math.random() * 6.2832, v = Math.random() * 6.2832;
-        o[i*3] = (R + r * Math.cos(v)) * Math.cos(u);
-        o[i*3+1] = r * Math.sin(v);
-        o[i*3+2] = (R + r * Math.cos(v)) * Math.sin(u);
+        const u = Math.random() * 6.2832,
+          v = Math.random() * 6.2832;
+        o[i * 3] = (R + r * Math.cos(v)) * Math.cos(u);
+        o[i * 3 + 1] = r * Math.sin(v);
+        o[i * 3 + 2] = (R + r * Math.cos(v)) * Math.sin(u);
       }
       return o;
     },
     helix(N) {
-      const o = new Float32Array(N * 3), TURNS = 2.5, H = 2.5, R = 0.62;
+      const o = new Float32Array(N * 3),
+        TURNS = 2.5,
+        H = 2.5,
+        R = 0.62;
       for (let i = 0; i < N; i++) {
         const t = (i / (N - 1)) * TURNS * 6.2832;
-        const jx = (Math.random() - .5) * .16, jy = (Math.random() - .5) * .16, jz = (Math.random() - .5) * .16;
-        o[i*3] = Math.cos(t) * R + jx;
-        o[i*3+1] = (i / (N - 1)) * H - H / 2 + jy;
-        o[i*3+2] = Math.sin(t) * R + jz;
+        const jx = (Math.random() - 0.5) * 0.16,
+          jy = (Math.random() - 0.5) * 0.16,
+          jz = (Math.random() - 0.5) * 0.16;
+        o[i * 3] = Math.cos(t) * R + jx;
+        o[i * 3 + 1] = (i / (N - 1)) * H - H / 2 + jy;
+        o[i * 3 + 2] = Math.sin(t) * R + jz;
       }
       return o;
-    }
+    },
   };
-
 
   /* ---------- tiny mat4 / quat ---------- */
   const persp = (fov, asp, n, f) => {
-    const t = 1 / Math.tan(fov / 2), r = 1 / (n - f);
-    return new Float32Array([t/asp,0,0,0, 0,t,0,0, 0,0,(f+n)*r,-1, 0,0,2*f*n*r,0]);
-  };
-  const qmul = (a, b) => {
-    const [ax,ay,az,aw] = a, [bx,by,bz,bw] = b;
-    return [aw*bx+ax*bw+ay*bz-az*by, aw*by-ax*bz+ay*bw+az*bx,
-            aw*bz+ax*by-ay*bx+az*bw, aw*bw-ax*bx-ay*by-az*bz];
-  };
-  const qaxis = (ax, ay, az, ang) => {
-    const s = Math.sin(ang / 2), L = Math.hypot(ax, ay, az) || 1;
-    return [ax/L*s, ay/L*s, az/L*s, Math.cos(ang / 2)];
-  };
-  const qnorm = q => { const L = Math.hypot(...q) || 1; return q.map(v => v / L); };
-  const qmat = q => {
-    const [x, y, z, w] = q;
+    const t = 1 / Math.tan(fov / 2),
+      r = 1 / (n - f);
     return new Float32Array([
-      1-2*y*y-2*z*z, 2*x*y+2*z*w, 2*x*z-2*y*w, 0,
-      2*x*y-2*z*w, 1-2*x*x-2*z*z, 2*y*z+2*x*w, 0,
-      2*x*z+2*y*w, 2*y*z-2*x*w, 1-2*x*x-2*y*y, 0,
-      0, 0, 0, 1
+      t / asp,
+      0,
+      0,
+      0,
+      0,
+      t,
+      0,
+      0,
+      0,
+      0,
+      (f + n) * r,
+      -1,
+      0,
+      0,
+      2 * f * n * r,
+      0,
     ]);
   };
-  const hex = x => { x = x.trim(); const n = parseInt(x.slice(1), 16); return [(n>>16&255)/255, (n>>8&255)/255, (n&255)/255]; };
+  const qmul = (a, b) => {
+    const [ax, ay, az, aw] = a,
+      [bx, by, bz, bw] = b;
+    return [
+      aw * bx + ax * bw + ay * bz - az * by,
+      aw * by - ax * bz + ay * bw + az * bx,
+      aw * bz + ax * by - ay * bx + az * bw,
+      aw * bw - ax * bx - ay * by - az * bz,
+    ];
+  };
+  const qaxis = (ax, ay, az, ang) => {
+    const s = Math.sin(ang / 2),
+      L = Math.hypot(ax, ay, az) || 1;
+    return [(ax / L) * s, (ay / L) * s, (az / L) * s, Math.cos(ang / 2)];
+  };
+  const qnorm = (q) => {
+    const L = Math.hypot(...q) || 1;
+    return q.map((v) => v / L);
+  };
+  const qmat = (q) => {
+    const [x, y, z, w] = q;
+    return new Float32Array([
+      1 - 2 * y * y - 2 * z * z,
+      2 * x * y + 2 * z * w,
+      2 * x * z - 2 * y * w,
+      0,
+      2 * x * y - 2 * z * w,
+      1 - 2 * x * x - 2 * z * z,
+      2 * y * z + 2 * x * w,
+      0,
+      2 * x * z + 2 * y * w,
+      2 * y * z - 2 * x * w,
+      1 - 2 * x * x - 2 * y * y,
+      0,
+      0,
+      0,
+      0,
+      1,
+    ]);
+  };
+  const hex = (x) => {
+    x = x.trim();
+    const n = parseInt(x.slice(1), 16);
+    return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+  };
 
   function init(fig) {
     const cv = fig.querySelector("canvas[data-shape]");
     if (!cv) return;
     let gl = null;
     try {
-      gl = cv.getContext("webgl", { antialias: true, alpha: true, preserveDrawingBuffer: true });
-    } catch (e) { console.error("fig.js context:", e); }
-    if (!gl) { fig.dataset.error = "1"; console.error("fig.js: no WebGL context"); return; }
+      gl = cv.getContext("webgl", {
+        antialias: true,
+        alpha: true,
+        preserveDrawingBuffer: true,
+      });
+    } catch (e) {
+      console.error("fig.js context:", e);
+    }
+    if (!gl) {
+      fig.dataset.error = "1";
+      console.error("fig.js: no WebGL context");
+      return;
+    }
 
     const sh = (t, s) => {
-      const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o);
-      if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o));
+      const o = gl.createShader(t);
+      gl.shaderSource(o, s);
+      gl.compileShader(o);
+      if (!gl.getShaderParameter(o, gl.COMPILE_STATUS))
+        throw new Error(gl.getShaderInfoLog(o));
       return o;
     };
     let pr = null;
@@ -119,11 +186,18 @@ void main() {
 
     const N = 4200;
     const shapeA = (SHAPES[cv.dataset.shape] || SHAPES.sphere)(N);
-    const shapeB = cv.dataset.morphTo ? (SHAPES[cv.dataset.morphTo] || SHAPES[cv.dataset.shape])(N) : shapeA;
+    const shapeB = cv.dataset.morphTo
+      ? (SHAPES[cv.dataset.morphTo] || SHAPES[cv.dataset.shape])(N)
+      : shapeA;
     const hi = new Float32Array(N);
     for (let i = 0; i < N; i += 13) hi[i] = 1;
 
-    const mkBuf = d => { const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, d, gl.STATIC_DRAW); return b; };
+    const mkBuf = (d) => {
+      const b = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, b);
+      gl.bufferData(gl.ARRAY_BUFFER, d, gl.STATIC_DRAW);
+      return b;
+    };
     const attr = (name, buf) => {
       const l = gl.getAttribLocation(pr, name);
       gl.bindBuffer(gl.ARRAY_BUFFER, buf);
@@ -135,17 +209,34 @@ void main() {
     attr("b", mkBuf(shapeB));
     attr("h", mkBuf(hi));
 
-    const U = n => gl.getUniformLocation(pr, n);
-    const uM = U("m"), uPr = U("pr"), uMix = U("mixv"), uDpr = U("dpr"),
-          uInk = U("ink"), uAcc = U("accent");
+    const U = (n) => gl.getUniformLocation(pr, n);
+    const uM = U("m"),
+      uPr = U("pr"),
+      uMix = U("mixv"),
+      uDpr = U("dpr"),
+      uInk = U("ink"),
+      uAcc = U("accent");
     gl.uniform1f(uMix, 0);
 
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let dpr = 1, q = qaxis(0.3, 1, 0.15, 0.7), mixCur = 0, mixTarget = 0, raf = 0;
+    let dpr = 1,
+      q = qaxis(0.3, 1, 0.15, 0.7),
+      mixCur = 0,
+      mixTarget = 0,
+      raf = 0;
+
+    if (cv.dataset.mix != null && cv.dataset.mix !== "") {
+      const m = Math.min(1, Math.max(0, Number(cv.dataset.mix) || 0));
+      mixCur = mixTarget = m;
+      gl.uniform1f(uMix, m);
+    }
 
     const slider = fig.querySelector("input[type=range]");
     if (slider && cv.dataset.morphTo)
-      slider.addEventListener("input", () => { mixTarget = slider.value / 1000; wake(); });
+      slider.addEventListener("input", () => {
+        mixTarget = slider.value / 1000;
+        wake();
+      });
 
     const size = () => {
       dpr = Math.min(devicePixelRatio || 1, 1.5);
@@ -177,13 +268,25 @@ void main() {
       draw();
       raf = requestAnimationFrame(step);
     };
-    const wake = () => { cancelAnimationFrame(raf); if (!reduced) raf = requestAnimationFrame(step); else draw(); };
+    const wake = () => {
+      cancelAnimationFrame(raf);
+      if (!reduced) raf = requestAnimationFrame(step);
+      else draw();
+    };
 
-    matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => { size(); draw(); });
+    matchMedia("(prefers-color-scheme: dark)").addEventListener?.(
+      "change",
+      () => {
+        size();
+        draw();
+      },
+    );
     size();
     wake();
   }
 
   const boot = () => document.querySelectorAll(".fig3d").forEach(init);
-  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", boot) : boot();
+  document.readyState === "loading"
+    ? document.addEventListener("DOMContentLoaded", boot)
+    : boot();
 })();

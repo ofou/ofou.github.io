@@ -7,8 +7,10 @@
     // legend strip (HTML so it stays readable at narrow widths)
     const legend = document.createElement("p");
     legend.className = "meta";
-    legend.style.cssText = "margin:0 0 .4rem;font:10px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace";
-    legend.textContent = "track = latency \u00B7 bar = $ vs OCR max \u00B7 \u2713/\u2717 = field fidelity";
+    legend.style.cssText =
+      "margin:0 0 .4rem;font:10px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace";
+    legend.textContent =
+      "track = latency \u00B7 bar = $ vs OCR max \u00B7 \u2713/\u2717 = field fidelity";
     el.appendChild(legend);
 
     const cv = Fig.canvas(el, 300);
@@ -18,19 +20,36 @@
     // measured: [label, latency s, cost $, fidelity note, good]
     // labels mirror the post table; race math still uses the mid/anchor latency.
     const LANES = [
-      ["native @ venice",                 7.4,  0.0061, "12/13 pages",        true],
-      ["images 100dpi \u00B7 ~16s (10\u201324)", 16.0, 0.0078, "13/13 + signatures", true],
-      ["cloudflare-ai, unpinned",         38.5, 0.0051, "13/13",              true],
-      ["mistral-ocr, unpinned",           45.1, 0.0342, "9/13 \u00B7 6\u00D7 cost", false],
+      ["native @ venice", 7.4, 0.0061, "12/13 pages", true],
+      [
+        "images 100dpi \u00B7 ~16s (10\u201324)",
+        16.0,
+        0.0078,
+        "13/13 + signatures",
+        true,
+      ],
+      ["cloudflare-ai, unpinned", 38.5, 0.0051, "13/13", true],
+      [
+        "mistral-ocr, unpinned",
+        45.1,
+        0.0342,
+        "9/13 \u00B7 6\u00D7 cost",
+        false,
+      ],
     ];
-    const T_MAX = 45.1, COST_MAX = 0.0342;
-    const T_SCALE = 6.5;          // real seconds compressed: race lasts ~7s
-    const HOLD = 10;              // race-seconds between cycles
-    const HOLD_LAST = 90;         // long hold so the 6× bar stays on screen
+    const T_MAX = 45.1,
+      COST_MAX = 0.0342;
+    const T_SCALE = 6.5; // real seconds compressed: race lasts ~7s
+    const HOLD = 10; // race-seconds between cycles
+    const HOLD_LAST = 90; // long hold so the 6× bar stays on screen
     const MAX_CYCLES = 2;
-    let cycles = 0, done = false;
-    let started = false, paused = false;
-    let t0 = 0, pauseAccum = 0, pauseAt = 0;
+    let cycles = 0,
+      done = false;
+    let started = false,
+      paused = false;
+    let t0 = 0,
+      pauseAccum = 0,
+      pauseAt = 0;
 
     function raceElapsed() {
       if (!started) return 0;
@@ -61,27 +80,31 @@
 
     // start at ≥50% visible; pause the clock while off-screen
     if ("IntersectionObserver" in window) {
-      new IntersectionObserver(es => {
-        const e = es[0];
-        if (!e) return;
-        if (e.intersectionRatio >= 0.5) {
-          if (!started) armRace();
-          else if (paused) {
-            pauseAccum += performance.now() - pauseAt;
-            paused = false;
+      new IntersectionObserver(
+        (es) => {
+          const e = es[0];
+          if (!e) return;
+          if (e.intersectionRatio >= 0.5) {
+            if (!started) armRace();
+            else if (paused) {
+              pauseAccum += performance.now() - pauseAt;
+              paused = false;
+            }
+          } else if (started && !paused && !e.isIntersecting) {
+            paused = true;
+            pauseAt = performance.now();
           }
-        } else if (started && !paused && !e.isIntersecting) {
-          paused = true;
-          pauseAt = performance.now();
-        }
-      }, { threshold: [0, 0.05, 0.5, 1] }).observe(el);
+        },
+        { threshold: [0, 0.05, 0.5, 1] },
+      ).observe(el);
     } else {
       armRace();
     }
 
     const draw = () => {
       const P = Fig.palette();
-      const w = cv.w, h = cv.h;
+      const w = cv.w,
+        h = cv.h;
       ctx.clearRect(0, 0, w, h);
 
       let raceT = raceElapsed() * (T_MAX / T_SCALE);
@@ -100,25 +123,37 @@
       if (done) raceT = T_MAX + holdDur;
       const tNow = Math.min(raceT, T_MAX);
 
-      const x0 = 12, x1 = w - 14;
-      const topY = 26, laneH = (h - topY - 8) / LANES.length;
+      const x0 = 12,
+        x1 = w - 14;
+      const topY = 26,
+        laneH = (h - topY - 8) / LANES.length;
       const trackW = x1 - x0;
 
       ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
       ctx.textBaseline = "middle";
       ctx.textAlign = "left";
       ctx.fillStyle = P.mute;
-      const status = !started ? "scroll into view to start"
-        : done ? " \u00B7 replay \u21BB"
-        : paused ? " \u00B7 paused"
-        : "";
-      ctx.fillText("t = " + tNow.toFixed(1) + " s (real latency, compressed)" + status, x0, 13);
+      const status = !started
+        ? "scroll into view to start"
+        : done
+          ? " \u00B7 replay \u21BB"
+          : paused
+            ? " \u00B7 paused"
+            : "";
+      ctx.fillText(
+        "t = " + tNow.toFixed(1) + " s (real latency, compressed)" + status,
+        x0,
+        13,
+      );
 
       // time cursor: one subtle vertical line synced across all lanes
       const cx = x0 + trackW * (tNow / T_MAX);
       ctx.strokeStyle = P.rule;
       ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(cx, topY - 4); ctx.lineTo(cx, h - 8); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx, topY - 4);
+      ctx.lineTo(cx, h - 8);
+      ctx.stroke();
 
       LANES.forEach((L, i) => {
         const [label, lat, cost, fid, good] = L;
@@ -140,12 +175,20 @@
         // track + progress + runner
         ctx.strokeStyle = P.rule;
         ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(x0, yTrack); ctx.lineTo(x1, yTrack); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x0, yTrack);
+        ctx.lineTo(x1, yTrack);
+        ctx.stroke();
         ctx.strokeStyle = good ? P.accent : P.mute;
         ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(x0, yTrack); ctx.lineTo(px, yTrack); ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x0, yTrack);
+        ctx.lineTo(px, yTrack);
+        ctx.stroke();
         ctx.fillStyle = good ? P.accent : P.mute;
-        ctx.beginPath(); ctx.arc(px, yTrack, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath();
+        ctx.arc(px, yTrack, 4, 0, Math.PI * 2);
+        ctx.fill();
 
         if (prog >= 1) {
           // cost bar grows under the track once the lane finishes
@@ -157,7 +200,11 @@
           ctx.fillRect(x0, yCost - 3, cw, 6);
           if (grow >= 1) {
             ctx.fillStyle = P.mute;
-            ctx.fillText("$" + cost.toFixed(4), x0 + trackW * (cost / COST_MAX) + 6, yCost);
+            ctx.fillText(
+              "$" + cost.toFixed(4),
+              x0 + trackW * (cost / COST_MAX) + 6,
+              yCost,
+            );
           }
           // verdict wraps UNDER the lane (never overflows right)
           ctx.fillStyle = good ? P.ink : P.mute;
@@ -165,7 +212,10 @@
         } else {
           ctx.strokeStyle = P.rule;
           ctx.lineWidth = 1;
-          ctx.beginPath(); ctx.moveTo(x0, yCost); ctx.lineTo(x0 + 4, yCost); ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(x0, yCost);
+          ctx.lineTo(x0 + 4, yCost);
+          ctx.stroke();
         }
       });
     };

@@ -536,8 +536,7 @@ article > .meta:first-child {
    project's tools are context, its subject is the link. Case is left
    alone: FastAPI, tiktoken and WebGL are spelled that way on purpose,
    and the uppercase the rest of .meta wears would flatten the
-   distinction out of them. It also keeps this line a different texture
-   from the subtitle directly above it. */
+   distinction out of them. Split into chips so the rhythm matches tags. */
 .stack {
   color: var(--mute);
   text-transform: none;
@@ -551,7 +550,8 @@ article > .meta:first-child {
   margin: 0.15rem 0 0;
 }
 
-.index-tags .tag {
+.index-tags .tag,
+.index-tags .stack {
   color: var(--mute);
   margin-right: 0.7rem;
 }
@@ -680,6 +680,65 @@ a.entry:hover {
 
 ul.index .meta {
   margin: 0.3rem 0 0;
+}
+
+/* Projects: optional square thumb from `featured: <component>`, `fig3d`,
+   or an image path. Only rows with a thumb use the two-column grid. */
+ul.index-projects > li.project-row {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 0.95rem 1.1rem;
+  align-items: center;
+}
+
+ul.index-projects .project-thumb {
+  display: block;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 0;
+  overflow: hidden;
+  background: var(--wash);
+  border: 1px solid var(--rule-fine);
+}
+
+ul.index-projects .project-thumb > * {
+  pointer-events: none; /* fig stays inert; the <a> is the hit target */
+}
+
+ul.index-projects .project-thumb .fig3d,
+ul.index-projects .project-thumb [data-fig] {
+  margin: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  clear: none;
+}
+
+ul.index-projects .project-thumb .fig3d canvas,
+ul.index-projects .project-thumb [data-fig] canvas {
+  display: block;
+  width: 4.5rem !important;
+  height: 4.5rem !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  cursor: default;
+}
+
+ul.index-projects .project-thumb .fig-controls,
+ul.index-projects .project-thumb .meta {
+  display: none;
+}
+
+ul.index-projects .project-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+ul.index-projects .project-copy {
+  min-width: 0;
 }
 
 .excerpt {
@@ -977,8 +1036,10 @@ figure {
 
 /* Mermaid diagrams replace a fenced ```mermaid block. Stay on the prose
    measure (same bay as tables / [data-fig]); wide graphs scroll rather
-   than blow past the column. The SVG ships its own colours from the
-   mermaid theme (default / dark via prefers-color-scheme). */
+   than blow past the column. Colours and the serif face are injected at
+   render time from :root tokens (see mermaid.js themeVariables); the
+   rules below keep edge chrome and HTML labels on the same hairline
+   voice if Mermaid's defaults leak through. */
 figure.mermaid {
   margin-block: 2rem;
   overflow-x: auto;
@@ -986,13 +1047,65 @@ figure.mermaid {
   scrollbar-width: thin;
   scrollbar-color: var(--rule) transparent;
   text-align: center;
+  color: var(--ink);
 }
 
 figure.mermaid svg {
   /* Mermaid already sets max-width on the root SVG; leave height alone so
-     the viewBox aspect ratio stays as dagre computed it (Cursor does the
-     same). Only clamp if a wide graph outruns the measure. */
+     the viewBox aspect ratio stays as dagre computed it. Only clamp if a
+     wide graph outruns the measure. */
   max-width: 100%;
+}
+
+/* Labels: inherit the page ink; do not reset font-family here — node
+   boxes were measured against the serif at render and a CSS swap clips. */
+figure.mermaid .nodeLabel,
+figure.mermaid .edgeLabel,
+figure.mermaid .label,
+figure.mermaid .cluster-label,
+figure.mermaid foreignObject,
+figure.mermaid foreignObject div {
+  color: var(--ink);
+}
+
+/* Edges and markers: mute hairlines, not Mermaid's default grey. */
+figure.mermaid .edgePath .path,
+figure.mermaid .flowchart-link,
+figure.mermaid .messageLine0,
+figure.mermaid .messageLine1,
+figure.mermaid line,
+figure.mermaid .actor-line {
+  stroke: var(--mute);
+}
+
+figure.mermaid .marker,
+figure.mermaid marker path {
+  fill: var(--mute);
+  stroke: var(--mute);
+}
+
+/* Node / cluster chrome when the diagram does not set its own fill. */
+figure.mermaid .node rect,
+figure.mermaid .node circle,
+figure.mermaid .node ellipse,
+figure.mermaid .node polygon,
+figure.mermaid .actor,
+figure.mermaid .note,
+figure.mermaid .labelBox {
+  stroke: var(--mute);
+}
+
+figure.mermaid .cluster rect {
+  fill: var(--paper) !important;
+  stroke: var(--rule) !important;
+  stroke-width: 1px;
+}
+
+/* Edge label chips sit on paper so they stay legible over mute lines. */
+figure.mermaid .edgeLabel rect,
+figure.mermaid .labelBkg {
+  fill: var(--paper) !important;
+  opacity: 0.92;
 }
 
 /* The listing bay: wider than the measure by one hang, centred on the
@@ -1026,12 +1139,17 @@ div.plate,
 }
 
 /* Explicit fullwidth: hang plus the note channel. Opt-in only — tables
-   and interactives stay on the listing bay above so they match code. */
+   and interactives stay on the listing bay above so they match code.
+   Asymmetric on purpose: left edge stays with the plate (hang-l/2); the
+   extra reach spends only the right-hand note channel. A symmetric
+   margin-inline of -(hang+reach)/2 would push the left edge past the
+   plate by reach/2 and stop short of the channel's outer edge. */
 figure.fullwidth,
 pre.fullwidth,
 div.fullwidth {
   width: calc(100% + var(--hang-l) + var(--reach-r));
-  margin-inline: calc(-1 * (var(--hang-l) + var(--reach-r)) / 2);
+  margin-inline-start: calc(-1 * var(--hang-l) / 2);
+  margin-inline-end: calc(-1 * (var(--hang-l) / 2 + var(--reach-r)));
   clear: both;
 }
 
@@ -1105,6 +1223,34 @@ figcaption {
   line-height: 1.45;
   color: var(--mute);
   text-wrap: pretty;
+}
+
+/* A block <img> before the caption eats the whole measure, so a floated
+   figcaption only begins under the picture — still in the channel, but
+   no longer beside anything. From the sidenote breakpoint up, park the
+   caption on the figure mid-line in the note column instead. Plate,
+   fullwidth, margin and mermaid keep their own caption rules. */
+@media (min-width: 1152px) {
+  figure:not(.plate, .fullwidth, .margin, .iframe-wrapper, .mermaid) {
+    position: relative;
+  }
+
+  figure:not(.plate, .fullwidth, .margin, .iframe-wrapper, .mermaid)
+    > figcaption {
+    float: none;
+    clear: none;
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    right: calc(
+      -1 *
+        (
+          var(--hang-l) / 2 + var(--sidenote-gap) +
+            var(--sidenote-w-fit, var(--sidenote-w))
+        )
+    );
+    margin: 0;
+  }
 }
 
 /* A plate's caption is a label, not a margin note. The picture is the
@@ -1425,13 +1571,13 @@ details {
   margin: 1.6rem 0;
 }
 
-/* A listing inside a disclosure chip is a plate of the page that
-   happens to sit in the chip: it re-applies the hang plus the chip's
-   own padding so it lands exactly where its flush siblings sit, at
-   every width. The chip's border frame is crossed on both sides —
-   the plate passes in front of it, because it does. */
+/* A listing inside a disclosure stays in the chip. The page-level pre
+   hang assumes the measure as its containing block; inside details that
+   hang (and the old padding-compensating negative margin) drove the
+   wash plate through the chip's border on both sides. Same stance as
+   `li pre`: nested context, in-column. */
 details pre {
-  margin-inline: calc(-1 * var(--hang-l) / 2 - 1.1rem - 1px);
+  margin-inline: 0;
 }
 
 summary {
@@ -1690,9 +1836,14 @@ footer.site a.handle:hover {
      halving the tab recovers two columns per nesting level, which beats
      shrinking 14.4px glyphs that are already at the legibility floor.
      The plate runs to the sheet edge so the sideways scroll is legible
-     as an affordance rather than as a clipped box. */
-  pre {
+     as an affordance rather than as a clipped box. pre.plate / pre.fullwidth
+     set their own margin-inline (and a width) above, so they must be named
+     here or they stay inset while a bare pre bleeds. */
+  pre,
+  pre.plate,
+  pre.fullwidth {
     tab-size: 2;
+    width: auto;
     margin-inline: -1.5rem;
     padding-inline: 1.5rem;
     border-inline: 0;
