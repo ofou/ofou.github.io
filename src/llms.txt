@@ -1,0 +1,27 @@
+# Omar Olivares
+> Personal site of Omar Olivares Urrutia — software engineer specializing in AI/ML, with interests in interpretability, alignment, and agentic systems.
+
+Contact: omar@olivares.cl · https://x.com/omarnomad · https://github.com/ofou · https://www.linkedin.com/in/ofou/
+
+## Pages
+- [Home](https://olivares.cl/): Brief bio and what Omar works on
+- [Blog](https://olivares.cl/blog/): Technical writing on AI, ML, and hacking
+- [Projects](https://olivares.cl/projects/): Selected builds and experiments
+- [CV](https://olivares.cl/cv/): Résumé
+- [Contact](https://olivares.cl/contact/): How to reach Omar
+
+## Blog
+- [Things you should be reading about AI in 2025](https://olivares.cl/blog/2025/01/01/things-you-should-be-reading-about-ai-in-2025/): Reading list across AI, ML, and neuroscience textbooks and codebases
+- [Introduction to Tinygrad](https://olivares.cl/blog/2025/06/10/introduction-to-tinygrad/): Lazy tensors, UOps, realization, autodiff, and the rewrite engine
+- [Vibe hacking Ableton's Push 3](https://olivares.cl/blog/2026/01/12/vibe-hacking-ableton-s-push-3/): Reverse-engineering Push 3 MIDI, USB, and display without official docs
+
+## Projects
+- [Lab](https://olivares.cl/projects/lab/): Interactive canvas explainables for posts (wave, Fourier, etc.)
+- [WebGrid Eval](https://olivares.cl/projects/webgrid-eval/): Multimodal LLM harness for Neuralink's WebGrid cursor task
+- [TexTube](https://olivares.cl/projects/textube/): YouTube transcripts as a ChatGPT plugin / API
+- [Graham Essays](https://olivares.cl/projects/graham/): Paul Graham essays as EPUB and Markdown, updated daily
+
+## Optional
+- [Sitemap](https://olivares.cl/sitemap.xml): Full list of indexable URLs
+- [RSS feed](https://olivares.cl/feed.xml): Blog feed
+- [Style guide](https://olivares.cl/blog/2026/08/21/style-guide-every-element-this-site-can-set/): Kitchen sink of every element the site template can render
