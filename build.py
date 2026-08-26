@@ -653,6 +653,7 @@ def layout(
 {'<script defer src="/static/youtube-lite.js"></script>' if "data-youtube=" in body else ""}
 {'<script defer src="/static/sidenotes.js"></script>' if 'class="sidenote"' in body else ""}
 {'<script defer src="/static/gallery.js"></script>' if ('class="gallery"' in body or "plate-reveal" in body) else ""}
+{'<script defer src="/static/edit.js"></script>' if "data-edit=" in body else ""}
 {katex_snippet() if math else ""}
 {COVERS_AB if "data-cdn-src=" in body else ""}
 {extra_head}
@@ -758,7 +759,7 @@ def article(page: Page, *, comments: bool = False) -> str:
     meta_bits += [f'<span class="tag">{escape(c)}</span>' for c in page.categories]
     edit = (
         SITE["repo"]
-        + "/blob/main/"
+        + "/edit/main/"
         + "/".join(
             quote(s, safe="") for s in page.path.relative_to(ROOT).as_posix().split("/")
         )
@@ -770,8 +771,9 @@ def article(page: Page, *, comments: bool = False) -> str:
     )
     body = place_nav(title + page.html)
     return (
-        f"<article>\n{head}\n{body}\n"
-        f'<p class="meta edit"><a href="{edit}">suggest an edit</a></p>\n</article>\n'
+        f'<article data-edit="{escape(edit, {'"': "&quot;"})}">\n{head}\n{body}\n'
+        f'<p class="meta edit"><a href="{escape(edit, {'"': "&quot;"})}">'
+        f"suggest an edit</a></p>\n</article>\n"
         + (GISCUS if comments else "")
     )
 
