@@ -84,7 +84,10 @@ RELTIME = """<script>
   };
   document.querySelectorAll("[data-rel-from]").forEach(e => {
     const t = Date.parse(e.dataset.relFrom);
-    if (!Number.isNaN(t)) e.title = rel(t);
+    if (Number.isNaN(t)) return;
+    const exact = e.textContent.trim();
+    if (exact) e.dataset.tip = exact;
+    e.textContent = rel(t);
   });
 })();
 </script>"""
@@ -567,7 +570,6 @@ def listing(title: str, intro: str, pages: list[Page], *, dated: bool) -> str:
         )
         sub = page.meta.get("subtitle") or ""
         meta = SEP.join(x for x in [line, escape(str(sub))] if x)
-        blurb = page.excerpt if dated else ""
 
         if dated:
             chips = "".join(
@@ -580,7 +582,7 @@ def listing(title: str, intro: str, pages: list[Page], *, dated: bool) -> str:
             f'<li><a class="entry" href="{page.url}">{escape(page.title)}</a>'
             f'<p class="meta">{meta}</p>'
             + (f'<p class="meta index-tags">{chips}</p>' if chips else "")
-            + f'<div class="excerpt">{blurb}</div></li>'
+            + "</li>"
         )
 
     head = f"<h1>{escape(title)}</h1>\n{intro}\n"

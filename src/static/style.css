@@ -310,9 +310,14 @@ footer.site::before {
 }
 
 .brand {
-  font-weight: 600;
-  font-size: 1.05rem;
-  letter-spacing: 0.01em;
+  /* Same face as titles: the wordmark is wayfinding, not prose. */
+  font-family: "Hind", "Segoe UI", Verdana, sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--text) * 0.95);
+  line-height: 1;
+  letter-spacing: -0.015em;
+  font-variant-numeric: lining-nums;
+  color: var(--ink);
   text-decoration: none;
   margin-inline-end: auto;
   flex: 0 1 auto;
@@ -323,7 +328,7 @@ footer.site::before {
 }
 
 .brand:hover {
-  color: var(--ink);
+  color: var(--accent);
 }
 
 /* ---------- typography ---------- */
@@ -575,47 +580,93 @@ article > .meta:first-child {
   border-color: var(--accent);
 }
 
-/* ---------- relative dates (revealed on hover) ---------- */
+/* ---------- relative dates (exact date in on-brand tip) ---------- */
 
-[data-rel-from]:hover .rel,
-[data-rel-from]:focus-visible .rel {
-  display: inline;
+[data-tip] {
+  position: relative;
+  cursor: default;
+  border-bottom: 1px dotted color-mix(in srgb, var(--mute) 55%, transparent);
+}
+
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.35rem);
+  transform: translateX(-50%) translateY(0.15rem);
+  z-index: 5;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--mute);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease,
+    visibility 0.12s;
+}
+
+[data-tip]:hover::after,
+[data-tip]:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-tip]::after {
+    transition: none;
+  }
 }
 
 /* ---------- index lists ---------- */
 
-/* A year is a divider, not a section title: it keeps the h2's rule and
-   field hang, because that is what separates the groups, but drops the
-   31px display voice for the label voice the dates beside it already
-   use. Still an h2 so the archive keeps a real heading outline. */
+/* A year is a label in the meta voice, not a chapter head: no field
+   hairline, no hang. Spacing alone separates the groups. */
 .index-year {
   font-family: var(--mono);
   font-size: 0.8rem;
   font-weight: 400;
   letter-spacing: 0.02em;
   color: var(--mute);
-  margin-top: 2.6rem;
-  padding-top: 0.75rem;
+  margin: 2.8rem 0 0;
+  margin-inline: 0;
+  padding: 0;
+  padding-inline: 0;
+  border-top: 0;
+  clear: none;
+}
+
+h1 + .index-year {
+  margin-top: 1.75rem;
 }
 
 .index-year + ul.index {
-  margin-top: 0.6rem;
+  margin-top: 0.55rem;
 }
 
 ul.index {
   list-style: none;
-  margin: 2rem 0 0;
+  margin: 1.5rem 0 0;
   padding: 0;
 }
 
 ul.index li {
   margin: 0;
-  padding-block: 1.15rem;
-  border-bottom: 1px solid var(--rule-fine);
+  padding-block: 1.05rem;
+  border-bottom: 0;
 }
 
-ul.index li:last-child {
-  border-bottom: 0;
+ul.index li + li {
+  padding-top: 1.15rem;
 }
 
 a.entry {
@@ -994,9 +1045,14 @@ figure.margin {
   clear: right;
   width: var(--sidenote-w-fit, var(--sidenote-w));
   margin: 0.3rem
-    calc(-1 * (var(--hang-l) / 2 + var(--sidenote-gap) + var(--sidenote-w-fit, var(--sidenote-w))))
-    1.2rem
-    calc(var(--hang-l) / 2 + var(--sidenote-gap));
+    calc(
+      -1 *
+        (
+          var(--hang-l) / 2 + var(--sidenote-gap) +
+            var(--sidenote-w-fit, var(--sidenote-w))
+        )
+    )
+    1.2rem calc(var(--hang-l) / 2 + var(--sidenote-gap));
 }
 
 /* Guard against a nested figure from an older build; zero its block
@@ -1037,7 +1093,11 @@ figcaption {
   float: right;
   clear: right;
   margin-right: calc(
-    -1 * (var(--hang-l) / 2 + var(--sidenote-gap) + var(--sidenote-w-fit, var(--sidenote-w)))
+    -1 *
+      (
+        var(--hang-l) / 2 + var(--sidenote-gap) +
+          var(--sidenote-w-fit, var(--sidenote-w))
+      )
   );
   width: var(--sidenote-w-fit, var(--sidenote-w));
   margin-top: 0.2rem;
@@ -1258,7 +1318,8 @@ caption {
     position: fixed;
     top: 4.5rem;
     left: calc(
-      var(--gutter) - var(--hang-l) / 2 - var(--sidenote-gap) - var(--sidenote-w-fit)
+      var(--gutter) - var(--hang-l) / 2 - var(--sidenote-gap) -
+        var(--sidenote-w-fit)
     );
     width: var(--sidenote-w-fit);
     max-height: calc(100vh - 7rem);
@@ -2157,7 +2218,11 @@ input[type="range"]::-moz-range-thumb {
      sharing their hang band (which read as the note sitting on the
      heading). */
   margin-right: calc(
-    -1 * (var(--hang-l) / 2 + var(--sidenote-gap) + var(--sidenote-w-fit, var(--sidenote-w)))
+    -1 *
+      (
+        var(--hang-l) / 2 + var(--sidenote-gap) +
+          var(--sidenote-w-fit, var(--sidenote-w))
+      )
   );
   width: var(--sidenote-w-fit, var(--sidenote-w));
   margin-top: 0.2rem;
