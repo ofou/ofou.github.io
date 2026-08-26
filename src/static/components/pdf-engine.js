@@ -43,11 +43,11 @@
     }
 
     const MONO =
-      '10px "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
+      '10px "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
     const MONO9 =
-      '9px "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
+      '9px "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
     const MONO11 =
-      '11px "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
+      '11px "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
 
     function geom() {
       const w = cv.w,

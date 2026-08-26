@@ -1,10 +1,9 @@
 /* menu.css — the masthead navigation.
-   Above the sidenote breakpoint the section links sit as squared chips
-   on the masthead line: the heading serif, hairline border, no toggle.
-   The page the reader is on carries the accent border and text, which
-   is the only state the nav has. Below that breakpoint the page is a
-   single column — no note channel, no TOC rail — and the chips stand
-   down with the rest of the apparatus. The brand alone remains. */
+   Section links sit as squared chips on the masthead line: the heading
+   serif, hairline border, no toggle. The page the reader is on carries
+   the accent border and text, which is the only state the nav has.
+   Chips stay visible at every width; the masthead wraps only when the
+   brand and chips cannot share the measure. */
 
 .menu-inline {
   display: flex;
@@ -35,10 +34,11 @@
   border-color: var(--accent);
 }
 
-/* Same cut as sidenotes and the TOC rail: once the margins collapse,
-   only the main column remains, and the masthead chips go with them. */
+/* Allow a natural wrap when brand + chips exceed the measure. Do not
+   force flex-basis: 100% — that drops the chips to a second line even
+   when a single row still has daylight. */
 @media (max-width: 1151px) {
-  .menu-inline {
-    display: none;
+  header.site {
+    flex-wrap: wrap;
   }
 }

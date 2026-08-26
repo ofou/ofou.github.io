@@ -2,16 +2,9 @@
    Editorial serif on warm paper, hairline structure,
    monospace micro-labels, one muted pop of the spectrum.
 
-   One webfont is linked from the document head with preconnect rather
-   than @import-ed here: an @import inside a stylesheet cannot start
-   downloading until this file has itself been fetched and parsed, one
-   round trip too many for the face the page cannot render without.
-
-   The prose face is not downloaded at all — STIX Two Text where the
-   reader already has it, Georgia everywhere else. Measured, those two
-   sit 1.7% apart in x-height (0.473em vs 0.481em) and 4% apart in
-   average advance: a cosmetic difference, not a legibility one, so the
-   page does not spend a request closing it. */
+   Webfonts (STIX Two Text, JetBrains Mono, Hind) are self-hosted via
+   fonts.css and fingerprinted at build — never @import-ed here, so the
+   critical faces can preload without waiting on this stylesheet. */
 
 :root {
   color-scheme: light dark;
@@ -35,15 +28,14 @@
   /* Two monospaces, two jobs. --mono is the label voice: caps, tracked
      out, never longer than a few words, where a system face is free and
      invisible. --mono-code is the verbatim voice, and it is worth a
-     download: IBM Plex Mono measures a 0.516em x-height against the
-     0.473em of the serif beside it, with punctuation drawn large and
-     centred on the line, which is where code legibility is actually
-     won. Every fallback below shares its 0.6em advance, so a listing
-     holds its column count while the webfont is still in flight. */
+     download: JetBrains Mono is drawn for editors (clear punctuation,
+     tall x-height, a real SemiBold for keyword weight). Every fallback
+     below shares a tabular advance, so a listing holds its column count
+     while the webfont is still in flight. */
   --mono:
     ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --mono-code:
-    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas,
+    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
 
   /* Type sizes derive from the reference device rather than from taste
@@ -55,12 +47,26 @@
      page is a multiple of this one number. */
   --text: 1.25rem;
 
-  /* IBM Plex Mono keeps the one property the column table cannot lose:
-     a true 0.6em advance, so the columns-per-plate figures above land
-     on whole columns at every module width. Its Text grade (450) is
-     not on Google Fonts, so the listing takes Regular. */
+  /* JetBrains Mono keeps a steady advance so the columns-per-plate
+     figures above land on whole columns at every module width. Keyword
+     weight steps to the hosted SemiBold (600). Advance is 0.6em, so
+     one column at --code-size is --code-col. */
   --code-size: 0.9rem;
   --code-weight: 400;
+  --code-col: calc(var(--code-size) * 0.6);
+  --listing-cols: 80;
+  /* Matches `padding: 1rem 1.15rem` + 1px border on each side of the
+     listing plate. */
+  --listing-pad-inline: 2.3rem;
+  --listing-border-inline: 2px;
+  /* Pygments linenos column (~2–3 digits) + the 0.75em pads on either
+     side of the gutter rule. Bare <pre> has no gutter and keeps the
+     slack, so a lined listing and a bare listing share one outer edge. */
+  --listing-gutter: calc(2.5 * var(--code-col) + 1.5em);
+  --listing-width: calc(
+    var(--listing-cols) * var(--code-col) + var(--listing-pad-inline) +
+      var(--listing-border-inline) + var(--listing-gutter)
+  );
 
   /* One module, and every width on the page an integer multiple of it.
      That is the part of the classical tradition that survives scrutiny:
@@ -70,47 +76,46 @@
      but a working unit chosen so the parts come out commensurable, the
      way Roman work came out in whole feet. The hierarchy here is
 
-       text : plate : notes = 4 : 5 : 2
+       text : notes = 4 : 2   (measure : channel)
 
-     which makes text + notes 6 and the plate one module wider than the
-     prose, so the step between them is not a near-miss of some
-     irrational ratio but the module itself, restated.
+     The plate used to be a fifth module (hang = module); once prose
+     locked to 80 characters that overshot code to ~95 columns. Hang is
+     now --hang-from-listing so the shared bay holds 80 mono columns
+     instead. Notes stay two modules.
 
-     The module is bounded at both ends and fluid between them, because
-     a Roman foot was chosen per building and this one is chosen per
-     screen. The ceiling is the reading measure: 9.5rem puts the prose
-     at 72 characters, the top of the 65–75 band the line-length
-     experiments support, and no screen size is a reason to go past it.
-     The floor is what a 12-inch panel can hold at all. 10.2vw between
-     them lands on every MacBook Apple ships or shipped, at default and
-     scaled logical widths — measured off a rendered post:
+     Tuned for the three MacBook Pro defaults (13" 1440, 14" 1512,
+     16" 1728). Ceiling is 10.7rem → measure 42.8rem = 684.8px ≈ 80
+     characters in STIX Two Text at --text (measured ~8.57px average
+     advance on English prose). That is the WCAG 2.1 AAA line-length
+     cap (SC 1.4.8: ≤80 glyphs/line); Baymard’s comfort band is
+     50–75, so this sits at the accessibility ceiling rather than the
+     mid-band ideal. 11.9vw meets the ceiling at 1440, so all three
+     Pros share one measure; spare width on the 16" stays gutter for
+     sidenotes. Floor 8.5rem keeps smaller / scaled panels inside the
+     band without forcing 80 on a narrow viewport.
 
-       1152  12"                     M 136  text 544  62 cpl  74 col
-       1280  13" / 15" scaled        M 136  text 544  62 cpl  74 col
-       1352  14" / 13.6" scaled      M 138  text 552  63 cpl  75 col
-       1440  13" default, 15" legacy M 147  text 588  69 cpl  80 col
-       1470  13.6" Air default       M 150  text 600  70 cpl  82 col
-       1512  14" default             M 152  text 608  72 cpl  83 col
-       1710  15" Air default         M 152  text 608  72 cpl  83 col
-       1728  16" default             M 152  text 608  72 cpl  83 col
-       1920, 2056  more space        M 152  text 608  72 cpl  83 col
+     The listing / plate hang is not “one module” anymore — that overshot
+     to ~95 mono columns once prose hit 80. Hang is now derived so the
+     shared bay is --listing-width: 80 JetBrains columns at --code-size
+     plus linenos gutter and plate padding (~777px → hang ≈ 5.8rem).
+     Prose and code both top out at 80; figures share the code bay.
 
-     From the 13-inch default up, the field carries the full 80 columns
-     of the mono face. Below roughly 1420px it cannot, and there the
-     three things wanted — 80 columns, a note in the margin, prose
-     inside the band — do not fit in the viewport at once: 80 columns
-     needs a 9.15rem module, and a note beside a 9.15rem composition
-     needs 1220px of screen. The note wins, because spatial contiguity
-     is the largest effect in this literature and a listing that
-     overruns the field simply scrolls, which the widest 7 of 57 code
-     blocks in this repository already do at any width.
+       1280  13" More Space / scaled  M 152  text 609  71 cpl  code ~80
+       1440  13" default              M 171  text 685  80 cpl  code  80
+       1512  14" default              M 171  text 685  80 cpl  code  80
+       1728  16" default              M 171  text 685  80 cpl  code  80
+       1920+ external / More Space    M 171  text 685  80 cpl  code  80
 
      Type size scales with none of this: 20px is 20px at book distance
      whatever the panel is, and scaling it would push the measure back
      out of the band it was chosen for. Only the field grows. */
-  --module: clamp(8.5rem, 10.2vw, 9.5rem);
+  --module: clamp(8.5rem, 11.9vw, 10.7rem);
   --measure: calc(4 * var(--module));
   --channel: calc(2 * var(--module));
+  --hang-from-listing: max(
+    0px,
+    calc(var(--listing-width) - var(--measure))
+  );
 
   /* There is deliberately no --plate length here. The prose column is
      min(--measure, 100% - 3rem), so a nominal five-module plate is a lie
@@ -127,17 +132,16 @@
   --sidenote-w: calc(var(--channel) - var(--sidenote-gap));
   --gutter: max(1.5rem, calc((100vw - var(--measure)) / 2));
 
-  /* --hang-l is how far the field reaches out of the prose column: up
-     to one module, split evenly across both sides by every consumer
-     (margin-inline: calc(-1 * var(--hang-l) / 2)), so plates, listings
-     and hairlines keep one centre line with the text. Below the
-     sidenote breakpoint the page is a single column and everything —
-     listings, section rules, the rule under the title — lines up with
-     it, because a field that creeps to within a gutter of the viewport
-     edge is not a field, it is a bleed, and it read as one next to the
-     masthead rule. Capped by the room actually outside the column, so
-     a plate never crosses the 1.5rem edge; when it cannot fit it
-     scrolls, as it always did. */
+  /* --hang-l is how far the field reaches out of the prose column —
+     derived from --hang-from-listing so plates and listings share a bay
+     that holds 80 mono columns, split evenly across both sides
+     (margin-inline: calc(-1 * var(--hang-l) / 2)). Below the sidenote
+     breakpoint the page is a single column and everything — listings,
+     section rules, the rule under the title — lines up with it, because
+     a field that creeps to within a gutter of the viewport edge is not
+     a field, it is a bleed, and it read as one next to the masthead
+     rule. Capped by the room actually outside the column, so a plate
+     never crosses the 1.5rem edge; when it cannot fit it scrolls. */
   --hang-room: max(0px, calc(var(--gutter) - 1.5rem));
   --hang-l: 0px;
 
@@ -168,8 +172,8 @@
     --rule: rgba(221, 216, 206, 0.2);
     --rule-fine: rgba(221, 216, 206, 0.1);
 
-    /* Night needs no weight compensation any more: Plex Mono ships
-       static faces only, so there is no lighter grade to step down to. */
+    /* Night needs no weight compensation: JetBrains Mono ships static
+       Regular and SemiBold, so keyword weight lands on a real face. */
   }
 
   body {
@@ -207,6 +211,9 @@ html {
 }
 
 body {
+  /* Kill the UA 8px margin — gutters are owned by --gutter / --hang-room
+     against 100vw; a leftover body margin only skews those caps. */
+  margin: 0;
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -452,8 +459,60 @@ hr {
 /* An authored `---` immediately before a section head draws the same line
    the h2 already owns, 42px apart. The section rule is the systematic one,
    so the manual rule stands down rather than the other way round. */
-hr:has(+ h2) {
+hr:has(+ h2),
+hr:has(+ .section-label),
+hr:has(+ .section-head) {
   display: none;
+}
+
+/* Dual section titles: a muted mono secondary label over the serif
+   display head. The label owns the field hairline; the h2 that follows
+   drops its own so the pair reads as one composition, not two rules. */
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--mute);
+  margin: 2.8rem 0 0;
+  margin-inline: calc(-1 * var(--hang-l) / 2);
+  padding-top: 1.1rem;
+  padding-inline: calc(var(--hang-l) / 2);
+  border-top: 1px solid var(--rule-fine);
+  clear: both;
+}
+
+.section-label + h2 {
+  border-top: 0;
+  margin-top: 0.35rem;
+  padding-top: 0;
+}
+
+/* Optional wrapper when the label should not sit as a free paragraph
+   (e.g. inside a findings block, or when an author wants one landmark). */
+.section-head {
+  margin-inline: calc(-1 * var(--hang-l) / 2);
+  padding-top: 1.1rem;
+  padding-inline: calc(var(--hang-l) / 2);
+  border-top: 1px solid var(--rule-fine);
+  clear: both;
+  margin-top: 2.8rem;
+}
+
+.section-head > .section-label {
+  margin: 0;
+  margin-inline: 0;
+  padding: 0;
+  border-top: 0;
+  clear: none;
+}
+
+.section-head > h2 {
+  border-top: 0;
+  margin-top: 0.35rem;
+  margin-inline: 0;
+  padding-top: 0;
+  padding-inline: 0;
 }
 
 blockquote {
@@ -519,6 +578,16 @@ article > .meta:first-child {
   border-bottom: 1px solid var(--rule-fine);
 }
 
+/* With a contents rail, the title-block hairline steps left by one
+   sidenote-gap so it meets the rail's own rule — one interrupted line
+   under Contents and the meta, not two baselines. */
+@media (min-width: 1152px) {
+  article:has(> .toc) > .meta:first-child {
+    margin-left: calc(-1 * (var(--hang-l) / 2 + var(--sidenote-gap)));
+    padding-left: calc(var(--hang-l) / 2 + var(--sidenote-gap));
+  }
+}
+
 .meta a {
   color: var(--mute);
   text-decoration: none;
@@ -565,19 +634,90 @@ article > .meta:first-child {
   opacity: 0.55;
 }
 
+/* Suggest-an-edit: mono micro-label in the left hang on paragraph
+   hover (fine pointer, wide layout). Same apparatus voice as
+   caption-actions — mute, hairline, accent on hover. Footer .edit is
+   the no-JS / touch / narrow fallback. */
 .edit {
   margin-top: 3.2rem;
+  margin-bottom: 0;
   color: var(--mute);
 }
 
 .edit a {
+  color: var(--mute);
   text-decoration: none;
-  border-bottom: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  border-bottom: 1px solid var(--rule-fine);
 }
 
 .edit a:hover {
   color: var(--accent);
-  border-color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+article[data-edit] > p:not(.meta) {
+  position: relative;
+}
+
+a.p-edit {
+  position: absolute;
+  top: 0.35em;
+  left: 0;
+  transform: translateX(calc(-100% - 0.55rem));
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  color: var(--mute);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule-fine);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease;
+}
+
+a.p-edit:hover,
+a.p-edit:focus-visible {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+a.p-edit:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 1152px) {
+  article[data-edit] > p:not(.meta):hover > a.p-edit,
+  article[data-edit] > p:not(.meta):focus-within > a.p-edit {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Hover UI owns discovery; footer stays in the tab order, clipped
+     until focused so keyboard readers still reach “suggest an edit”. */
+  html:has(a.p-edit) .edit:not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@media print {
+  a.p-edit,
+  .edit {
+    display: none !important;
+  }
 }
 
 /* ---------- relative dates (exact date in on-brand tip) ---------- */
@@ -682,8 +822,8 @@ ul.index .meta {
   margin: 0.3rem 0 0;
 }
 
-/* Projects: optional square thumb from `featured: <component>`, `fig3d`,
-   or an image path. Only rows with a thumb use the two-column grid. */
+/* Projects: optional square thumb from `featured: <component>` or an
+   image path. Only rows with a thumb use the two-column grid. */
 ul.index-projects > li.project-row {
   display: grid;
   grid-template-columns: 4.5rem minmax(0, 1fr);
@@ -705,7 +845,6 @@ ul.index-projects .project-thumb > * {
   pointer-events: none; /* fig stays inert; the <a> is the hit target */
 }
 
-ul.index-projects .project-thumb .fig3d,
 ul.index-projects .project-thumb [data-fig] {
   margin: 0;
   display: block;
@@ -714,7 +853,6 @@ ul.index-projects .project-thumb [data-fig] {
   clear: none;
 }
 
-ul.index-projects .project-thumb .fig3d canvas,
 ul.index-projects .project-thumb [data-fig] canvas {
   display: block;
   width: 4.5rem !important;
@@ -792,11 +930,10 @@ pre {
 
 code,
 samp {
-  /* Matched on x-height, not on em: the serif sits at 0.473em (Georgia
-     0.481em), IBM Plex Mono at 0.516em, so 0.9em puts the two
-     lowercases within 2% of one optical line. The old 0.85em was tuned
-     against a mono with a taller x-height and left inline code visibly
-     shorter than the prose it interrupts. */
+  /* Matched on x-height, not on em: the serif sits at ~0.47em; JetBrains
+     Mono is taller, so 0.9em puts the two lowercases on one optical
+     line. The old 0.85em left inline code visibly shorter than the
+     prose it interrupts. */
   font-size: 0.9em;
   background: var(--wash);
   /* Vertical padding stays under the serif's leading so a wrapped
@@ -823,12 +960,9 @@ kbd {
 pre {
   background: var(--wash);
   border: 1px solid var(--rule-fine);
-  /* The listing keeps its 80 columns even though the prose column is no
-     longer 80 columns wide: it opens half a module out of the column
-     on each side, and nothing else on the page is allowed past the
-     measure without opting in. The hang reaches the same x-band as a
-     margin figure, so clear drops the plate below any float riding
-     there — otherwise a listing paints through the channel image. */
+  /* Listing bay = --listing-width (80 mono columns + linenos gutter +
+     padding). Hang is half of (listing − measure) on each side, so the
+     plate shares one centre line with prose and with figure.plate. */
   padding: 1rem 1.15rem;
   margin: 1.5rem calc(-1 * var(--hang-l) / 2);
   clear: both;
@@ -855,15 +989,22 @@ li pre {
 }
 
 @media (min-width: 1152px) {
-  /* Here the margins exist: the field opens half a module out of the
-     column on each side — far enough to carry 80 columns of listing.
-     Notes and the TOC sit past that hang, not in it, so a listing or
-     section rule never shares an x-band with the apparatus. */
+  /* Here the margins exist: hang opens enough for 80 mono columns in the
+     listing bay (--hang-from-listing), not a full module. Notes and the
+     TOC sit past that hang, not in it, so a listing or section rule
+     never shares an x-band with the apparatus. */
   :root {
-    --hang-l: min(var(--module), var(--hang-room));
+    --hang-l: min(var(--hang-from-listing), var(--hang-room));
     /* A wide figure may spend the note channel, but never more room than
-       actually exists outside the column. */
-    --reach-r: min(var(--channel), var(--hang-room));
+       actually exists outside the column. Fullwidth already hangs
+       hang-l/2 past the measure on the right before reach begins, so
+       reach is capped by hang-room − hang-l/2 — otherwise the plate
+       overruns the 1.5rem edge (≈32px of page scrollWidth near the
+       sidenote breakpoint). */
+    --reach-r: min(
+      var(--channel),
+      max(0px, calc(var(--hang-room) - var(--hang-l) / 2))
+    );
     /* Room left for a note once the field hang, the gap, and the 1.5rem
        edge gutter are taken out — same formula the TOC already used. */
     --sidenote-w-fit: min(
@@ -900,32 +1041,28 @@ kbd::selection {
   color: var(--ink);
 }
 
-/* ---------- highlighted listings (@speed-highlight) ---------- */
+/* ---------- highlighted listings (Pygments / CodeHilite) ---------- */
 
-/* highlight.js appends the vendor theme to <head> at runtime, so it always
-   lands after this file and wins on source order. Every rule below is
-   therefore prefixed to outspecify `[class*=shj-lang-]` (0,1,0) rather
-   than relying on cascade position.
+/* The plate used to live on bare <pre>. CodeHilite wraps a table, so the
+   wash, hang, and scroll move onto .highlight; the inner <pre> is just
+   the token stream. Same voice as before: weight for keywords, accent
+   for literals, mute for comments — no stock Pygments theme. */
 
-   Two jobs. First, undo: the vendor sheet repaints the <code> child as a
-   white 12px-radius card in Consolas 16px/1.625 with its own border,
-   padding and margin, which nests a second box inside the wash plate and
-   goes badly wrong at night. Its `font` shorthand is the dangerous part —
-   per CSS Fonts it also resets font-feature-settings, so ligatures come
-   back on and the slashed zero switches off unless both are restated. */
-
-pre code[class*="shj-lang-"] {
-  background: none;
-  border: 0;
-  border-radius: 0;
-  margin: 0;
-  padding: 0;
-  max-width: none;
-  color: inherit;
-  font: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  tab-size: inherit;
+div.highlight {
+  background: var(--wash);
+  border: 1px solid var(--rule-fine);
+  padding: 1rem 1.15rem;
+  margin: 1.5rem calc(-1 * var(--hang-l) / 2);
+  clear: both;
+  font-family: var(--mono-code);
+  font-size: var(--code-size);
+  font-weight: var(--code-weight);
+  line-height: 1.6;
+  tab-size: 4;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
   font-variant-ligatures: none;
   font-feature-settings:
     "liga" 0,
@@ -934,77 +1071,174 @@ pre code[class*="shj-lang-"] {
     "zero" 1;
 }
 
-/* One scroll container, not two. The vendor puts `overflow-x: auto` on
-   its inner flex row, which would nest a second scroller inside the
-   `pre` that already scrolls — two tracks, and neither carrying the
-   overscroll and scrollbar treatment set above. */
-pre code[class*="shj-lang-"] > div {
-  overflow: visible;
+li div.highlight {
+  margin-inline: 0;
 }
 
-/* Numbered listings are the textbook idiom, and they cost about four
-   columns of the eighty. The gutter is a hairline and a mute figure —
-   an index, not content — and it is unselectable so that copying a
-   listing yields the program and not a column of integers. */
-pre code[class*="shj-lang-"] .shj-numbers {
-  /* The vendor gives the code column `flex: 1`; without this the gutter
-     is the only item left that can absorb the shortfall, and the numbers
-     compress out of alignment with the lines they index. */
-  flex: none;
-  margin-right: 0.6em;
-  padding-right: 0.6em;
+div.highlight .highlighttable {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+}
+
+div.highlight .highlighttable td {
+  padding: 0;
+  vertical-align: top;
+  /* Global `td` rules add prose-table padding and a bottom hairline;
+     both read as listing artifacts inside the plate. */
+  border-bottom: 0;
+}
+
+div.highlight .highlighttable td.linenos {
+  padding-right: 0.75em;
   border-right: 1px solid var(--rule-fine);
   color: var(--mute);
   user-select: none;
+  text-align: right;
+  -webkit-user-select: none;
 }
 
-pre code[class*="shj-lang-"] .shj-numbers div::before {
-  color: var(--mute);
+div.highlight .linenos pre,
+div.highlight .linenos .linenodiv {
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
   opacity: 0.65;
 }
 
-/* Second job, colour. A printed listing has always distinguished its
-   parts with weight and italic, not hue, and this page has exactly one
-   pop of the spectrum to spend. So: keywords take a half-step of weight
-   (tracking --code-weight, so the night edition stays as restrained as
-   the day one), literals take the accent, comments recede to mute, and
-   everything else is simply ink. Nothing here is a colour the rest of
-   the site does not already use. */
-pre code[class*="shj-lang-"] .shj-syn-kwd,
-pre code[class*="shj-lang-"] .shj-syn-section {
-  color: inherit;
+div.highlight .highlighttable td.code {
+  padding-left: 0.75em;
+}
+
+div.highlight td.code > div {
+  padding: 0;
+}
+
+div.highlight pre {
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  font: inherit;
+  line-height: inherit;
+  tab-size: inherit;
+}
+
+div.highlight pre code {
+  display: block;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+/* Listing colour: same jobs as a careful editor theme, drawn only from
+   site tokens (and short mixes of them). Keywords carry structure,
+   strings and numbers split the literal channel, types take accent,
+   decorators take ok, comments recede. No stock Pygments theme. */
+div.highlight {
+  --code-kwd: color-mix(in srgb, var(--accent) 55%, var(--ok) 45%);
+  --code-str: color-mix(in srgb, var(--fail) 42%, #9d174d 58%);
+  --code-num: var(--warn);
+  --code-type: var(--accent);
+  --code-deco: var(--ok);
+  --code-cmnt: var(--mute);
+}
+
+@media (prefers-color-scheme: dark) {
+  div.highlight {
+    --code-str: color-mix(in srgb, #f9a8d4 70%, var(--fail) 30%);
+  }
+}
+
+div.highlight .k,
+div.highlight .kd,
+div.highlight .kn,
+div.highlight .kp,
+div.highlight .kr,
+div.highlight .kt,
+div.highlight .ow,
+div.highlight .nf {
+  color: var(--code-kwd);
   font-weight: calc(var(--code-weight) + 200);
 }
 
-pre code[class*="shj-lang-"] .shj-syn-str,
-pre code[class*="shj-lang-"] .shj-syn-num,
-pre code[class*="shj-lang-"] .shj-syn-bool {
-  color: var(--accent);
+div.highlight .s,
+div.highlight .s1,
+div.highlight .s2,
+div.highlight .sa,
+div.highlight .sb,
+div.highlight .sc,
+div.highlight .dl,
+div.highlight .sd,
+div.highlight .se,
+div.highlight .sh,
+div.highlight .si,
+div.highlight .sx,
+div.highlight .sr,
+div.highlight .ss {
+  color: var(--code-str);
 }
 
-/* Mute alone carries the comment. The webfont is loaded upright only —
-   the vendor's italic would be a synthetic slant of a monospace, which
-   is worse than no italic at all. */
-pre code[class*="shj-lang-"] .shj-syn-cmnt {
-  color: var(--mute);
+div.highlight .m,
+div.highlight .mb,
+div.highlight .mf,
+div.highlight .mh,
+div.highlight .mi,
+div.highlight .mo,
+div.highlight .il,
+div.highlight .kc {
+  color: var(--code-num);
+}
+
+div.highlight .nc,
+div.highlight .ne,
+div.highlight .nb,
+div.highlight .bp,
+div.highlight .vc,
+div.highlight .vg,
+div.highlight .vi,
+div.highlight .vm {
+  color: var(--code-type);
+}
+
+div.highlight .nd,
+div.highlight .na {
+  color: var(--code-deco);
+}
+
+div.highlight .c,
+div.highlight .ch,
+div.highlight .cm,
+div.highlight .cp,
+div.highlight .cpf,
+div.highlight .c1,
+div.highlight .cs {
+  color: var(--code-cmnt);
   font-style: normal;
 }
 
-pre code[class*="shj-lang-"] .shj-syn-err {
-  color: var(--mute);
+div.highlight .err {
+  color: var(--code-cmnt);
+  border: 0;
+  background: none;
 }
 
-pre code[class*="shj-lang-"] .shj-syn-func,
-pre code[class*="shj-lang-"] .shj-syn-type,
-pre code[class*="shj-lang-"] .shj-syn-class,
-pre code[class*="shj-lang-"] .shj-syn-oper,
-pre code[class*="shj-lang-"] .shj-syn-var {
+div.highlight .o,
+div.highlight .p {
   color: inherit;
 }
 
-/* The vendor's #bdf5 selection outspecifies the rule above it. */
-pre code[class*="shj-lang-"]::selection,
-pre code[class*="shj-lang-"] ::selection {
+div.highlight::selection,
+div.highlight *::selection {
   background: color-mix(in srgb, var(--accent) 24%, var(--paper));
   color: var(--ink);
 }
@@ -1034,12 +1268,15 @@ figure {
   margin: 2rem 0;
 }
 
-/* Mermaid diagrams replace a fenced ```mermaid block. Stay on the prose
-   measure (same bay as tables / [data-fig]); wide graphs scroll rather
-   than blow past the column. Colours and the serif face are injected at
-   render time from :root tokens (see mermaid.js themeVariables); the
-   rules below keep edge chrome and HTML labels on the same hairline
-   voice if Mermaid's defaults leak through. */
+/* Mermaid diagrams replace a fenced ```mermaid block. Default width is
+   the listing bay (same hang as bare `pre` / figure.plate); wide graphs
+   still scroll rather than blow past that bay.
+
+   Voice matches the page: paper nodes outlined in mute (a readable
+   hairline — --rule is too faint to define a floating box), mute edges,
+   mono labels. Colours and the mono face are injected at render time
+   from :root tokens (mermaid.js); the rules below keep Mermaid's
+   leftover chrome from drifting off brand. */
 figure.mermaid {
   margin-block: 2rem;
   overflow-x: auto;
@@ -1057,8 +1294,8 @@ figure.mermaid svg {
   max-width: 100%;
 }
 
-/* Labels: inherit the page ink; do not reset font-family here — node
-   boxes were measured against the serif at render and a CSS swap clips. */
+/* Labels: ink + the mono face already baked into the SVG. Do not reset
+   font-family here — node boxes were measured against it at render. */
 figure.mermaid .nodeLabel,
 figure.mermaid .edgeLabel,
 figure.mermaid .label,
@@ -1066,16 +1303,24 @@ figure.mermaid .cluster-label,
 figure.mermaid foreignObject,
 figure.mermaid foreignObject div {
   color: var(--ink);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    "liga" 0,
+    "clig" 0,
+    "calt" 0,
+    "zero" 1;
 }
 
-/* Edges and markers: mute hairlines, not Mermaid's default grey. */
+/* Edges and markers: mute hairlines, same weight as table rules. */
 figure.mermaid .edgePath .path,
 figure.mermaid .flowchart-link,
 figure.mermaid .messageLine0,
 figure.mermaid .messageLine1,
-figure.mermaid line,
-figure.mermaid .actor-line {
+figure.mermaid .actor-line,
+figure.mermaid .loopLine,
+figure.mermaid .relation {
   stroke: var(--mute);
+  stroke-width: 1.15px;
 }
 
 figure.mermaid .marker,
@@ -1084,36 +1329,88 @@ figure.mermaid marker path {
   stroke: var(--mute);
 }
 
-/* Node / cluster chrome when the diagram does not set its own fill. */
+/* Nodes: paper plates with a mute outline. Do not paint fill here —
+   themeVariables set paper, and author style= fills must still win. */
 figure.mermaid .node rect,
 figure.mermaid .node circle,
 figure.mermaid .node ellipse,
 figure.mermaid .node polygon,
+figure.mermaid .node path,
 figure.mermaid .actor,
-figure.mermaid .note,
 figure.mermaid .labelBox {
   stroke: var(--mute);
+  stroke-width: 1px;
 }
 
-figure.mermaid .cluster rect {
-  fill: var(--paper) !important;
-  stroke: var(--rule) !important;
+figure.mermaid .note {
+  fill: var(--mark);
+  stroke: var(--mute);
   stroke-width: 1px;
+}
+
+/* Activation keeps the one accent pop on an otherwise mute sequence. */
+figure.mermaid .activation0,
+figure.mermaid .activation1,
+figure.mermaid .activation2 {
+  fill: var(--wash);
+  stroke: var(--accent);
+  stroke-width: 1px;
+}
+
+/* Class members: Mermaid paints these mute by default; keep ink. */
+figure.mermaid g.classGroup text,
+figure.mermaid .classLabel .label {
+  fill: var(--ink);
+  color: var(--ink);
+  stroke: none;
+}
+
+figure.mermaid .divider {
+  stroke: var(--mute);
+  fill: none;
+}
+
+/* Pie titles/legends: Mermaid sizes them like display type; pull back
+   to the micro-label scale. */
+figure.mermaid .pieTitleText {
+  font-size: 13px !important;
+  fill: var(--ink);
+}
+
+figure.mermaid text.slice,
+figure.mermaid .legend text {
+  font-size: 12.5px !important;
+  fill: var(--ink);
+}
+
+figure.mermaid .pieCircle {
+  stroke: var(--paper);
+  stroke-width: 2px;
+}
+
+/* Clusters: dashed mute, no fill — a grouping brace, not a card. */
+figure.mermaid .cluster rect {
+  fill: transparent !important;
+  stroke: var(--mute) !important;
+  stroke-width: 1px;
+  stroke-dasharray: 4 3;
 }
 
 /* Edge label chips sit on paper so they stay legible over mute lines. */
 figure.mermaid .edgeLabel rect,
 figure.mermaid .labelBkg {
   fill: var(--paper) !important;
-  opacity: 0.92;
+  stroke: none !important;
+  opacity: 0.96;
 }
 
 /* The listing bay: wider than the measure by one hang, centred on the
-   column axis. A picture, a listing, a scroll-table and an interactive
-   figure share this bay and one centre line — the same edges a bare
-   `pre` already draws with its hang margins. Tiers that spend the note
-   channel opt into .fullwidth instead. */
+   column axis. A picture, a listing, a mermaid graph, a scroll-table
+   and an interactive figure share this bay and one centre line — the
+   same edges a bare `pre` already draws with its hang margins. Tiers
+   that spend the note channel opt into .fullwidth instead. */
 figure.plate,
+figure.mermaid,
 pre.plate,
 div.plate,
 .scroll-x,
@@ -1189,18 +1486,63 @@ figure.margin figcaption {
 /* An embed has no intrinsic ratio, so the wrapper carries one and the
    frame fills it. Replaces naming individual video hosts: any embed
    opts in, and --ratio overrides 16/9 for the odd square or portrait
-   frame. */
+   frame. YouTube uses data-youtube + youtube-lite.js (poster until click). */
 .iframe-wrapper {
   position: relative;
   aspect-ratio: var(--ratio, 16 / 9);
   background: var(--wash);
 }
 
-.iframe-wrapper iframe {
+.iframe-wrapper iframe,
+.iframe-wrapper .youtube-lite-play,
+.iframe-wrapper .youtube-lite-play img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+}
+
+.iframe-wrapper .youtube-lite-play {
+  display: block;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: var(--wash);
+  color: inherit;
+}
+
+.iframe-wrapper .youtube-lite-play img {
+  object-fit: cover;
+}
+
+.iframe-wrapper .youtube-lite-play::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  margin: 0;
+  border-style: solid;
+  border-width: 0.75rem 0 0.75rem 1.25rem;
+  border-color: transparent transparent transparent
+    color-mix(in srgb, var(--paper) 92%, transparent);
+  transform: translate(-30%, -50%);
+  background: none;
+  clip-path: none;
+  border-radius: 0;
+  transition: border-color 0.2s ease;
+}
+
+.iframe-wrapper .youtube-lite-play:hover::after,
+.iframe-wrapper .youtube-lite-play:focus-visible::after {
+  border-color: transparent transparent transparent var(--accent, var(--paper));
+  background: none;
+}
+
+.iframe-wrapper .youtube-lite-play:focus-visible {
+  outline: 2px solid var(--accent, var(--ink));
+  outline-offset: 2px;
 }
 
 /* Captions are margin notes for pictures — Tufte sets them beside the
@@ -1228,8 +1570,10 @@ figcaption {
 /* A block <img> before the caption eats the whole measure, so a floated
    figcaption only begins under the picture — still in the channel, but
    no longer beside anything. From the sidenote breakpoint up, park the
-   caption on the figure mid-line in the note column instead. Plate,
-   fullwidth, margin and mermaid keep their own caption rules. */
+   caption in the note column at the top of the image's bottom fifth
+   (80%), where a note reads against the picture without sitting on the
+   geometric centre or dropping under the frame. Plate, fullwidth,
+   margin and mermaid keep their own caption rules. */
 @media (min-width: 1152px) {
   figure:not(.plate, .fullwidth, .margin, .iframe-wrapper, .mermaid) {
     position: relative;
@@ -1240,8 +1584,8 @@ figcaption {
     float: none;
     clear: none;
     position: absolute;
-    top: 50%;
-    translate: 0 -50%;
+    top: 80%;
+    translate: 0 0;
     right: calc(
       -1 *
         (
@@ -1285,6 +1629,38 @@ figure.plate > figcaption code {
   font-weight: 400;
   letter-spacing: 0.04em;
   color: var(--mute);
+}
+
+/* Caption-row actions: download / open-full / source. Mono micro-links
+   under the title-voice sentence — apparatus, not a second caption. */
+.caption-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.15rem 0.95rem;
+  margin-top: 0.55rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+}
+
+/* Bare / fullwidth / margin captions are left-aligned in the note voice;
+   keep actions with that axis instead of forcing the plate centre. */
+figure:not(.plate) > figcaption > .caption-actions {
+  justify-content: flex-start;
+}
+
+.caption-actions a {
+  color: var(--mute);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule-fine);
+}
+
+.caption-actions a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
 /* A wide figure has already spent the channel it would have hung its
@@ -1462,26 +1838,40 @@ caption {
   .toc {
     display: block;
     position: fixed;
-    top: 4.5rem;
-    left: calc(
-      var(--gutter) - var(--hang-l) / 2 - var(--sidenote-gap) -
-        var(--sidenote-w-fit)
-    );
-    width: var(--sidenote-w-fit);
-    max-height: calc(100vh - 7rem);
+    /* Fallback before toc.js pins top to the meta; same band as the
+       title-block rule so Contents and meta share one hairline. */
+    top: var(--toc-top, 9rem);
+    /* Pin the column-facing edge; shrink to the longest entry. */
+    left: calc(var(--gutter) - var(--hang-l) / 2 - var(--sidenote-gap));
+    width: max-content;
+    max-width: var(--sidenote-w-fit);
+    transform: translateX(-100%);
+    max-height: calc(100vh - 11.5rem);
     overflow: auto;
     scrollbar-width: thin;
+    /* Mirror the sidenote: the rail box keeps its daylight off the
+       field, but the text sits on the inner edge — toward the column —
+       not on the outer trim. Left-aligned copy in a 2-module channel
+       read as a floating orphan; right-aligned it shares an edge with
+       the composition the way a note does on the other side. */
+    text-align: right;
   }
 }
 
 .toc::before {
   content: "Contents";
   display: block;
+  /* Same voice and padding as article > .meta:first-child so when the
+     rail top matches the meta top, the two hairlines share a baseline
+     and meet at the sidenote-gap (meta rule reaches that far left). */
+  width: 100%;
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
   letter-spacing: 0.02em;
   color: var(--mute);
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.9rem;
+  /* Keep the list tight; meta's 2.2rem below is for the h1, not the rail. */
   margin-bottom: 0.55rem;
   border-bottom: 1px solid var(--rule-fine);
 }
@@ -1511,6 +1901,10 @@ caption {
 .toc summary {
   list-style: none;
   cursor: pointer;
+  /* list-item is the UA default and can reserve marker space even
+     after list-style: none; block drops that inline slot so a folded
+     title shares the rail's right edge with its plain siblings. */
+  display: block;
 }
 
 /* The page's own disclosure chip carries a border and well padding;
@@ -1528,9 +1922,14 @@ caption {
 }
 
 .toc details > ul {
-  margin-left: 0.45rem;
-  padding-left: 0.9rem;
-  border-left: 1px solid var(--rule-fine);
+  /* Nested rows hang off the inner (column-facing) edge, same as the
+     parent titles — border on the right, indent mirrored. */
+  margin-left: 0;
+  margin-right: 0.45rem;
+  padding-left: 0;
+  padding-right: 0.9rem;
+  border-left: 0;
+  border-right: 1px solid var(--rule-fine);
 }
 
 .toc details[open] > summary a {
@@ -2121,14 +2520,24 @@ footer.site a.handle:hover {
     widows: 2;
   }
 
+  div.highlight {
+    --code-weight: 400;
+    background: none;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    font-size: 8.5pt;
+    line-height: 1.45;
+    overflow: visible;
+    orphans: 2;
+    widows: 2;
+  }
+
   /* The screen rule pins `white-space: pre` on the inner <code>, so the
-     wrap has to be undone there too or the listing prints clipped. The
-     highlighter's own `white-space: pre` outspecifies `pre code`, hence
-     the third selector — without it every coloured listing would print
-     with its right-hand half off the trim. */
+     wrap has to be undone there too or the listing prints clipped. */
   pre,
   pre code,
-  pre code[class*="shj-lang-"] {
+  div.highlight,
+  div.highlight pre,
+  div.highlight code {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
@@ -2492,5 +2901,220 @@ input.margin-toggle {
     padding-left: 0.8rem;
     border-left: 2px solid var(--rule);
     color: var(--ink);
+  }
+}
+
+/* ---------- findings / claim list ----------
+   Structured key-results callout. Hairline spine like a blockquote,
+   mono label, then claims in the prose voice — textbook “delivers”,
+   not a marketing card. */
+
+.findings {
+  margin: 1.8rem 0;
+  padding: 0.85rem 0 0.85rem 1.15rem;
+  border-left: 2px solid var(--rule);
+}
+
+.findings > .section-label,
+.findings > .findings-label {
+  margin: 0 0 0.55rem;
+  margin-inline: 0;
+  padding: 0;
+  border-top: 0;
+  clear: none;
+}
+
+.findings > p:not(.section-label):not(.findings-label) {
+  margin-bottom: 0.7rem;
+  text-wrap: pretty;
+}
+
+.findings > p:last-child {
+  margin-bottom: 0;
+}
+
+.claim-list {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
+}
+
+.claim-list > li {
+  margin: 0 0 0.7rem;
+  padding: 0;
+  text-wrap: pretty;
+}
+
+.claim-list > li:last-child {
+  margin-bottom: 0;
+}
+
+.claim-list > li > strong:first-child {
+  font-weight: 600;
+}
+
+/* ---------- figure gallery ----------
+   Caption-bound plate slides. Scroll-snap owns the track; dots and
+   prev/next are apparatus in the mono voice — not paddle chrome. */
+
+figure.gallery {
+  position: relative;
+  /* Captions are visually hidden with absolute positioning; clip so a
+     mis-contained static position cannot widen the page scrollport. */
+  overflow-x: clip;
+}
+
+figure.gallery .gallery-viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  /* Height reserved for the tallest plate (gallery.js) so slide changes
+     never reflow surrounding content or nudge page scroll. */
+  height: var(--gallery-h, auto);
+  overflow-anchor: none;
+}
+
+figure.gallery .gallery-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+figure.gallery .gallery-track {
+  display: flex;
+  /* Shorter plates sit in the vertical middle of the reserved bay. */
+  align-items: center;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+figure.gallery .gallery-slide {
+  /* Containing block for .gallery-slide-caption — without this the
+     figure (position: relative) owns them and their static positions
+     sit at each slide’s offset, blowing out document scrollWidth. */
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  margin: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+figure.gallery .gallery-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+figure.gallery .gallery-slide-caption {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+figure.gallery .gallery-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+
+figure.gallery .gallery-prev,
+figure.gallery .gallery-next {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--mute);
+  background: none;
+  border: 0;
+  padding: 0.2rem 0.35rem;
+  cursor: pointer;
+}
+
+figure.gallery .gallery-prev:hover,
+figure.gallery .gallery-next:hover,
+figure.gallery .gallery-prev:focus-visible,
+figure.gallery .gallery-next:focus-visible {
+  color: var(--accent);
+}
+
+figure.gallery .gallery-prev:disabled,
+figure.gallery .gallery-next:disabled {
+  opacity: 0.35;
+  cursor: default;
+  color: var(--mute);
+}
+
+figure.gallery .gallery-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+figure.gallery .gallery-dot {
+  box-sizing: content-box;
+  width: 0.35rem;
+  height: 0.35rem;
+  padding: 0;
+  border: 1px solid var(--mute);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+figure.gallery .gallery-dot[aria-selected="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+figure.gallery .gallery-dot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+figure.gallery > figcaption .gallery-live-caption:empty {
+  display: none;
+}
+
+/* ---------- plate fade-in ----------
+   Subtle enter on scroll. Off until intersecting; killed under
+   prefers-reduced-motion (gallery.js also short-circuits). */
+
+@media (prefers-reduced-motion: no-preference) {
+  .plate-reveal:not(.is-revealed) {
+    opacity: 0;
+    transform: translateY(0.45rem);
+  }
+
+  .plate-reveal {
+    transition:
+      opacity 0.48s ease,
+      transform 0.48s ease;
+  }
+
+  .plate-reveal.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

@@ -1,12 +1,21 @@
 /* mermaid.js — render ```mermaid fences as diagrams.
    Python-Markdown leaves them as <pre><code class="language-mermaid">;
-   this module swaps each block for an SVG. Theme is the site palette
-   (--paper, --ink, --wash, --mute, --accent, …) via Mermaid's base
-   theme + themeVariables, not default/dark. If the CDN is unreachable
-   the fences stay as plain source — never blank. */
+   this module swaps each block for an SVG.
 
-const MODULE =
-  "https://cdn.jsdelivr.net/npm/mermaid@11.12.2/dist/mermaid.esm.min.mjs";
+   Brand voice matches the rest of the page: paper field, hairline
+   structure, monospace labels (the micro-label / code face — diagrams
+   here are mostly UOp trees and pipelines, not prose). Colours come
+   from :root tokens via Mermaid's base theme. Default: self-hosted
+   under /static/vendor/mermaid/ (fetched by build.py). Pass ?cdn=1 to
+   A/B against jsDelivr. VER is stamped at build to the resolved npm
+   version so ?cdn=1 matches. If the module is unreachable the fences
+   stay as plain source — never blank. */
+
+const VER = "0.0.0";
+const useCdn = new URLSearchParams(location.search).has("cdn");
+const MODULE = useCdn
+  ? `https://cdn.jsdelivr.net/npm/mermaid@${VER}/dist/mermaid.esm.min.mjs`
+  : "/static/vendor/mermaid/mermaid.esm.min.mjs";
 
 const blocks = [...document.querySelectorAll("pre code.language-mermaid")].map(
   (el) => ({
@@ -29,19 +38,24 @@ const brandTheme = () => {
   const ok = css("--ok");
   const fail = css("--fail");
   const warn = css("--warn");
-  /* Serif at init so dagre measures labels with the face that ships —
-     overriding font in CSS after render clips text inside fixed boxes. */
-  const fontFamily = css("--serif").replace(/"/g, "") || "Georgia, serif";
+  /* Mono at init so dagre measures labels with the face that ships —
+     a CSS font swap after render clips text inside fixed boxes. */
+  const fontFamily =
+    css("--mono-code").replace(/"/g, "") ||
+    "JetBrains Mono, ui-monospace, monospace";
 
   return {
     darkMode: dark,
     background: paper,
     fontFamily,
-    fontSize: "15px",
-    primaryColor: wash,
+    fontSize: "12.5px",
+    /* Nodes sit on the sheet like kbd / plates: paper fill, mute
+       hairline. Wash is reserved for secondary / alt bands, mark for
+       notes — not for every box (that reads as card chrome). */
+    primaryColor: paper,
     primaryTextColor: ink,
     primaryBorderColor: mute,
-    secondaryColor: mark,
+    secondaryColor: wash,
     secondaryTextColor: ink,
     secondaryBorderColor: mute,
     tertiaryColor: paper,
@@ -49,7 +63,7 @@ const brandTheme = () => {
     tertiaryBorderColor: mute,
     lineColor: mute,
     textColor: ink,
-    mainBkg: wash,
+    mainBkg: paper,
     nodeBorder: mute,
     clusterBkg: paper,
     clusterBorder: mute,
@@ -57,14 +71,18 @@ const brandTheme = () => {
     edgeLabelBackground: paper,
     nodeTextColor: ink,
     defaultLinkColor: mute,
-    /* Sequence */
-    actorBkg: wash,
+    /* Sharp corners, 1px strokes — same hairline grammar as tables. */
+    radius: "0",
+    strokeWidth: "1px",
+    /* Sequence — messages stay mute like flowchart edges; activation
+       keeps the one accent pop. */
+    actorBkg: paper,
     actorBorder: mute,
     actorTextColor: ink,
     actorLineColor: mute,
-    signalColor: ink,
+    signalColor: mute,
     signalTextColor: ink,
-    labelBoxBkgColor: wash,
+    labelBoxBkgColor: paper,
     labelBoxBorderColor: mute,
     labelTextColor: ink,
     loopTextColor: ink,
@@ -73,10 +91,14 @@ const brandTheme = () => {
     noteBorderColor: mute,
     activationBkgColor: wash,
     activationBorderColor: accent,
+    actorFontSize: "12.5px",
+    noteFontSize: "12.5px",
+    messageFontSize: "12.5px",
     /* State / class */
     labelColor: ink,
     altBackground: wash,
-    /* Pie — brand spectrum, not Mermaid's defaults */
+    classText: ink,
+    /* Pie — brand spectrum, micro-label sizes (Mermaid defaults 17–25) */
     pie1: accent,
     pie2: mute,
     pie3: ok,
@@ -88,6 +110,9 @@ const brandTheme = () => {
     pieSectionTextColor: ink,
     pieLegendTextColor: ink,
     pieStrokeColor: paper,
+    pieTitleTextSize: "13px",
+    pieSectionTextSize: "12.5px",
+    pieLegendTextSize: "12.5px",
     /* Git graph */
     git0: accent,
     git1: ok,
@@ -102,9 +127,32 @@ const brandTheme = () => {
     gitBranchLabel4: paper,
     gitBranchLabel5: ink,
     commitLabelColor: ink,
-    commitLabelBackground: wash,
-    commitLabelFontSize: "12px",
+    commitLabelBackground: paper,
+    commitLabelFontSize: "11px",
   };
+};
+
+/* Mermaid still paints a few defaults past themeVariables; strip the
+   leftover chrome so the SVG matches table / kbd hairlines. */
+const themeCSS = [
+  ".node rect,.node circle,.node ellipse,.node polygon,.node path,",
+  ".actor,.labelBox{stroke-width:1px!important}",
+  ".cluster rect{fill:transparent!important;stroke-width:1px!important;",
+  "stroke-dasharray:4 3}",
+  ".edgePath .path,.flowchart-link,.messageLine0,.messageLine1,",
+  ".loopLine,.relation{stroke-width:1.15px!important}",
+  "marker path{stroke-width:1px!important}",
+  "g.classGroup text,.classLabel .label{fill:inherit!important;color:inherit}",
+  ".pieTitleText{font-size:13px!important}",
+  "text.slice,.legend text{font-size:12.5px!important}",
+].join("");
+
+const harden = (svgRoot) => {
+  /* Force sharp corners even when a diagram look sets rx/ry. */
+  svgRoot.querySelectorAll("rect").forEach((r) => {
+    r.setAttribute("rx", "0");
+    r.setAttribute("ry", "0");
+  });
 };
 
 if (!blocks.length) {
@@ -118,6 +166,7 @@ if (!blocks.length) {
         startOnLoad: false,
         theme: "base",
         themeVariables: brandTheme(),
+        themeCSS,
         look: "classic",
         layout: "dagre",
         securityLevel: "strict",
@@ -126,10 +175,10 @@ if (!blocks.length) {
           // "basis" draws soft Béziers; linear keeps mostly straight
           // segments with sharp corners at waypoints.
           curve: "linear",
-          padding: 15,
-          nodeSpacing: 50,
-          rankSpacing: 50,
-          wrappingWidth: 200,
+          padding: 12,
+          nodeSpacing: 40,
+          rankSpacing: 44,
+          wrappingWidth: 180,
           useMaxWidth: true,
         },
       });
@@ -143,6 +192,8 @@ if (!blocks.length) {
           figure.className = "mermaid";
           figure.setAttribute("role", "img");
           figure.innerHTML = svg;
+          const root = figure.querySelector("svg");
+          if (root) harden(root);
           block.pre.replaceWith(figure);
           block.pre = figure;
         } catch {

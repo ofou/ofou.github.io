@@ -238,7 +238,7 @@
             mount(e.target);
           }
         }),
-      { rootMargin: "60% 0px" },
+      { rootMargin: "200px 0px" },
     );
     document.querySelectorAll("[data-fig]").forEach((el) => near.observe(el));
   }
