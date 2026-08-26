@@ -23,6 +23,9 @@
      page for a reader in bright light. */
   --mute: #615d54;
   --accent: #2d4fa1;
+  --ok: #16a34a;
+  --fail: #dc2626;
+  --warn: #ca8a04;
   --wash: #ecebe5;
   --mark: #f2e4b7;
   --rule: rgba(26, 25, 23, 0.22);
@@ -37,8 +40,11 @@
      centred on the line, which is where code legibility is actually
      won. Every fallback below shares its 0.6em advance, so a listing
      holds its column count while the webfont is still in flight. */
-  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --mono-code: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --mono:
+    ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --mono-code:
+    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
 
   /* Type sizes derive from the reference device rather than from taste
      alone. A 16-inch MacBook Pro is 3456×2234 native at 2×: a viewport
@@ -104,8 +110,13 @@
      out of the band it was chosen for. Only the field grows. */
   --module: clamp(8.5rem, 10.2vw, 9.5rem);
   --measure: calc(4 * var(--module));
-  --plate: calc(5 * var(--module));
   --channel: calc(2 * var(--module));
+
+  /* There is deliberately no --plate length here. The prose column is
+     min(--measure, 100% - 3rem), so a nominal five-module plate is a lie
+     on a phone — it claims 544px of a 390px viewport. The wide figure
+     tiers are stated as `100% + hang` against the real column instead,
+     which degrades on its own and needs no breakpoint. */
 
   /* Margin geometry for sidenotes; build.py emits Tufte's label +
      checkbox + floated span. The channel is the primitive now and the
@@ -116,20 +127,27 @@
   --sidenote-w: calc(var(--channel) - var(--sidenote-gap));
   --gutter: max(1.5rem, calc((100vw - var(--measure)) / 2));
 
-  /* --hang-l / --hang-r are how far the field reaches out of the prose
-     column: one module on the left once there is a margin to reach into,
-     nothing otherwise. Below the sidenote breakpoint the page is a
-     single column and everything — listings, section rules, the rule
-     under the title — lines up with it, because a field that creeps to
-     within a gutter of the viewport edge is not a field, it is a bleed,
-     and it read as one next to the masthead rule. Capped by the room
-     actually outside the column, so a plate never crosses the 1.5rem
-     edge; when it cannot fit it scrolls, as it always did. Two
-     variables rather than one rule per breakpoint: every consumer reads
-     the same pair and none of them has to care about source order. */
+  /* --hang-l is how far the field reaches out of the prose column: up
+     to one module, split evenly across both sides by every consumer
+     (margin-inline: calc(-1 * var(--hang-l) / 2)), so plates, listings
+     and hairlines keep one centre line with the text. Below the
+     sidenote breakpoint the page is a single column and everything —
+     listings, section rules, the rule under the title — lines up with
+     it, because a field that creeps to within a gutter of the viewport
+     edge is not a field, it is a bleed, and it read as one next to the
+     masthead rule. Capped by the room actually outside the column, so
+     a plate never crosses the 1.5rem edge; when it cannot fit it
+     scrolls, as it always did. */
   --hang-room: max(0px, calc(var(--gutter) - 1.5rem));
   --hang-l: 0px;
-  --hang-r: 0px;
+
+  /* How far a wide figure may cross the caption channel. Capped by the
+     room actually outside the column so a figure stops where sidenotes
+     stop instead of running to the trim: the plate's left edge and the
+     channel's outer edge become the two vertical edges every wide
+     element on the page shares. Zero below the sidenote breakpoint,
+     where there is no channel to cross. */
+  --reach-r: 0px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -142,6 +160,9 @@
     --ink: #dcd8ce;
     --mute: #96928a;
     --accent: #7e9ce6;
+    --ok: #4ade80;
+    --fail: #f87171;
+    --warn: #fbbf24;
     --wash: #1e1d1a;
     --mark: #4a4433;
     --rule: rgba(221, 216, 206, 0.2);
@@ -174,6 +195,15 @@
 
 html {
   height: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    /* Contents links, footnote markers and the 404 page's jump list
+       travel the distance they draw; an instant teleport leaves the
+       reader to work out what moved. */
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -243,20 +273,40 @@ footer.site {
 }
 
 /* Every structural hairline on the page — this one, the rule under the
-   title block, the rule over each section, <hr>, the bibliography and
-   the comments — spans the field, while the words inside it stay in the
-   column. One left edge for all of them, shared with the listings; the
-   alternative is hairlines of identical weight starting at two
-   different places, which reads as a mistake rather than as a frame. */
+   title block, the rule over each section, <hr>, the bibliography, the
+   comments and the footer — spans the field, while the words inside it
+   stay in the column. One centre line for all of them, shared with
+   the listings and the plates; hairlines of identical weight drawn at
+   two different places read as a mistake rather than as a frame.
+
+   The masthead and the footer are flex items of <body> centred by auto
+   margins, so they cannot take the negative margin the in-flow blocks
+   use — it would replace the auto and shove them to the flex start.
+   They draw the rule with a pseudo-element instead: no layout to
+   disturb, same two edges. */
 header.site {
+  position: relative;
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
   gap: 0.85rem;
-  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
   padding-block: 1.4rem 1.2rem;
-  padding-inline: var(--hang-l) var(--hang-r);
-  border-bottom: 1px solid var(--rule);
+}
+
+header.site::after,
+footer.site::before {
+  content: "";
+  position: absolute;
+  inset-inline: calc(-1 * var(--hang-l) / 2);
+  border-top: 1px solid var(--rule);
+}
+
+header.site::after {
+  bottom: 0;
+}
+
+footer.site::before {
+  top: 0;
 }
 
 .brand {
@@ -290,18 +340,14 @@ h3,
 h4,
 h5,
 h6 {
-  /* Titles are airport signage. The letterforms are Hind — the Indian
-     Type Foundry's Latin, adapted from Frutiger Next, the face Adrian
-     Frutiger drew for Charles de Gaulle's wayfinding — and the setting
-     follows the signage conventions that face was drawn for: bold,
-     capitals, tracked out. Research for screen headings converges on
-     weights 600–700 with leading 1.1–1.3; caps signage adds positive
-     tracking where display serifs take negative. Fallbacks stay in the
-     Frutiger lineage: Carter's Verdana, Segoe's humanist sans. */
+  /* Titles are set in Hind — the Indian Type Foundry's Latin, adapted
+     from Frutiger Next — at weight 700, in sentence case with no added
+     tracking: the wayfinding caps this face was drawn for read as
+     shouting at book sizes, so the voice is carried by weight and the
+     sans/serif contrast alone. Fallbacks stay in the Frutiger lineage:
+     Carter's Verdana, Segoe's humanist sans. */
   font-family: "Hind", "Segoe UI", Verdana, sans-serif;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
   line-height: 1.15;
   hyphens: none;
   font-variant-numeric: lining-nums;
@@ -314,7 +360,6 @@ h6 {
 h1 {
   text-wrap: balance;
   font-size: clamp(calc(var(--text) * 1.85), 6vw, calc(var(--text) * 2.2));
-  letter-spacing: 0.03em;
   margin-block: 0 1.4rem;
 }
 
@@ -326,22 +371,22 @@ h6 {
   text-wrap: pretty;
 }
 
-/* The section rule is what declares the field. A plate one module wider
-   than the prose reads as an accident if nothing else on the page knows
-   about that width; so the hairline over every section — and the rule
-   under the title block, and every <hr> — runs the full plate field
-   while the words stay in the column. Classical practice for exactly
-   this problem: a string course or stylobate states the bay, and the
-   members inside it are then free to differ. Below the sidenote
-   breakpoint --hang-l is 0 and all of this collapses to the column. */
+/* The section rule states the field. The wide tiers — plates, listings,
+   code — now sit centred on the column axis, so the hairline over every
+   section, the rule under the title block and every <hr> reach the same
+   half-hang on both sides: one symmetric bay, members free to differ
+   inside it. Below the sidenote breakpoint --hang-l is 0 and all of
+   this collapses to the column. */
 h2 {
   font-size: calc(var(--text) * 1.55);
-  letter-spacing: 0.045em;
-  margin-top: 2.6rem;
-  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
+  margin-inline: calc(-1 * var(--hang-l) / 2);
   padding-top: 1.1rem;
-  padding-inline: var(--hang-l) var(--hang-r);
+  padding-inline: calc(var(--hang-l) / 2);
   border-top: 1px solid var(--rule-fine);
+  /* The rule spans the field, so like any plate it cannot share
+     vertical with a note riding the channel — and a left float must
+     not run under it either. */
+  clear: both;
 }
 
 h3 {
@@ -350,12 +395,25 @@ h3 {
   margin-top: 2rem;
 }
 
-h4,
-h5,
-h6 {
+h4 {
   font-size: calc(var(--text) * 1.12);
   font-weight: inherit;
   margin-top: 1.6rem;
+}
+
+h5 {
+  font-size: var(--text);
+  font-weight: inherit;
+  margin-top: 1.5rem;
+}
+
+/* The floor of the scale. Caps need room to be read as caps, so the
+   tracking widens as the size drops — the same trade the .meta voice
+   makes at 0.8rem. */
+h6 {
+  font-size: calc(var(--text) * 0.9);
+  font-weight: inherit;
+  margin-top: 1.4rem;
 }
 
 p,
@@ -382,7 +440,15 @@ strong {
 hr {
   border: 0;
   border-top: 1px solid var(--rule-fine);
-  margin: 2.4rem calc(-1 * var(--hang-r)) 2.4rem calc(-1 * var(--hang-l));
+  margin: 2.4rem calc(-1 * var(--hang-l) / 2);
+  clear: both;
+}
+
+/* An authored `---` immediately before a section head draws the same line
+   the h2 already owns, 42px apart. The section rule is the systematic one,
+   so the manual rule stands down rather than the other way round. */
+hr:has(+ h2) {
+  display: none;
 }
 
 blockquote {
@@ -396,22 +462,6 @@ blockquote {
 
 blockquote p:last-child {
   margin-bottom: 0;
-}
-
-/* Chapter epigraphs, as in Beautiful Evidence: italic quotes whose
-   attribution rides in a <footer> inside the blockquote. */
-div.epigraph > blockquote,
-div.epigraph > blockquote > p {
-  font-style: italic;
-}
-
-div.epigraph > blockquote > footer {
-  font-style: normal;
-  text-align: right;
-}
-
-div.epigraph > blockquote > footer > cite {
-  font-style: italic;
 }
 
 small {
@@ -449,17 +499,18 @@ dd {
 
 .meta {
   font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  /* 0.8rem mono in the document's own case reads as apparatus, not
+     prose; 0.02em of tracking keeps the small face from crowding. */
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
   color: var(--mute);
   margin: 0 0 2.2rem;
 }
 
 article > .meta:first-child {
-  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
+  margin-inline: calc(-1 * var(--hang-l) / 2);
   padding-bottom: 0.9rem;
-  padding-inline: var(--hang-l) var(--hang-r);
+  padding-inline: calc(var(--hang-l) / 2);
   border-bottom: 1px solid var(--rule-fine);
 }
 
@@ -473,6 +524,34 @@ article > .meta:first-child {
 }
 
 .tag {
+  color: var(--accent);
+}
+
+/* The stack is machine vocabulary, so it reads in the label voice — a
+   project's tools are context, its subject is the link. Case is left
+   alone: FastAPI, tiktoken and WebGL are spelled that way on purpose,
+   and the uppercase the rest of .meta wears would flatten the
+   distinction out of them. It also keeps this line a different texture
+   from the subtitle directly above it. */
+.stack {
+  color: var(--mute);
+  text-transform: none;
+}
+
+/* In prose a tag is a live classification and earns the accent. In a
+   list it is the fourth line of a row whose first line is the title, and
+   accent there makes the filing louder than the thing filed. Same chip,
+   quieted by position. */
+.index-tags {
+  margin: 0.15rem 0 0;
+}
+
+.index-tags .tag {
+  color: var(--mute);
+  margin-right: 0.7rem;
+}
+
+.index-tags .tag:hover {
   color: var(--accent);
 }
 
@@ -498,18 +577,30 @@ article > .meta:first-child {
 
 /* ---------- relative dates (revealed on hover) ---------- */
 
-
-.cv-when .rel {
-  color: var(--accent);
-}
-
 [data-rel-from]:hover .rel,
-[data-rel-from]:focus-visible .rel,
-.cv-when:hover .rel {
+[data-rel-from]:focus-visible .rel {
   display: inline;
 }
 
 /* ---------- index lists ---------- */
+
+/* A year is a divider, not a section title: it keeps the h2's rule and
+   field hang, because that is what separates the groups, but drops the
+   31px display voice for the label voice the dates beside it already
+   use. Still an h2 so the archive keeps a real heading outline. */
+.index-year {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--mute);
+  margin-top: 2.6rem;
+  padding-top: 0.75rem;
+}
+
+.index-year + ul.index {
+  margin-top: 0.6rem;
+}
 
 ul.index {
   list-style: none;
@@ -582,7 +673,11 @@ pre {
      arrow, and `===` must stay countable. The slashed zero stays on so
      0/O never has to be inferred from context. */
   font-variant-ligatures: none;
-  font-feature-settings: "liga" 0, "clig" 0, "calt" 0, "zero" 1;
+  font-feature-settings:
+    "liga" 0,
+    "clig" 0,
+    "calt" 0,
+    "zero" 1;
 }
 
 code,
@@ -607,7 +702,9 @@ samp {
 kbd {
   font-size: 0.8em;
   background: var(--paper);
-  box-shadow: inset 0 0 0 1px var(--rule), 0 1px 0 0 var(--rule);
+  box-shadow:
+    inset 0 0 0 1px var(--rule),
+    0 1px 0 0 var(--rule);
   border-radius: 3px;
   padding: 0.18em 0.45em;
   white-space: nowrap;
@@ -617,11 +714,14 @@ pre {
   background: var(--wash);
   border: 1px solid var(--rule-fine);
   /* The listing keeps its 80 columns even though the prose column is no
-     longer 80 columns wide: it hangs out of the column by --hang, and
-     nothing else on the page is allowed past the measure without
-     opting in. */
+     longer 80 columns wide: it opens half a module out of the column
+     on each side, and nothing else on the page is allowed past the
+     measure without opting in. The hang reaches the same x-band as a
+     margin figure, so clear drops the plate below any float riding
+     there — otherwise a listing paints through the channel image. */
   padding: 1rem 1.15rem;
-  margin: 1.5rem calc(-1 * var(--hang-r)) 1.5rem calc(-1 * var(--hang-l));
+  margin: 1.5rem calc(-1 * var(--hang-l) / 2);
+  clear: both;
   font-size: var(--code-size);
   font-weight: var(--code-weight);
   /* Looser than the 1.5 of the prose. Code is scanned down the indent
@@ -636,13 +736,30 @@ pre {
   scrollbar-color: var(--rule) transparent;
 }
 
+/* A listing inside a list item sits in the item's own indent: the
+   plate hang assumes the column as its containing block, which a
+   nested pre does not have — so inside a list the listing stays
+   in-column, aligned with the item text. */
+li pre {
+  margin-inline: 0;
+}
+
 @media (min-width: 1152px) {
-  /* Here the margins exist: the right one is the note channel, so the
-     field opens one module to the left — far enough to carry 80 columns
-     of listing, never far enough to slide under a note. */
+  /* Here the margins exist: the field opens half a module out of the
+     column on each side — far enough to carry 80 columns of listing.
+     Notes and the TOC sit past that hang, not in it, so a listing or
+     section rule never shares an x-band with the apparatus. */
   :root {
     --hang-l: min(var(--module), var(--hang-room));
-    --hang-r: 0px;
+    /* A wide figure may spend the note channel, but never more room than
+       actually exists outside the column. */
+    --reach-r: min(var(--channel), var(--hang-room));
+    /* Room left for a note once the field hang, the gap, and the 1.5rem
+       edge gutter are taken out — same formula the TOC already used. */
+    --sidenote-w-fit: min(
+      var(--sidenote-w),
+      calc(var(--gutter) - var(--hang-l) / 2 - var(--sidenote-gap) - 1.5rem)
+    );
   }
 }
 
@@ -700,7 +817,11 @@ pre code[class*="shj-lang-"] {
   line-height: inherit;
   tab-size: inherit;
   font-variant-ligatures: none;
-  font-feature-settings: "liga" 0, "clig" 0, "calt" 0, "zero" 1;
+  font-feature-settings:
+    "liga" 0,
+    "clig" 0,
+    "calt" 0,
+    "zero" 1;
 }
 
 /* One scroll container, not two. The vendor puts `overflow-x: auto` on
@@ -789,56 +910,136 @@ video {
 }
 
 /* A hand-written embed arrives with pixel width and height attributes —
-   here a 720px box, which panned the whole page sideways on a phone
-   because nothing was constraining it to the column. Unlike img and
-   video, an iframe's attributes do not give it an intrinsic ratio, so
-   the ratio has to be restated for the two hosts that actually appear
-   in these posts; every other frame (giscus) only gets the cap. */
+   a 720px box that panned the whole page sideways on a phone because
+   nothing constrained it to the column. Unlike img and video, an
+   iframe's attributes give it no intrinsic ratio, so the ratio comes
+   from a wrapper rather than from a list of video hosts to keep up
+   with; unwrapped frames (giscus) still get the cap. */
 iframe {
   max-width: 100%;
   border: 0;
-}
-
-iframe[src*="youtube"],
-iframe[src*="vimeo"] {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  height: auto;
-  display: block;
-  background: var(--wash);
 }
 
 figure {
   margin: 2rem 0;
 }
 
-/* Tufte's escape hatch for wide graphics: an opt-in class that lets a
-   figure or listing reach symmetrically past the column into both
-   margins, capped by the viewport gutter. */
+/* Mermaid diagrams replace a fenced ```mermaid block. Stay on the prose
+   measure (same bay as tables / [data-fig]); wide graphs scroll rather
+   than blow past the column. The SVG ships its own colours from the
+   mermaid theme (default / dark via prefers-color-scheme). */
+figure.mermaid {
+  margin-block: 2rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+  text-align: center;
+}
+
+figure.mermaid svg {
+  /* Mermaid already sets max-width on the root SVG; leave height alone so
+     the viewBox aspect ratio stays as dagre computed it (Cursor does the
+     same). Only clamp if a wide graph outruns the measure. */
+  max-width: 100%;
+}
+
+/* The listing bay: wider than the measure by one hang, centred on the
+   column axis. A picture, a listing, a scroll-table and an interactive
+   figure share this bay and one centre line — the same edges a bare
+   `pre` already draws with its hang margins. Tiers that spend the note
+   channel opt into .fullwidth instead. */
+figure.plate,
+pre.plate,
+div.plate,
+.scroll-x,
+[data-fig] {
+  width: calc(100% + var(--hang-l));
+  margin-inline: calc(-1 * var(--hang-l) / 2);
+  /* A tier that crosses the channel cannot share the vertical with a
+     floated margin note or margin figure — without the clear, the plate
+     paints straight through whatever is riding the channel. */
+  clear: both;
+}
+
+/* Embeds and scroll tables sit on the figure beat: 2rem above and
+   below, so a canvas, its controls and a following results table
+   never share an edge with the prose. Their old zero block margin
+   borrowed air from whatever paragraph happened to precede them and
+   glued them to whatever followed — a controls row 5px from a table,
+   a chart butted against the sentence that reads it. Adjacent plate
+   tiers collapse to one shared 2rem, as figures always did. */
+[data-fig],
+.scroll-x {
+  margin-block: 2rem;
+}
+
+/* Explicit fullwidth: hang plus the note channel. Opt-in only — tables
+   and interactives stay on the listing bay above so they match code. */
 figure.fullwidth,
 pre.fullwidth,
 div.fullwidth {
-  --overhang: min(15rem, max(0px, calc(var(--gutter) - 1.6rem)));
-  width: calc(var(--measure) + 2 * var(--overhang));
-  margin-left: calc(-1 * var(--overhang));
+  width: calc(100% + var(--hang-l) + var(--reach-r));
+  margin-inline: calc(-1 * (var(--hang-l) + var(--reach-r)) / 2);
+  clear: both;
 }
 
-/* The newthought: Tufte opens a section with small caps instead of a
-   heading when the prose should run unbroken beneath it. */
-span.newthought {
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.03em;
+/* A margin figure is a picture in the note voice: it lives in the
+   channel beside the prose rather than interrupting it. Tufte wraps an
+   image in a marginnote; here the figure element carries it so the
+   caption stays attached. Geometry matches .sidenote: past the field
+   hang, then one sidenote-gap (zero measure invasion). */
+figure.margin {
+  float: right;
+  clear: right;
+  width: var(--sidenote-w-fit, var(--sidenote-w));
+  margin: 0.3rem
+    calc(-1 * (var(--hang-l) / 2 + var(--sidenote-gap) + var(--sidenote-w-fit, var(--sidenote-w))))
+    1.2rem
+    calc(var(--hang-l) / 2 + var(--sidenote-gap));
+}
+
+/* Guard against a nested figure from an older build; zero its block
+   margin so it cannot pad the channel float. */
+figure.margin > figure {
+  margin: 0;
+}
+
+figure.margin figcaption {
+  float: none;
+  width: auto;
+  margin-right: 0;
+  margin-top: 0.5rem;
+}
+
+/* An embed has no intrinsic ratio, so the wrapper carries one and the
+   frame fills it. Replaces naming individual video hosts: any embed
+   opts in, and --ratio overrides 16/9 for the odd square or portrait
+   frame. */
+.iframe-wrapper {
+  position: relative;
+  aspect-ratio: var(--ratio, 16 / 9);
+  background: var(--wash);
+}
+
+.iframe-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /* Captions are margin notes for pictures — Tufte sets them beside the
    figure in the sidenote voice, not beneath it. The float hangs off the
-   column by the same geometry as .sidenote, so text and captions stack
+   field by the same geometry as .sidenote, so text and captions stack
    down one clear margin channel. */
 figcaption {
   float: right;
   clear: right;
-  margin-right: calc(-1 * var(--channel));
-  width: var(--sidenote-w);
+  margin-right: calc(
+    -1 * (var(--hang-l) / 2 + var(--sidenote-gap) + var(--sidenote-w-fit, var(--sidenote-w)))
+  );
+  width: var(--sidenote-w-fit, var(--sidenote-w));
   margin-top: 0.2rem;
   font-size: calc(var(--text) * 0.68);
   line-height: 1.45;
@@ -846,20 +1047,65 @@ figcaption {
   text-wrap: pretty;
 }
 
+/* A plate's caption is a label, not a margin note. The picture is the
+   subject of the bay, so its caption sits beneath it, centred on the
+   shared axis: a mono file-lead in the micro-label voice over a line
+   in the title voice. (The floated sidenote-voice caption read as a
+   footnote hanging off a picture that fills the field.) */
+figure.plate > figcaption {
+  float: none;
+  width: auto;
+  margin-right: 0;
+  margin-top: 1.1rem;
+  text-align: center;
+  font-family: "Hind", "Segoe UI", Verdana, sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--text) * 0.72);
+  line-height: 1.4;
+  color: var(--ink);
+  text-wrap: balance;
+  hyphens: none;
+}
+
+/* The lead is apparatus: the file's own name in the label voice, on
+   its own line, quiet under the title-voice sentence it introduces.
+   Strips the inline-code wash — here it names, it does not tokenize. */
+figure.plate > figcaption code {
+  display: block;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  background: none;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--mute);
+}
+
+/* A wide figure has already spent the channel it would have hung its
+   caption in, so the caption drops under the picture in the same voice
+   — the treatment the narrow breakpoint uses for every caption. */
 figure.fullwidth figcaption {
-  /* The fullwidth figure has already spent its margin; walk the caption
-     back by the overhang so it lands where sidenotes do. */
-  margin-right: calc(var(--overhang) - var(--channel));
+  float: none;
+  width: auto;
+  margin-right: 0;
+  margin-top: 0.7rem;
 }
 
 /* Without a margin there is nowhere to hang a caption: it becomes a
-   footnote under the picture, same voice. */
+   footnote under the picture, same voice. A margin figure has nowhere
+   to go either, so it rejoins the column at full measure. */
 @media (max-width: 1151px) {
   figcaption {
     float: none;
     width: auto;
     margin-right: 0;
     margin-top: 0.7rem;
+  }
+
+  figure.margin {
+    float: none;
+    width: auto;
+    margin: 2rem 0;
   }
 }
 
@@ -868,9 +1114,22 @@ img:not(.avatar) {
   background: var(--paper);
 }
 
-footer.site a.icon img {
-  border: 0;
-  background: none;
+/* A UI capture arrives on #fff, which on #f6f5f1 paper reads as a pale
+   patch rather than as a plate — and the bigger the tier, the louder the
+   mismatch. Multiplying against the backdrop maps that white exactly
+   onto the paper and leaves the dark interface untouched, so the capture
+   sits on the page instead of on top of it. Opt-in, because the same
+   blend would wrongly darken a photograph. */
+img.screenshot {
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* Multiply against near-black would crush the capture to nothing; at
+     night the existing brightness pullback is the whole treatment. */
+  img.screenshot {
+    mix-blend-mode: normal;
+  }
 }
 
 .avatar {
@@ -903,6 +1162,22 @@ abbr[title] {
 
 /* ---------- tables ---------- */
 
+/* build.py wraps every table in this. The table keeps table layout and
+   the wrapper takes the overflow. The wrapper rides the listing bay
+   with [data-fig] and bare `pre`, so a wide table, a canvas and a code
+   plate share one left and right edge; below 1152px they scroll inside
+   the column. Same contained flick as a listing. */
+.scroll-x {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+
+.scroll-x table {
+  min-width: max-content;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -921,8 +1196,7 @@ th {
   font-family: var(--mono);
   font-size: 0.75rem;
   font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--mute);
   border-bottom: 1px solid var(--rule);
 }
@@ -931,20 +1205,66 @@ caption {
   caption-side: bottom;
   font-family: var(--mono);
   font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--mute);
   padding-top: 0.6rem;
   text-align: left;
 }
 
+.mark-ok {
+  color: var(--ok);
+  font-weight: 600;
+}
+
+.mark-fail {
+  color: var(--fail);
+}
+
+.mark-warn {
+  color: var(--warn);
+}
+
 /* ---------- table of contents ---------- */
 
+/* A contents list is apparatus, so it lives where the rest of the
+   apparatus lives. From 1152px — the width at which the margins open
+   and the sidenotes surface — it stands as a fixed rail in the left
+   gutter: the exact mirror of the sidenote. Same width (the channel
+   minus the gap), same daylight off the composition (one
+   sidenote-gap), so the page carries one note channel per side and
+   the margins read as a pair, not as two improvisations. Below that
+   width there is no channel to hold it, and a list wedged after the
+   title is furniture; it steps aside entirely, exactly as the
+   sidenotes do.
+
+   The one difference: the rail's daylight is measured from the field
+   edge — where plates and listings land at hang-l/2 — not from the
+   prose column, because the field is the widest thing the left
+   margin must clear. Plates keep their centre line; the rail keeps
+   clear of them by the same gap a note keeps from the column.
+
+   Fixed, not floated: every section head on this site carries
+   `clear: both` so its rule never shares vertical with a channel
+   occupant, and a floated rail would push the first heading a
+   rail-height down the page — a hole between the lede and its first
+   section. Out of the flow, nothing has to clear it. */
 .toc {
-  border: 1px solid var(--rule-fine);
-  padding: 0.9rem 1.2rem;
-  font-size: 0.92em;
-  background: color-mix(in srgb, var(--wash) 55%, transparent);
+  display: none;
+}
+
+@media (min-width: 1152px) {
+  .toc {
+    display: block;
+    position: fixed;
+    top: 4.5rem;
+    left: calc(
+      var(--gutter) - var(--hang-l) / 2 - var(--sidenote-gap) - var(--sidenote-w-fit)
+    );
+    width: var(--sidenote-w-fit);
+    max-height: calc(100vh - 7rem);
+    overflow: auto;
+    scrollbar-width: thin;
+  }
 }
 
 .toc::before {
@@ -952,23 +1272,105 @@ caption {
   display: block;
   font-family: var(--mono);
   font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--mute);
-  margin-bottom: 0.35rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.55rem;
+  border-bottom: 1px solid var(--rule-fine);
 }
 
 .toc ul {
+  list-style: none;
   margin: 0;
-  padding-left: 1rem;
+  padding: 0;
 }
 
-/* ---------- details / task lists ---------- */
+/* The rows are set in the heading face, at a smaller size: each entry
+   IS a heading, quoted out of the page, so it speaks in the same
+   voice rather than in the mono apparatus voice of the label above
+   it. Tight leading keeps the list one block rather than a scatter
+   down the gutter. */
+.toc li {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Sections with h3 children collapse to their title in a native
+   disclosure — plain HTML, no script needed to fold by hand. The
+   default triangle is press furniture; the fold reads through the
+   indent and a single hairline, the same structural line the sidenotes
+   and captions are allowed. toc.js opens the group in view and closes
+   the rest, so an open title is itself the "you are here" signal. */
+.toc summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+/* The page's own disclosure chip carries a border and well padding;
+   inside the rail that furniture would box a quarter of the list, so
+   the fold collapses to bare rows and the hairline on the children
+   does the structural work alone. */
+.toc details {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.toc summary::-webkit-details-marker {
+  display: none;
+}
+
+.toc details > ul {
+  margin-left: 0.45rem;
+  padding-left: 0.9rem;
+  border-left: 1px solid var(--rule-fine);
+}
+
+.toc details[open] > summary a {
+  color: var(--ink);
+}
+
+/* No underline on rest state: the whole block is a link list, and
+   underlining every row would draw sixteen horizontal marks across a
+   rail whose only other line is structural. Sub-sections read a step
+   smaller, the way an h3 sits under its h2. The section currently in
+   view reads as bold ink against mute — weight, not colour, is what
+   a heading uses to say "you are here" — and hover answers in
+   accent. */
+.toc a {
+  font-family: "Hind", "Segoe UI", Verdana, sans-serif;
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--mute);
+  text-decoration: none;
+}
+
+.toc details > ul a {
+  font-size: 0.74rem;
+}
+
+.toc a:hover {
+  color: var(--accent);
+}
+
+.toc a[aria-current="location"] {
+  color: var(--ink);
+  font-weight: 700;
+}
 
 details {
   border: 1px solid var(--rule-fine);
   padding: 0.8rem 1.1rem;
   margin: 1.6rem 0;
+}
+
+/* A listing inside a disclosure chip is a plate of the page that
+   happens to sit in the chip: it re-applies the hang plus the chip's
+   own padding so it lands exactly where its flush siblings sit, at
+   every width. The chip's border frame is crossed on both sides —
+   the plate passes in front of it, because it does. */
+details pre {
+  margin-inline: calc(-1 * var(--hang-l) / 2 - 1.1rem - 1px);
 }
 
 summary {
@@ -978,22 +1380,6 @@ summary {
 
 details[open] summary {
   margin-bottom: 0.6rem;
-}
-
-.task {
-  list-style: none;
-  padding-left: 0.2rem;
-}
-
-.task li {
-  display: flex;
-  align-items: baseline;
-  gap: 0.55rem;
-}
-
-.task input[type="checkbox"] {
-  accent-color: var(--accent);
-  transform: translateY(1px);
 }
 
 /* ---------- book grid ---------- */
@@ -1024,10 +1410,10 @@ details[open] summary {
 
 .bibliography {
   margin-top: 3rem;
-  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
+  margin-inline: calc(-1 * var(--hang-l) / 2);
   border-top: 1px solid var(--rule);
   padding-top: 0.8rem;
-  padding-inline: var(--hang-l) var(--hang-r);
+  padding-inline: calc(var(--hang-l) / 2);
   font-size: 0.85em;
   line-height: 1.35;
 }
@@ -1040,14 +1426,25 @@ details[open] summary {
   margin-bottom: 0.3rem;
 }
 
+/* Fallback when a citation cannot ride the channel: python-markdown's
+   raw endnote block, set in the bibliography voice so the page never
+   shows an unstyled div. */
+.footnote {
+  margin-top: 3rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 0.8rem;
+  font-size: 0.85em;
+  line-height: 1.35;
+}
+
 /* ---------- comments ---------- */
 
 .comments {
   margin-top: 3.2rem;
-  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
+  margin-inline: calc(-1 * var(--hang-l) / 2);
   border-top: 1px solid var(--rule);
   padding-top: 1.4rem;
-  padding-inline: var(--hang-l) var(--hang-r);
+  padding-inline: calc(var(--hang-l) / 2);
 }
 
 /* ---------- math ---------- */
@@ -1065,10 +1462,8 @@ details[open] summary {
 /* ---------- footer ---------- */
 
 footer.site {
-  margin-inline: calc(-1 * var(--hang-l)) calc(-1 * var(--hang-r));
-  border-top: 1px solid var(--rule);
+  position: relative;
   padding-block: 1.4rem 2.6rem;
-  padding-inline: var(--hang-l) var(--hang-r);
   font-size: 0.92em;
 }
 
@@ -1078,9 +1473,8 @@ footer.site p {
   justify-content: center;
   gap: 0.85rem;
   font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
   color: var(--mute);
   margin: 0;
 }
@@ -1105,8 +1499,7 @@ footer.site a.icon:hover svg {
 }
 
 footer.site a.handle {
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 footer.site a.handle:hover {
@@ -1114,7 +1507,6 @@ footer.site a.handle:hover {
 }
 
 /* ---------- scroll motion blur (transient, settles when idle) ---------- */
-
 
 /* ---------- fig.js interactive figures ---------- */
 
@@ -1142,8 +1534,7 @@ footer.site a.handle:hover {
   display: block;
   font-family: var(--mono);
   font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--mute);
   border: 1px dashed var(--rule-fine);
   padding: 1.4rem 1rem;
@@ -1181,10 +1572,18 @@ footer.site a.handle:hover {
 /* ---------- small screens ---------- */
 
 @media (max-width: 34rem) {
-  /* Phone edition: 18px ≈ 10.2pt holds ~47 characters on a 375px
-     viewport instead of the desktop's 72 — the floor of the window. */
+  /* Phone edition. 18px on the 24px-per-side column held 41 characters,
+     under Butterick's floor, and the shortfall was being paid for with
+     hyphenation. Buying 8px back from each margin costs nothing legible
+     and returns the line to 45. */
   :root {
     --text: 1.125rem;
+  }
+
+  header.site,
+  main,
+  footer.site {
+    width: calc(100% - 2rem);
   }
 
   body {
@@ -1210,9 +1609,20 @@ footer.site a.handle:hover {
        WebKit: do not hyphenate two lines in a row. */
     hyphens: auto;
     hyphenate-limit-lines: 2;
-    hyphenate-limit-chars: 6 3 3;
-    -webkit-hyphenate-limit-before: 3;
-    -webkit-hyphenate-limit-after: 3;
+    /* 6 3 3 still let "interpretabili-ty" break with a two-character
+       tail, which is the one break that reads as a typo rather than as
+       typography. Longer minimum word, longer tail. */
+    hyphenate-limit-chars: 8 4 4;
+    -webkit-hyphenate-limit-before: 4;
+    -webkit-hyphenate-limit-after: 4;
+  }
+
+  /* An address is data: a hyphen the author never typed becomes part of
+     it the moment the line is copied, so links never hyphenate — a long
+     one wraps bare instead. */
+  a {
+    hyphens: none;
+    overflow-wrap: break-word;
   }
 
   /* On a phone the cheapest horizontal room is the indent, not the type:
@@ -1247,8 +1657,7 @@ footer.site a.handle:hover {
 .cv-btn {
   font-family: var(--mono);
   font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   background: transparent;
   color: var(--ink);
   border: 1px solid var(--rule);
@@ -1271,8 +1680,7 @@ footer.site a.handle:hover {
 .cv-label {
   font-family: var(--mono);
   font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--mute);
   margin: -0.7rem 0 1.5rem;
 }
@@ -1280,8 +1688,7 @@ footer.site a.handle:hover {
 .cv-contact {
   font-family: var(--mono);
   font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--mute);
   margin: 0 0 0.6rem;
 }
@@ -1326,8 +1733,7 @@ footer.site a.handle:hover {
 .cv-when {
   font-family: var(--mono);
   font-size: 0.75rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--mute);
   white-space: nowrap;
 }
@@ -1373,8 +1779,7 @@ footer.site a.handle:hover {
 .cv-skill-name {
   font-family: var(--mono);
   font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--mute);
 }
 
@@ -1425,9 +1830,17 @@ footer.site a.handle:hover {
     --rule-fine: rgba(0, 0, 0, 0.22);
   }
 
+  /* The masthead is screen furniture. On paper the brand only repeats the
+     h1 below it and the Menu button is a control that cannot be pressed,
+     so the whole header stands down rather than just its nav. The contents
+     list goes with it: sixteen anchors that cannot be followed, spending a
+     third of the first sheet to name headings the reader is about to reach
+     anyway. Paper has its own random access. */
+  header.site,
   .menu-inline,
   footer.site,
   .cv-actions,
+  .toc,
   .comments {
     display: none;
   }
@@ -1456,6 +1869,18 @@ footer.site a.handle:hover {
   a {
     color: #000;
     text-decoration: none;
+  }
+
+  /* Paper cannot be clicked, so the CV's profile line prints as three bare
+     words — GitHub, LinkedIn, Twitter — naming destinations it never gives.
+     Scoped to that line on purpose: an employer's name is the information
+     and its URL is noise, and spelling out every link in a post with fifty
+     references would cost more ink than the prose. */
+  .cv-contact a[href^="http"]::after {
+    content: " <" attr(href) ">";
+    font-family: var(--mono);
+    font-size: 0.78em;
+    word-break: break-all;
   }
 
   img,
@@ -1531,8 +1956,7 @@ footer.site a.handle:hover {
 .fig-control > span {
   font-family: var(--mono);
   font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--mute);
 }
 
@@ -1549,22 +1973,32 @@ footer.site a.handle:hover {
   font-feature-settings: "zero" 1;
 }
 
-.fig-control input[type="range"] {
+/* Sliders are styled on the element, not on the wrapper. A component
+   that builds a bare input — conv-kernel makes nine of them for its
+   3×3 kernel — used to fall through to the native control and paint
+   itself in browser blue next to these. The square thumb on a hairline
+   track is the house control now; only the width is a wrapper's
+   business. */
+input[type="range"] {
   appearance: none;
   -webkit-appearance: none;
-  width: 100%;
   height: 24px;
-  background: linear-gradient(var(--rule), var(--rule)) 0 50% / 100% 1px no-repeat;
+  background: linear-gradient(var(--rule), var(--rule)) 0 50% / 100% 1px
+    no-repeat;
   display: block;
   touch-action: pan-y;
 }
 
-.fig-control input[type="range"]::-webkit-slider-runnable-track {
+.fig-control input[type="range"] {
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
   height: 24px;
   background: transparent;
 }
 
-.fig-control input[type="range"]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 14px;
   height: 14px;
@@ -1575,12 +2009,12 @@ footer.site a.handle:hover {
   cursor: ew-resize;
 }
 
-.fig-control input[type="range"]::-moz-range-track {
+input[type="range"]::-moz-range-track {
   height: 24px;
   background: transparent;
 }
 
-.fig-control input[type="range"]::-moz-range-thumb {
+input[type="range"]::-moz-range-thumb {
   width: 14px;
   height: 14px;
   background: var(--accent);
@@ -1592,13 +2026,23 @@ footer.site a.handle:hover {
 /* ---------- contact form ---------- */
 
 .contact-form {
+  /* The label column is a shared measurement: the field rows indent by it
+     and the submit button has to indent by the same amount or it hangs a
+     full label-width left of every input it belongs to. */
+  --form-label: 5.5rem;
+  --form-gap: 0.8rem;
   display: grid;
   gap: 1rem;
   margin-top: 1.8rem;
 }
 
 .contact-form .fig-control {
-  grid-template-columns: 5.5rem 1fr;
+  grid-template-columns: var(--form-label) 1fr;
+  gap: var(--form-gap);
+}
+
+.contact-form button[type="submit"] {
+  margin-left: calc(var(--form-label) + var(--form-gap));
 }
 
 .contact-form input,
@@ -1627,7 +2071,7 @@ footer.site a.handle:hover {
 }
 
 .contact-form .fig-control-col {
-  grid-template-columns: 5.5rem 1fr;
+  grid-template-columns: var(--form-label) 1fr;
 }
 
 .contact-form .fig-control-col span {
@@ -1635,16 +2079,56 @@ footer.site a.handle:hover {
   padding-top: 0.55em;
 }
 
+/* Two columns need room the phone does not have: below this the label
+   sits over its field and both take the full measure. */
+@media (max-width: 32rem) {
+  .contact-form .fig-control,
+  .contact-form .fig-control-col {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .contact-form .fig-control-col span {
+    padding-top: 0;
+  }
+
+  .contact-form button[type="submit"] {
+    margin-left: 0;
+  }
+}
+
 /* ---------- lab figure height reserves (CLS) ---------- */
 
-[data-fig] { min-height: 300px; }
-[data-fig="wave"] { min-height: 260px; }
-[data-fig="next-token"] { min-height: 210px; }
-[data-fig="tokenizer"] { min-height: 150px; }
-[data-fig="entropy"] { min-height: 280px; }
-[data-fig="iso-cube"] { min-height: 320px; }
-[data-fig="conv-kernel"] { min-height: 240px; }
-[data-fig="attention-matrix"] { min-height: 300px; }
+[data-fig] {
+  min-height: 300px;
+}
+[data-fig="wave"] {
+  min-height: 260px;
+}
+[data-fig="next-token"] {
+  min-height: 210px;
+}
+[data-fig="tokenizer"] {
+  min-height: 150px;
+}
+[data-fig="entropy"] {
+  min-height: 280px;
+}
+[data-fig="iso-cube"] {
+  min-height: 320px;
+}
+[data-fig="conv-kernel"] {
+  min-height: 240px;
+}
+[data-fig="attention-matrix"] {
+  min-height: 300px;
+}
+[data-fig="engraving"] {
+  min-height: 560px;
+}
+[data-fig="pdf-engine"] {
+  min-height: 400px;
+}
 
 /* ---------- sidenotes ----------
    Tufte's mechanism, emitted at build time: each reference is a label
@@ -1668,14 +2152,45 @@ footer.site a.handle:hover {
 .sidenote {
   float: right;
   clear: right;
-  margin-right: calc(-1 * var(--channel));
-  width: var(--sidenote-w);
+  /* Past the field hang, then one sidenote-gap — the right-hand mirror
+     of the TOC rail. Notes clear listings and section rules instead of
+     sharing their hang band (which read as the note sitting on the
+     heading). */
+  margin-right: calc(
+    -1 * (var(--hang-l) / 2 + var(--sidenote-gap) + var(--sidenote-w-fit, var(--sidenote-w)))
+  );
+  width: var(--sidenote-w-fit, var(--sidenote-w));
   margin-top: 0.2rem;
   margin-bottom: 0.4rem;
   /* 0.68 × prose ≈ 13.6px = 8.2pt: the classic footnote size. */
   font-size: calc(var(--text) * 0.68);
   line-height: 1.45;
   color: var(--mute);
+}
+
+/* Script-promoted notes: sidenotes.js (loaded only on pages that emit
+   notes) takes notes out of the float flow on wide viewports. Absolute
+   at the marker's line, a note yields only to occupants actually in the
+   outer channel — a margin figure, a floated caption, a previous note,
+   a .fullwidth plate — never to a hang-only listing, so a note can sit
+   beside a pre and consecutive notes anchor to their own markers.
+   Without the script, or below the breakpoint, the float rules above
+   and the fold-up below stand. */
+@media (min-width: 1152px) {
+  html.snotes-abs article {
+    position: relative;
+  }
+
+  html.snotes-abs .sidenote {
+    position: absolute;
+    float: none;
+    clear: none;
+    margin: 0;
+    right: calc(
+      -1 * (var(--hang-l) / 2 + var(--sidenote-gap) + var(--sidenote-w-fit))
+    );
+    width: var(--sidenote-w-fit);
+  }
 }
 
 label.sidenote-number {
@@ -1744,6 +2259,10 @@ input.margin-toggle {
 }
 
 @media print {
+  html.snotes-abs .sidenote {
+    position: static;
+  }
+
   label.margin-toggle,
   input.margin-toggle {
     display: none;
@@ -1757,228 +2276,5 @@ input.margin-toggle {
     padding-left: 0.8rem;
     border-left: 2px solid var(--rule);
     color: var(--ink);
-  }
-}
-
-/* ---------- masthead nav ---------- */
-
-.menu-inline {
-  display: flex;
-  align-items: center;
-  gap: 0.15rem;
-  min-width: 0;
-  flex: 0 1 auto;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.menu-inline::-webkit-scrollbar {
-  display: none;
-}
-
-.menu-inline a {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: var(--ink);
-  background: transparent;
-  border: 1px solid transparent;
-  padding: 0.55em 0.85em;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.menu-inline a:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-.menu-inline a[aria-current="page"] {
-  border-color: var(--rule);
-}
-
-.menu-inline a[aria-current="page"]:hover {
-  border-color: var(--accent);
-}
-
-/* ---------- inline menu reveal ---------- */
-
-.menu-btn {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  background: transparent;
-  color: var(--ink);
-  border: 1px solid var(--rule);
-  padding: 0.55em 1em;
-  cursor: pointer;
-}
-
-.menu-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-header.site nav {
-  display: none;
-}
-
-.menu-inline {
-  counter-reset: menu;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.4rem 1.4rem;
-  width: min(60ch, calc(100% - 3rem));
-  margin-inline: auto;
-  border-bottom: 1px solid var(--rule-fine);
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  padding-block: 0;
-  border-block-width: 0;
-  transition:
-    max-height 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.28s ease,
-    padding 0.38s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.menu-inline.open {
-  max-height: 5rem;
-  opacity: 1;
-  padding-block: 0.9rem 1.1rem;
-  border-bottom-width: 1px;
-}
-
-.menu-inline a {
-  font-size: 1.2rem;
-  text-decoration: none;
-  color: var(--ink);
-  position: relative;
-  z-index: 1;
-  width: fit-content;
-}
-
-.menu-inline a:hover {
-  color: var(--accent);
-}
-
-.menu-inline a::before {
-  counter-increment: menu;
-  content: "0" counter(menu);
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.13em;
-  color: var(--mute);
-  margin-right: 0.7em;
-  vertical-align: 0.12em;
-}
-
-.menu-inline a[aria-current="page"] {
-  color: var(--accent);
-}
-
-.menu-gl {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .menu-inline {
-    transition: opacity 0.15s ease;
-  }
-}
-
-/* ---------- inline menu reveal ---------- */
-
-.menu-btn {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  background: transparent;
-  color: var(--ink);
-  border: 1px solid var(--rule);
-  padding: 0.55em 1em;
-  cursor: pointer;
-}
-
-.menu-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-header.site nav {
-  display: none;
-}
-
-.menu-inline {
-  counter-reset: menu;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.4rem 1.4rem;
-  width: min(60ch, calc(100% - 3rem));
-  margin-inline: auto;
-  border-bottom: 1px solid var(--rule-fine);
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  padding-block: 0;
-  border-block-width: 0;
-  transition:
-    max-height 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.28s ease,
-    padding 0.38s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.menu-inline.open {
-  max-height: 5rem;
-  opacity: 1;
-  padding-block: 0.9rem 1.1rem;
-  border-bottom-width: 1px;
-}
-
-.menu-inline a {
-  font-size: 1.2rem;
-  text-decoration: none;
-  color: var(--ink);
-  position: relative;
-  z-index: 1;
-  width: fit-content;
-}
-
-.menu-inline a:hover {
-  color: var(--accent);
-}
-
-.menu-inline a::before {
-  counter-increment: menu;
-  content: "0" counter(menu);
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.13em;
-  color: var(--mute);
-  margin-right: 0.7em;
-  vertical-align: 0.12em;
-}
-
-.menu-inline a[aria-current="page"] {
-  color: var(--accent);
-}
-
-.menu-gl {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .menu-inline {
-    transition: opacity 0.15s ease;
   }
 }

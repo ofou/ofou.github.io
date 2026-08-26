@@ -3,6 +3,7 @@ title: Lab
 subtitle: Interactive explainables, on brand
 author: ofou
 date: 2026-08-21
+stack: Canvas 2D · WebGL · vanilla JS
 categories:
   - Interactive
 ---
@@ -72,6 +73,10 @@ A growing library of bare-canvas explainer components — every one built on the
 <div data-fig="sorting-bars"></div>
 
 <div data-fig="iso-cube"></div>
+
+## Image processing
+
+<div data-fig="engraving" data-height="480"></div>
 
 ## Retro terminal
 

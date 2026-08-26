@@ -16,11 +16,17 @@ const LANGS = {
   python: "py",
   sh: "bash",
   bash: "bash",
+  curl: "bash",
+  c: "c",
   json: "json",
   css: "css",
   html: "html",
   md: "md",
 };
+
+/* Deliberately unmapped: mermaid fences are diagrams (see mermaid.js),
+   not token streams, and bibtex has no grammar here — both stay plain
+   on purpose. */
 
 /* The stylesheet has to land before the first rewrite. A highlighted
    block carries its line numbers as empty divs that only become digits

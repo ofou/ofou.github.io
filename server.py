@@ -1,7 +1,9 @@
 """Static site server for olivares.cl: preloaded bytes, boot-time gzip, WSGI."""
 import gzip
+import hashlib
 import mimetypes
 import os
+import re
 
 ROOT = os.environ.get("STATIC_ROOT", "/srv/site")
 
@@ -36,6 +38,21 @@ GZ = {p: gzip.compress(b, 6) for p, (b, ct) in ROUTES.items()
 
 NOT_FOUND = ROUTES.get("/404.html", (b"Not Found",))[0]
 
+# Fonts are content-addressed by the build (name.<sha8>.woff2), so their URL
+# changes whenever their bytes do. That makes them safe to cache hard and
+# forever: no revalidation, no conditional round trip on repeat visits.
+# Everything else stays unversioned, so it keeps the no-cache + ETag dance.
+IMMUTABLE_MAX_AGE = 31536000  # one year, the practical ceiling
+FONT_RE = re.compile(r"^/static/fonts/.+\.[0-9a-f]{8}\.woff2$")
+
+
+def cache_control_for(path):
+    if FONT_RE.match(path):
+        return f"public, max-age={IMMUTABLE_MAX_AGE}, immutable"
+    # Assets are unversioned, so freshness must be revalidated, not guessed:
+    # no-cache forces the conditional round trip, the ETag makes it a 304.
+    return "no-cache"
+
 
 def app(environ, start_response):
     path = environ.get("PATH_INFO", "/")
@@ -46,10 +63,20 @@ def app(environ, start_response):
             ("Content-Length", str(len(NOT_FOUND)))])
         return [b""] if environ.get("REQUEST_METHOD") == "HEAD" else [NOT_FOUND]
     body, ctype = hit
-    headers = [("Content-Type", ctype), ("Content-Length", str(len(body)))]
     if path in GZ and "gzip" in environ.get("HTTP_ACCEPT_ENCODING", ""):
         body = GZ[path]
-        headers[1] = ("Content-Length", str(len(body)))
-        headers += [("Content-Encoding", "gzip"), ("Vary", "Accept-Encoding")]
+        encoding = "gzip"
+    else:
+        encoding = "identity"
+    etag = f'W/"{hashlib.md5(body).hexdigest()}"'
+    headers = [("Content-Type", ctype), ("Content-Length", str(len(body))),
+               ("ETag", etag), ("Cache-Control", cache_control_for(path)),
+               ("Vary", "Accept-Encoding")]
+    if environ.get("HTTP_IF_NONE_MATCH") == etag:
+        headers[1] = ("Content-Length", "0")
+        start_response("304 Not Modified", headers)
+        return [b""]
+    if encoding == "gzip":
+        headers += [("Content-Encoding", "gzip")]
     start_response("200 OK", headers)
     return [b""] if environ.get("REQUEST_METHOD") == "HEAD" else [body]

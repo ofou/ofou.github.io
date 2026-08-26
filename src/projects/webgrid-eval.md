@@ -2,6 +2,7 @@
 title: WebGrid Eval
 subtitle: LLM vision and tool-use on Neuralink's cursor task
 date: 2026-05-22
+stack: Python · OpenRouter · Responses API
 categories:
   - Evaluation
   - WebGrid
@@ -9,8 +10,7 @@ categories:
   - Machine Learning
 ---
 
-[![CI](https://github.com/ofou/webgrid_eval/actions/workflows/ci.yml/badge.svg)](https://github.com/ofou/webgrid_eval/actions/workflows/ci.yml)
-[![wakatime](https://wakatime.com/badge/github/ofou/webgrid_eval.svg)](https://wakatime.com/badge/github/ofou/webgrid_eval)
+<p class="meta"><a href="https://github.com/ofou/webgrid_eval/actions/workflows/ci.yml">CI status</a> · <a href="https://wakatime.com/badge/github/ofou/webgrid_eval">time tracked</a></p>
 
 A small harness that puts multimodal LLMs through [Neuralink Webgrid](https://neuralink.com/webgrid): see a grid, find the blue target, click.
 
@@ -46,7 +46,7 @@ Webgrid measures cursor control as bits per second. The same loop is useful as a
 ### Example replay
 
 <!-- markdownlint-disable MD033 -->
-<figure align="center">
+<figure>
   <img src="https://raw.githubusercontent.com/ofou/webgrid_eval/main/docs/img/gemini-3-flash-preview.gif" alt="gemini-3-flash-preview replay at 1x speed" width="400">
   <figcaption><em>gemini-3-flash-preview on a 30×30 grid — 0.16 BPS (1 NTPM) in 70s</em></figcaption>
 </figure>

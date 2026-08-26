@@ -15,7 +15,9 @@ Tinygrad is hard to read, even if you already live in autograd. Karpathy has sai
 
 <!-- more -->
 
-<iframe width="720" height="320" src="https://www.youtube.com/embed/QUry9dHC-bk" title="Tinygrad overview" loading="lazy" allowfullscreen></iframe>
+<figure class="iframe-wrapper">
+<iframe src="https://www.youtube.com/embed/QUry9dHC-bk" title="Tinygrad overview" loading="lazy" allowfullscreen></iframe>
+</figure>
 
 ## Why Tinygrad?
 

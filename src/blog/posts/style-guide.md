@@ -95,10 +95,31 @@ docker run --rm -p 8000:8000 -e PORT=8000 --entrypoint granian olivares.cl --int
 
 ## Media
 
-<figure markdown="1">
-![Push 3 with the case removed](/static/images/chatgpt-plugin.png)
-<figcaption>Fig. S1 — the *plate*, with a **bold** run.</figcaption>
+Three sizes sit above the prose column, all centred on the column axis.
+A `figure` keeps the measure, a `figure.plate` opens half a module on
+both sides onto the same field the listings and section rules use, and
+a `figure.fullwidth` also spends the note channel. All three share one
+centre line.
+
+<figure class="plate" markdown="1">
+![The TexTube ChatGPT plugin card, listing four sample video prompts](/static/images/chatgpt-plugin.png){: .screenshot }
+<figcaption markdown="span">Fig. S1 — the *plate*, with a **bold** run.</figcaption>
 </figure>
+
+<figure class="fullwidth" markdown="1">
+![The TexTube ChatGPT plugin card, listing four sample video prompts](/static/images/chatgpt-plugin.png){: .screenshot }
+<figcaption markdown="span">Fig. S4 — *fullwidth*: Fig. S1 again, one tier wider. Plate plus the note channel, so the caption drops underneath.</figcaption>
+</figure>
+
+<figure class="margin" markdown="1">
+![Rembrandt engraving, cross-hatched shading](/static/images/engraving-rembrandt.jpg)
+<figcaption markdown="span">Fig. S3 — a *margin figure*: a picture in the note voice, out in the channel.</figcaption>
+</figure>
+
+A margin figure sits beside this paragraph rather than interrupting it,
+which is where a picture belongs when it is evidence for a sentence and
+not the subject of the section. It shares the channel with the sidenotes,
+so notes and small pictures queue down one column instead of two.
 
 <figure class="fig3d">
 <canvas data-shape="sphere" data-morph-to="torus"></canvas>

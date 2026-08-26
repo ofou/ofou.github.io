@@ -3,11 +3,12 @@ title: TexTube
 subtitle: YouTube subtitles in ChatGPT fast
 date: 2024-09
 author: ofou
+stack: FastAPI · Firestore · tiktoken · Docker
 ---
 
 # Textube: YouTube-to-ChatGPT API
 
-[![](/static/images/chatgpt-plugin.png)](https://chatgpt.com/g/g-2KencLm4f-textube)
+[![The TexTube ChatGPT plugin card, listing four sample video prompts](/static/images/chatgpt-plugin.png){: .screenshot }](https://chatgpt.com/g/g-2KencLm4f-textube)
 
 _Featured on [Hacker News](https://news.ycombinator.com/item?id=41571706), currently live as [ChatGPT Plugin](https://chatgpt.com/g/g-2KencLm4f-textube), [API](https://textube.olivares.cl)  or [GitHub](https://github.com/ofou/texttube)_[^1]
 

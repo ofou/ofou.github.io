@@ -3,6 +3,7 @@ title: "Graham Essays"
 subtitle: in EPUB and Markdown, updated daily
 date: 2022-09
 author: ofou
+stack: Python · feedparser · html2text · EPUB
 ---
 
 # Graham Essays
@@ -11,7 +12,7 @@ author: ofou
 
 _Featured on [Hacker News] front page at launch, check on [GitHub] for more details._
 
-![](https://camo.githubusercontent.com/98838670401864a9da92506a193dcc729f9d75189a2760af89a8ea138559f13c/68747470733a2f2f36342e6d656469612e74756d626c722e636f6d2f74756d626c725f6c69347032326a45544231717a367071696f315f3530302e706e67)
+![Graham Essays — a sample essay card from the collection](https://camo.githubusercontent.com/98838670401864a9da92506a193dcc729f9d75189a2760af89a8ea138559f13c/68747470733a2f2f36342e6d656469612e74756d626c722e636f6d2f74756d626c725f6c69347032326a45544231717a367071696f315f3530302e706e67)
 
 [GitHub]: https://github.com/ofou/graham-essays
 
@@ -57,9 +58,9 @@ This generates fresh EPUB and Markdown files with the latest essays.
 
 **Ready-to-use files** (updated daily via GitHub Actions):
 
-- 🏷️ [All Releases](https://github.com/ofou/graham-essays/releases)
-- 📚 [Direct EPUB Download](https://github.com/ofou/graham-essays/releases/download/latest/graham.epub)
-- 📄 [Essay Index (CSV)](https://github.com/ofou/graham-essays/releases/download/latest/essays.csv)
+- [All Releases](https://github.com/ofou/graham-essays/releases)
+- [Direct EPUB Download](https://github.com/ofou/graham-essays/releases/download/latest/graham.epub)
+- [Essay Index (CSV)](https://github.com/ofou/graham-essays/releases/download/latest/essays.csv)
 
 ## Contributing
 

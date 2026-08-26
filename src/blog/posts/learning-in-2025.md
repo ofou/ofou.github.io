@@ -23,7 +23,7 @@ It is easy to drown in [this year's papers](https://www.latent.space/p/2025-pape
 
 Start here if you want the map before the math: what the field thinks it is doing, and where it might go.
 
-<div class="book-grid">
+<div class="book-grid plate">
     <a href="#fn:bostrom2014paths" title="Superintelligence: Paths, Dangers, Strategies">
 <!-- [@bostrom2014paths] -->
       <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1400884046i/20527133.jpg" alt="Superintelligence: Paths, Dangers, Strategies" />
@@ -78,7 +78,7 @@ Start here if you want the map before the math: what the field thinks it is doin
 
 Once the map is in your head, these are short and conceptual. Little math, little padding.
 
-<div class="book-grid">
+<div class="book-grid plate">
   <a href="#fn:burkov2019hundred" title="The Hundred-Page Machine Learning Book">
 <!-- [@burkov2019hundred] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1546285613i/43190851.jpg" alt="The Hundred-Page Machine Learning Book" />
@@ -99,7 +99,7 @@ Once the map is in your head, these are short and conceptual. Little math, littl
 
 If you already write code and remember some linear algebra, these build intuition before the graduate books.
 
-<div class="book-grid">
+<div class="book-grid plate">
   <a href="#fn:deisenroth2020mathematics" title="Mathematics for Machine Learning">
 <!-- [@deisenroth2020mathematics] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1572995056l/50041024.jpg" alt="Mathematics for Machine Learning" />
@@ -138,7 +138,7 @@ After you are comfortable with the math in *Mathematics for Machine Learning* [@
 
 One substitution: instead of the ubiquitous *Pattern Recognition and Machine Learning* [@bishop2006pattern], I prefer Bishop's later *Deep Learning* [@bishop2024deep], written with his son. Same mind, current field.
 
-<div class="book-grid">
+<div class="book-grid plate">
   <a href="#fn:aiebook2025" title="AI Engineering: Building Applications with Foundation Models">
 <!-- [@aiebook2025] -->
     <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1733340973i/216848047.jpg" alt="AI Engineering: Building Applications with Foundation Models" />
