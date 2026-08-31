@@ -867,6 +867,7 @@ def layout(
 {'<script type="module" src="/static/mermaid.js"></script>' if "language-mermaid" in body else ""}
 {'<script defer src="/static/youtube-lite.js"></script>' if "data-youtube=" in body else ""}
 {'<script defer src="/static/sidenotes.js"></script>' if 'class="sidenote"' in body else ""}
+{'<script defer src="/static/fn-nav.js"></script>' if ("bibliography" in body or 'href="#fn:' in body or "fnref:" in body) else ""}
 {'<script defer src="/static/gallery.js"></script>' if ('class="gallery"' in body or "plate-reveal" in body) else ""}
 {katex_snippet() if math else ""}
 {COVERS_AB if "data-cdn-src=" in body else ""}
