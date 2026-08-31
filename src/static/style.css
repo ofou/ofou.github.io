@@ -10,10 +10,10 @@
   color-scheme: light dark;
   --paper: #f6f5f1;
   --ink: #1a1917;
-  /* Mute carries micro-labels at 11.5px and sidenotes at 13.6px, so it
-     is held at 6:1 instead of the 4.86:1 it used to sit at — still
-     plainly quieter than ink (16:1), no longer the weakest thing on the
-     page for a reader in bright light. */
+  /* Mute carries micro-labels at 11.5px, so it is held at 6:1 instead
+     of the 4.86:1 it used to sit at — still plainly quieter than ink
+     (16:1), no longer the weakest thing on the page for a reader in
+     bright light. */
   --mute: #615d54;
   --accent: #2d4fa1;
   --ok: #16a34a;
@@ -60,9 +60,12 @@
   --listing-pad-inline: 2.3rem;
   --listing-border-inline: 2px;
   /* Pygments linenos column (~2–3 digits) + the 0.75em pads on either
-     side of the gutter rule. Bare <pre> has no gutter and keeps the
-     slack, so a lined listing and a bare listing share one outer edge. */
-  --listing-gutter: calc(2.5 * var(--code-col) + 1.5em);
+     side of the gutter rule. Use --code-size, not em: hang vars inherit
+     onto div.highlight (font-size: var(--code-size)) and onto figures
+     (prose size); em would re-resolve and pull plate edges apart.
+     Bare <pre> has no gutter and keeps the slack, so a lined listing
+     and a bare listing share one outer edge. */
+  --listing-gutter: calc(2.5 * var(--code-col) + 1.5 * var(--code-size));
   --listing-width: calc(
     var(--listing-cols) * var(--code-col) + var(--listing-pad-inline) +
       var(--listing-border-inline) + var(--listing-gutter)
@@ -112,10 +115,7 @@
   --module: clamp(8.5rem, 11.9vw, 10.7rem);
   --measure: calc(4 * var(--module));
   --channel: calc(2 * var(--module));
-  --hang-from-listing: max(
-    0px,
-    calc(var(--listing-width) - var(--measure))
-  );
+  --hang-from-listing: max(0px, calc(var(--listing-width) - var(--measure)));
 
   /* There is deliberately no --plate length here. The prose column is
      min(--measure, 100% - 3rem), so a nominal five-module plate is a lie
@@ -123,11 +123,12 @@
      tiers are stated as `100% + hang` against the real column instead,
      which degrades on its own and needs no breakpoint. */
 
-  /* Margin geometry for sidenotes; build.py emits Tufte's label +
-     checkbox + floated span. The channel is the primitive now and the
-     note is what is left of it once the gap is taken out. --gutter is
-     the daylight outside the column, and everything that reaches past
-     the measure — listings, fullwidth figures — is capped by it. */
+  /* Margin geometry for sidenotes; build.py emits a marker link +
+     floated span, plus the same text in .bibliography for narrow
+     viewports. The channel is the primitive now and the note is what
+     is left of it once the gap is taken out. --gutter is the daylight
+     outside the column, and everything that reaches past the measure —
+     listings, fullwidth figures — is capped by it. */
   --sidenote-gap: 2rem;
   --sidenote-w: calc(var(--channel) - var(--sidenote-gap));
   --gutter: max(1.5rem, calc((100vw - var(--measure)) / 2));
@@ -227,6 +228,10 @@ body {
   font-variant-ligatures: common-ligatures;
   font-variant-numeric: oldstyle-nums;
   hanging-punctuation: first last allow-end;
+  /* Keep .footer-aurora under raised chrome (z-index 1) while still
+     above the paper wash — without a stacking context fixed layers
+     can fall behind the whole page. */
+  isolation: isolate;
 }
 
 p,
@@ -436,8 +441,19 @@ dl {
   margin: 0 0 1lh;
 }
 
+/* Prose lists: same 1.2rem inset as blockquote / dd / bibliography,
+   markers in the mute apparatus voice rather than ink discs. */
+ul,
+ol {
+  padding-left: 1.2rem;
+}
+
 li {
   margin-bottom: 0.35rem;
+}
+
+li::marker {
+  color: var(--mute);
 }
 
 li > ul,
@@ -572,6 +588,11 @@ dd {
 }
 
 article > .meta:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
   margin-inline: calc(-1 * var(--hang-l) / 2);
   padding-bottom: 0.9rem;
   padding-inline: calc(var(--hang-l) / 2);
@@ -634,41 +655,12 @@ article > .meta:first-child {
   opacity: 0.55;
 }
 
-/* Suggest-an-edit: mono micro-label in the left hang on paragraph
-   hover (fine pointer, wide layout). Same apparatus voice as
-   caption-actions — mute, hairline, accent on hover. Footer .edit is
-   the no-JS / touch / narrow fallback. */
-.edit {
-  margin-top: 3.2rem;
-  margin-bottom: 0;
-  color: var(--mute);
-}
-
-.edit a {
-  color: var(--mute);
-  text-decoration: none;
-  border-bottom: 1px solid var(--rule-fine);
-}
-
-.edit a:hover {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-
-article[data-edit] > p:not(.meta) {
-  position: relative;
-}
-
-a.p-edit {
-  position: absolute;
-  top: 0.35em;
-  left: 0;
-  transform: translateX(calc(-100% - 0.55rem));
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
+/* Suggest-an-edit lives in the post-info meta row — same baseline as
+   date / subtitle / tags, flush right. Caption-actions voice: mute
+   mono, hairline, accent on hover. Revealed when the meta line is
+   hovered (fine pointer); always visible on touch. */
+article > .meta:first-child > a.edit {
+  flex-shrink: 0;
   color: var(--mute);
   text-decoration: none;
   border-bottom: 1px solid var(--rule-fine);
@@ -680,42 +672,29 @@ a.p-edit {
     border-color 120ms ease;
 }
 
-a.p-edit:hover,
-a.p-edit:focus-visible {
+article > .meta:first-child > a.edit:hover,
+article > .meta:first-child > a.edit:focus-visible {
   color: var(--accent);
   border-bottom-color: var(--accent);
 }
 
-a.p-edit:focus-visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-@media (hover: hover) and (pointer: fine) and (min-width: 1152px) {
-  article[data-edit] > p:not(.meta):hover > a.p-edit,
-  article[data-edit] > p:not(.meta):focus-within > a.p-edit {
+@media (hover: hover) and (pointer: fine) {
+  article > .meta:first-child:hover > a.edit,
+  article > .meta:first-child:focus-within > a.edit {
     opacity: 1;
     pointer-events: auto;
   }
+}
 
-  /* Hover UI owns discovery; footer stays in the tab order, clipped
-     until focused so keyboard readers still reach “suggest an edit”. */
-  html:has(a.p-edit) .edit:not(:focus-within) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+@media (hover: none), (pointer: coarse) {
+  article > .meta:first-child > a.edit {
+    opacity: 1;
+    pointer-events: auto;
   }
 }
 
 @media print {
-  a.p-edit,
-  .edit {
+  article > .meta:first-child > a.edit {
     display: none !important;
   }
 }
@@ -930,15 +909,15 @@ pre {
 
 code,
 samp {
-  /* Matched on x-height, not on em: the serif sits at ~0.47em; JetBrains
-     Mono is taller, so 0.9em puts the two lowercases on one optical
-     line. The old 0.85em left inline code visibly shorter than the
-     prose it interrupts. */
-  font-size: 0.9em;
+  /* Matched on x-height, not on em. JetBrains Mono's tall x-height means
+     0.9em still overshoots STIX at --text; 0.85em lands the lowercases
+     on one optical line. Keep the wash plate thin so the chip marks
+     the token without shouting over the sentence. */
+  font-size: 0.85em;
   background: var(--wash);
   /* Vertical padding stays under the serif's leading so a wrapped
      paragraph never has two plates touching. */
-  padding: 0.1em 0.34em;
+  padding: 0.05em 0.3em;
   border-radius: 2px;
   overflow-wrap: break-word;
 }
@@ -1086,8 +1065,8 @@ div.highlight .highlighttable {
 div.highlight .highlighttable td {
   padding: 0;
   vertical-align: top;
-  /* Global `td` rules add prose-table padding and a bottom hairline;
-     both read as listing artifacts inside the plate. */
+  /* Prose-table cell chrome is scoped to .prose-table; keep this
+     explicit so a listing never inherits a hairline from a broader rule. */
   border-bottom: 0;
 }
 
@@ -1143,8 +1122,10 @@ div.highlight pre code {
 /* Listing colour: same jobs as a careful editor theme, drawn only from
    site tokens (and short mixes of them). Keywords carry structure,
    strings and numbers split the literal channel, types take accent,
-   decorators take ok, comments recede. No stock Pygments theme. */
-div.highlight {
+   decorators take ok, comments recede. No stock Pygments theme.
+   `.highlight` covers both CodeHilite plates (`div.highlight`) and
+   inline `:::lang` chips (`code.highlight`). */
+.highlight {
   --code-kwd: color-mix(in srgb, var(--accent) 55%, var(--ok) 45%);
   --code-str: color-mix(in srgb, var(--fail) 42%, #9d174d 58%);
   --code-num: var(--warn);
@@ -1154,91 +1135,91 @@ div.highlight {
 }
 
 @media (prefers-color-scheme: dark) {
-  div.highlight {
+  .highlight {
     --code-str: color-mix(in srgb, #f9a8d4 70%, var(--fail) 30%);
   }
 }
 
-div.highlight .k,
-div.highlight .kd,
-div.highlight .kn,
-div.highlight .kp,
-div.highlight .kr,
-div.highlight .kt,
-div.highlight .ow,
-div.highlight .nf {
+.highlight .k,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .kt,
+.highlight .ow,
+.highlight .nf {
   color: var(--code-kwd);
   font-weight: calc(var(--code-weight) + 200);
 }
 
-div.highlight .s,
-div.highlight .s1,
-div.highlight .s2,
-div.highlight .sa,
-div.highlight .sb,
-div.highlight .sc,
-div.highlight .dl,
-div.highlight .sd,
-div.highlight .se,
-div.highlight .sh,
-div.highlight .si,
-div.highlight .sx,
-div.highlight .sr,
-div.highlight .ss {
+.highlight .s,
+.highlight .s1,
+.highlight .s2,
+.highlight .sa,
+.highlight .sb,
+.highlight .sc,
+.highlight .dl,
+.highlight .sd,
+.highlight .se,
+.highlight .sh,
+.highlight .si,
+.highlight .sx,
+.highlight .sr,
+.highlight .ss {
   color: var(--code-str);
 }
 
-div.highlight .m,
-div.highlight .mb,
-div.highlight .mf,
-div.highlight .mh,
-div.highlight .mi,
-div.highlight .mo,
-div.highlight .il,
-div.highlight .kc {
+.highlight .m,
+.highlight .mb,
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo,
+.highlight .il,
+.highlight .kc {
   color: var(--code-num);
 }
 
-div.highlight .nc,
-div.highlight .ne,
-div.highlight .nb,
-div.highlight .bp,
-div.highlight .vc,
-div.highlight .vg,
-div.highlight .vi,
-div.highlight .vm {
+.highlight .nc,
+.highlight .ne,
+.highlight .nb,
+.highlight .bp,
+.highlight .vc,
+.highlight .vg,
+.highlight .vi,
+.highlight .vm {
   color: var(--code-type);
 }
 
-div.highlight .nd,
-div.highlight .na {
+.highlight .nd,
+.highlight .na {
   color: var(--code-deco);
 }
 
-div.highlight .c,
-div.highlight .ch,
-div.highlight .cm,
-div.highlight .cp,
-div.highlight .cpf,
-div.highlight .c1,
-div.highlight .cs {
+.highlight .c,
+.highlight .ch,
+.highlight .cm,
+.highlight .cp,
+.highlight .cpf,
+.highlight .c1,
+.highlight .cs {
   color: var(--code-cmnt);
   font-style: normal;
 }
 
-div.highlight .err {
+.highlight .err {
   color: var(--code-cmnt);
   border: 0;
   background: none;
 }
 
-div.highlight .o,
-div.highlight .p {
+.highlight .o,
+.highlight .p {
   color: inherit;
 }
 
-div.highlight::selection,
-div.highlight *::selection {
+.highlight::selection,
+.highlight *::selection {
   background: color-mix(in srgb, var(--accent) 24%, var(--paper));
   color: var(--ink);
 }
@@ -1404,16 +1385,20 @@ figure.mermaid .labelBkg {
   opacity: 0.96;
 }
 
-/* The listing bay: wider than the measure by one hang, centred on the
-   column axis. A picture, a listing, a mermaid graph, a scroll-table
-   and an interactive figure share this bay and one centre line — the
-   same edges a bare `pre` already draws with its hang margins. Tiers
-   that spend the note channel opt into .fullwidth instead. */
-figure.plate,
+/* ---------- width tiers ---------- */
+
+/* Shared across figures, listings, tables, embeds. One rule per tier —
+   hosts opt in with the class (figure.plate, pre.fullwidth,
+   .scroll-x.plate, …). Mermaid and [data-fig] always ride the plate bay.
+   :is() keeps specificity above bare `pre` / `div.highlight` hang so a
+   tier class wins without restating the math per element.
+
+     .compact   measure (+ denser padding where it applies)
+     .plate     listing bay  (measure + hang)
+     .fullwidth bay + note channel */
+
+:is(figure, pre, div, .scroll-x).plate,
 figure.mermaid,
-pre.plate,
-div.plate,
-.scroll-x,
 [data-fig] {
   width: calc(100% + var(--hang-l));
   margin-inline: calc(-1 * var(--hang-l) / 2);
@@ -1423,31 +1408,30 @@ div.plate,
   clear: both;
 }
 
-/* Embeds and scroll tables sit on the figure beat: 2rem above and
-   below, so a canvas, its controls and a following results table
-   never share an edge with the prose. Their old zero block margin
-   borrowed air from whatever paragraph happened to precede them and
-   glued them to whatever followed — a controls row 5px from a table,
-   a chart butted against the sentence that reads it. Adjacent plate
-   tiers collapse to one shared 2rem, as figures always did. */
-[data-fig],
-.scroll-x {
-  margin-block: 2rem;
-}
-
-/* Explicit fullwidth: hang plus the note channel. Opt-in only — tables
-   and interactives stay on the listing bay above so they match code.
-   Asymmetric on purpose: left edge stays with the plate (hang-l/2); the
-   extra reach spends only the right-hand note channel. A symmetric
-   margin-inline of -(hang+reach)/2 would push the left edge past the
-   plate by reach/2 and stop short of the channel's outer edge. */
-figure.fullwidth,
-pre.fullwidth,
-div.fullwidth {
+:is(figure, pre, div, .scroll-x).fullwidth {
   width: calc(100% + var(--hang-l) + var(--reach-r));
   margin-inline-start: calc(-1 * var(--hang-l) / 2);
   margin-inline-end: calc(-1 * (var(--hang-l) / 2 + var(--reach-r)));
   clear: both;
+}
+
+/* Compact: stay on the measure (undo a host's default hang) and tighten
+   padding. Tables already sit on the measure — for them this is density
+   only (see table.prose-table.compact below). */
+:is(pre, div.highlight).compact {
+  width: auto;
+  margin-inline: 0;
+  padding-block: 0.65rem;
+  padding-inline: 0.85rem;
+}
+
+/* Embeds and scroll tables sit on the figure beat: 2rem above and
+   below, so a canvas, its controls and a following results table
+   never share an edge with the prose. Adjacent plate tiers collapse
+   to one shared 2rem, as figures always did. */
+[data-fig],
+.scroll-x {
+  margin-block: 2rem;
 }
 
 /* A margin figure is a picture in the note voice: it lives in the
@@ -1631,38 +1615,6 @@ figure.plate > figcaption code {
   color: var(--mute);
 }
 
-/* Caption-row actions: download / open-full / source. Mono micro-links
-   under the title-voice sentence — apparatus, not a second caption. */
-.caption-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.15rem 0.95rem;
-  margin-top: 0.55rem;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  line-height: 1.35;
-}
-
-/* Bare / fullwidth / margin captions are left-aligned in the note voice;
-   keep actions with that axis instead of forcing the plate centre. */
-figure:not(.plate) > figcaption > .caption-actions {
-  justify-content: flex-start;
-}
-
-.caption-actions a {
-  color: var(--mute);
-  text-decoration: none;
-  border-bottom: 1px solid var(--rule-fine);
-}
-
-.caption-actions a:hover {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-
 /* A wide figure has already spent the channel it would have hung its
    caption in, so the caption drops under the picture in the same voice
    — the treatment the narrow breakpoint uses for every caption. */
@@ -1744,11 +1696,17 @@ abbr[title] {
 
 /* ---------- tables ---------- */
 
-/* build.py wraps every table in this. The table keeps table layout and
-   the wrapper takes the overflow. The wrapper rides the listing bay
-   with [data-fig] and bare `pre`, so a wide table, a canvas and a code
-   plate share one left and right edge; below 1152px they scroll inside
-   the column. Same contained flick as a listing. */
+/* build.py wraps every prose table in .scroll-x and stamps .prose-table.
+   Narrow tables stay on the measure (same edges as the prose). Wide ones
+   (≥5 columns, or class="plate") open the listing bay via .scroll-x.plate;
+   class="fullwidth" spends the note channel too. The wrapper takes
+   overflow; below 1152px a bay table scrolls inside the column.
+
+   Wrap policy: measure tables reflow prose cells inside the column;
+   stubs, heads, and right-aligned (numeric) cells stay one line. Bay
+   tables keep max-content + nowrap and scroll instead of wrapping the
+   grid — data columns stay scannable. Pygments `.highlighttable` is
+   out of scope. */
 .scroll-x {
   overflow-x: auto;
   overscroll-behavior-x: contain;
@@ -1756,41 +1714,141 @@ abbr[title] {
   scrollbar-color: var(--rule) transparent;
 }
 
-.scroll-x table {
+/* Bay only: lock to content width so columns don't soft-wrap; the
+   wrapper scrolls. Measure tables omit this and reflow instead. */
+:is(.plate, .fullwidth) > table.prose-table {
   min-width: max-content;
 }
 
-table {
+table.prose-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.8rem 0;
+  border-spacing: 0;
+  margin: 0;
   font-size: 0.95em;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+  /* Full textbook frame: top + bottom already carried the heavy rule;
+     close the left and right so the grid reads as a plate, not a
+     stack of hairlines floating in the measure. */
+  border: 1px solid var(--rule);
 }
 
-th,
-td {
+table.prose-table th,
+table.prose-table td {
   text-align: left;
-  padding: 0.55rem 0.9rem 0.55rem 0;
+  /* Equal inline pad on every cell — required for `:----:` to land on
+     the optical centre of the column. Flushing the outer edges to the
+     frame (pad-left:0 / pad-right:0) used to shift every centred last
+     column by half a gutter. */
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
   border-bottom: 1px solid var(--rule-fine);
+  overflow-wrap: break-word;
 }
 
-th {
+/* Heads, stubs, and numeric columns stay one line — wrapping a number
+   or a micro-label breaks the vertical scan. Markdown right-align is
+   the numeric signal (`-----:` → text-align: right). */
+table.prose-table thead th,
+table.prose-table th[scope="row"],
+table.prose-table [style*="text-align: right"],
+table.prose-table [style*="text-align:right"] {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+/* Bay / fullwidth: the whole grid stays one line; scroll the bay.
+   Same tier classes as figures and listings — not a table-only rule. */
+:is(.plate, .fullwidth) table.prose-table th,
+:is(.plate, .fullwidth) table.prose-table td {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+table.prose-table thead th {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 400;
   letter-spacing: 0.02em;
   color: var(--mute);
+  vertical-align: bottom;
+  padding-top: 0.35rem;
+  padding-bottom: 0.55rem;
   border-bottom: 1px solid var(--rule);
+  background: var(--paper);
 }
 
-caption {
+table.prose-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+/* Stub column: row label in the prose face, not another mute head. */
+table.prose-table th[scope="row"] {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  letter-spacing: normal;
+  color: var(--ink);
+}
+
+/* Sticky stub when the bay scrolls sideways. No paper fill on the body
+   stub — only thead carries a plate. A freeze edge appears only on the
+   head corner (which already has background). */
+.scroll-x > table.prose-table thead th:first-child,
+.scroll-x > table.prose-table tbody th[scope="row"] {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.scroll-x > table.prose-table thead th:first-child {
+  z-index: 3;
+  box-shadow: 1px 0 0 var(--rule-fine);
+}
+
+/* Row hover: a wash, not a card. Skip when the reader asked for less
+   motion — the hairlines already carry structure. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  table.prose-table tbody tr:hover > * {
+    background: color-mix(in srgb, var(--wash) 78%, var(--paper));
+  }
+}
+
+table.prose-table caption {
   caption-side: bottom;
   font-family: var(--mono);
   font-size: 0.68rem;
   letter-spacing: 0.02em;
   color: var(--mute);
-  padding-top: 0.6rem;
+  padding: 0.65rem 0 0;
   text-align: left;
+  border: 0;
+}
+
+/* Dense comparison grids (pricing, matrices): tighter rhythm, still
+   the same frame. Opt in with class="compact" on the <table>. */
+table.prose-table.compact th,
+table.prose-table.compact td {
+  padding-top: 0.32rem;
+  padding-bottom: 0.32rem;
+}
+
+table.prose-table.compact thead th {
+  padding-top: 0.25rem;
+  padding-bottom: 0.4rem;
+}
+
+@media print {
+  .scroll-x > table.prose-table thead th:first-child,
+  .scroll-x > table.prose-table tbody th[scope="row"] {
+    position: static;
+    box-shadow: none;
+  }
+
+  table.prose-table tbody tr:hover > * {
+    background: transparent;
+  }
 }
 
 .mark-ok {
@@ -1971,11 +2029,11 @@ details {
 }
 
 /* A listing inside a disclosure stays in the chip. The page-level pre
-   hang assumes the measure as its containing block; inside details that
-   hang (and the old padding-compensating negative margin) drove the
-   wash plate through the chip's border on both sides. Same stance as
-   `li pre`: nested context, in-column. */
-details pre {
+   / .highlight hang assumes the measure as its containing block; inside
+   details that hang drove the wash plate through the chip's border.
+   Same stance as `li pre` / `li div.highlight`: nested context, in-column. */
+details pre,
+details div.highlight {
   margin-inline: 0;
 }
 
@@ -1988,31 +2046,60 @@ details[open] summary {
   margin-bottom: 0.6rem;
 }
 
-/* ---------- book grid ---------- */
+/* ---------- book grid ----------
+   Goodreads BookCover: natural jacket proportions (no forced 2:3 crop),
+   spine-square / fore-edge-round radius, hairline + lift. Shelf-aligned. */
 .book-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
-  gap: 0.6rem;
+  gap: 0.75rem;
   margin: 1.8rem 0;
+  align-items: end;
+}
+
+.book-grid a {
+  display: block;
+  line-height: 0;
 }
 
 .book-grid img,
 .book-grid a img {
   width: 100%;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
+  height: auto;
+  vertical-align: bottom;
   border: 0;
-  background: none;
-  transition: transform 0.35s ease;
+  /* Goodreads .BookCover__image — square spine, soft page edge */
+  border-radius: 0 6% 6% 0 / 4%;
+  background: var(--wash);
+  box-shadow:
+    0 0 0 1px var(--rule-fine),
+    0 1px 2px color-mix(in srgb, var(--ink) 8%, transparent),
+    0 4px 10px color-mix(in srgb, var(--ink) 10%, transparent);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
 }
 
 .book-grid a:hover img {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 0 1px var(--rule-fine),
+    0 2px 4px color-mix(in srgb, var(--ink) 10%, transparent),
+    0 10px 18px color-mix(in srgb, var(--ink) 14%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-grid img,
+  .book-grid a img {
+    transition: none;
+  }
 }
 
 /* ---------- bibliography ----------
-   Notes nothing refers to — citations made inside HTML comments — keep
-   the endnote idiom; everything cited inline lives in the margin. */
+   Every note is emitted here with id="fn:…". Cited notes also ride the
+   margin as .sidenote; on wide viewports those <li data-margin> stand
+   down so the margin is the only copy. Below 1152px the margin folds
+   away and this list is the Notes / References block. */
 
 .bibliography {
   margin-top: 3rem;
@@ -2030,6 +2117,38 @@ details[open] summary {
 
 .bibliography li {
   margin-bottom: 0.3rem;
+}
+
+.bibliography li[id] {
+  /* Clear the sticky menu when jumping from a marker or cover #fn: link. */
+  scroll-margin-top: 4rem;
+}
+
+.bibliography li:target {
+  background: color-mix(in srgb, var(--mark) 55%, transparent);
+  outline: 1px solid var(--rule-fine);
+  border-radius: 2px;
+}
+
+@media (min-width: 1152px) {
+  /* Margin owns cited notes. Prefer the build-time class over :has() —
+     Safari was leaving an empty .bibliography (border + padding) which
+     doubled the hairline above Comments. */
+  .bibliography--margin-only {
+    display: none;
+  }
+
+  .bibliography--margin-only:has(li:target) {
+    display: block;
+  }
+
+  .bibliography li[data-margin] {
+    display: none;
+  }
+
+  .bibliography li[data-margin]:target {
+    display: list-item;
+  }
 }
 
 /* Fallback when a citation cannot ride the channel: python-markdown's
@@ -2069,8 +2188,87 @@ details[open] summary {
 
 footer.site {
   position: relative;
-  padding-block: 1.4rem 2.6rem;
+  /* Extra bottom so social icons sit in the soft part of the wash. */
+  padding-block: 1.4rem 3.2rem;
   font-size: 0.92em;
+  overflow: visible;
+}
+
+/* Full-viewport ambient light — behind all chrome.
+   z-index 0 + raised header/main/footer keeps rules and type on top. */
+.footer-aurora {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Hidden surprise — invisible until hover near bottom-left or focus. */
+.aurora-compare {
+  position: fixed;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 2;
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule-fine);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Enlarge the hover hit area toward the bottom-left corner. */
+.aurora-compare::before {
+  content: "";
+  position: absolute;
+  left: -1.25rem;
+  bottom: -1.25rem;
+  right: -0.75rem;
+  top: -1.5rem;
+}
+
+.aurora-compare:hover,
+.aurora-compare:focus-within {
+  opacity: 1;
+}
+
+.aurora-compare button {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  background: transparent;
+  color: var(--mute);
+  cursor: pointer;
+  position: relative;
+}
+
+.aurora-compare button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--accent) 18%, var(--paper));
+  color: var(--ink);
+}
+
+.aurora-compare button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+header.site,
+main,
+footer.site {
+  position: relative;
+  z-index: 1;
+  background: transparent;
 }
 
 footer.site p {
@@ -2235,12 +2433,13 @@ footer.site a.handle:hover {
      halving the tab recovers two columns per nesting level, which beats
      shrinking 14.4px glyphs that are already at the legibility floor.
      The plate runs to the sheet edge so the sideways scroll is legible
-     as an affordance rather than as a clipped box. pre.plate / pre.fullwidth
-     set their own margin-inline (and a width) above, so they must be named
-     here or they stay inset while a bare pre bleeds. */
+     as an affordance rather than as a clipped box. Tier classes (.plate /
+     .fullwidth / .compact) set width + margin above — name them here or
+     they stay inset while a bare pre bleeds. */
   pre,
   pre.plate,
-  pre.fullwidth {
+  pre.fullwidth,
+  pre.compact {
     tab-size: 2;
     width: auto;
     margin-inline: -1.5rem;
@@ -2450,6 +2649,7 @@ footer.site a.handle:hover {
   header.site,
   .menu-inline,
   footer.site,
+  .footer-aurora,
   .cv-actions,
   .toc,
   .comments {
@@ -2738,6 +2938,9 @@ input[type="range"]::-moz-range-thumb {
 [data-fig="iso-cube"] {
   min-height: 320px;
 }
+[data-fig="divergence-volume"] {
+  min-height: 380px;
+}
 [data-fig="conv-kernel"] {
   min-height: 240px;
 }
@@ -2752,10 +2955,9 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* ---------- sidenotes ----------
-   Tufte's mechanism, emitted at build time: each reference is a label
-   plus a hidden checkbox followed by the note itself, a floated span
-   hanging off the column into the margin — no script, so nothing
-   flashes or drifts after load. One counter numbers both ends.
+   Build emits a numbered marker link plus a floated .sidenote span, and
+   the same text again in .bibliography. Wide viewports read the margin;
+   below 1152px the span hides and the marker jumps to the end list.
 
    The breakpoint is derived, not tuned: with the column centred, each
    margin is half of what the viewport has left over, and a note needs
@@ -2766,9 +2968,7 @@ input[type="range"]::-moz-range-thumb {
    at every scaled resolution Apple offers, reads its notes in the
    margin rather than in a drawer. Spatial contiguity (d ≈ 1.1) is the
    largest effect in the reading literature this page is built on, and
-   it was previously being thrown away on any screen under 1400px.
-   Below 1152px the notes fold up behind their markers until asked
-   for. */
+   it was previously being thrown away on any screen under 1400px. */
 
 .sidenote {
   float: right;
@@ -2787,10 +2987,11 @@ input[type="range"]::-moz-range-thumb {
   width: var(--sidenote-w-fit, var(--sidenote-w));
   margin-top: 0.2rem;
   margin-bottom: 0.4rem;
-  /* 0.68 × prose ≈ 13.6px = 8.2pt: the classic footnote size. */
-  font-size: calc(var(--text) * 0.68);
-  line-height: 1.45;
-  color: var(--mute);
+  /* Same voice as .bibliography / .footnote — citations in the margin
+     and the end list should read as one apparatus, not two sizes. */
+  font-size: 0.85em;
+  line-height: 1.35;
+  color: var(--ink);
 }
 
 /* Script-promoted notes: sidenotes.js (loaded only on pages that emit
@@ -2815,22 +3016,34 @@ input[type="range"]::-moz-range-thumb {
       -1 * (var(--hang-l) / 2 + var(--sidenote-gap) + var(--sidenote-w-fit))
     );
     width: var(--sidenote-w-fit);
+    /* Do not set pointer-events: none here. Safari ignores clicks on
+       child <a>s inside a pointer-events: none ancestor, so margin
+       reference links went dead. Empty note chrome can catch a click;
+       title links in the note must stay hittable. */
   }
 }
 
-label.sidenote-number {
-  /* Nothing was incrementing the counter, so every marker and every note
-     printed a 0 and a reader with three notes in one margin block had no
-     way to tell which belonged to which. The increment lives on the
-     label — the first of the three elements the build emits — so the
-     ::after below and the note's ::before further down resolve to the
-     same number in document order. */
+a.sidenote-number {
+  /* Increment on the marker — the first of the two elements the build
+     emits — so ::after here and ::before on the margin note resolve to
+     the same number in document order (and match the endnote <ol>). */
   counter-increment: sidenote-counter;
-  cursor: default;
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 0;
+  cursor: pointer;
 }
 
-/* The same counter on marker and note ties a tap target to its margin
-   note without either knowing the other's number. */
+/* Wide: the margin is already open, so the marker is not a jump target. */
+@media (min-width: 1152px) {
+  a.sidenote-number {
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+/* The same counter on marker and note ties a number to its margin copy
+   without either knowing the other's value. */
 .sidenote-number::after,
 .sidenote::before {
   content: counter(sidenote-counter);
@@ -2845,62 +3058,23 @@ label.sidenote-number {
   margin-right: 0.4em;
 }
 
-input.margin-toggle {
-  display: none;
-}
-
 @media (max-width: 1151px) {
+  /* Margin copy stands down; the endnote list owns the text. */
   .sidenote {
     display: none;
-  }
-
-  label.margin-toggle {
-    display: inline;
-    cursor: pointer;
-  }
-
-  /* Kept focusable so keyboard users can reach the checkbox the label
-     toggles; visually it stays invisible. */
-  input.margin-toggle {
-    display: inline-block;
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: 0;
-    opacity: 0;
-  }
-
-  input.margin-toggle:checked + .sidenote,
-  input.margin-toggle:focus-visible + .sidenote {
-    display: block;
-    float: none;
-    clear: both;
-    width: auto;
-    margin: 0.5rem 0 0.7rem;
-    padding-left: 0.8rem;
-    border-left: 2px solid var(--rule);
-    color: var(--ink);
   }
 }
 
 @media print {
-  html.snotes-abs .sidenote {
-    position: static;
-  }
-
-  label.margin-toggle,
-  input.margin-toggle {
+  /* Ink prefers one copy: the end list, not the margin float. */
+  .sidenote {
     display: none;
   }
 
-  .sidenote {
-    float: none;
-    display: block;
-    width: auto;
-    margin: 0.4rem 0 0.6rem;
-    padding-left: 0.8rem;
-    border-left: 2px solid var(--rule);
-    color: var(--ink);
+  .bibliography--margin-only,
+  .bibliography,
+  .bibliography li[data-margin] {
+    display: revert;
   }
 }
 
@@ -2965,25 +3139,45 @@ figure.gallery {
 }
 
 figure.gallery .gallery-viewport {
+  position: relative;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
-  /* Height reserved for the tallest plate (gallery.js) so slide changes
-     never reflow surrounding content or nudge page scroll. */
+  /* Height reserved for the normalised bay (gallery.js) so slide
+     changes never reflow surrounding content or nudge page scroll. */
   height: var(--gallery-h, auto);
   overflow-anchor: none;
+  /* Wash fills letterbox while plates contain-fit into the first-plate bay. */
+  background: var(--wash);
 }
 
 figure.gallery .gallery-viewport::-webkit-scrollbar {
   display: none;
 }
 
+/* WebGL Hilbert reveal sits over the bay; pointer-events none so
+   scroll/drag still reach the viewport when the canvas is idle. */
+figure.gallery .gallery-gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+}
+
+figure.gallery .gallery-gl.is-active {
+  opacity: 1;
+}
+
 figure.gallery .gallery-track {
   display: flex;
-  /* Shorter plates sit in the vertical middle of the reserved bay. */
-  align-items: center;
+  /* Stretch so every slide fills the locked bay; imgs contain-fit. */
+  align-items: stretch;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -2998,6 +3192,7 @@ figure.gallery .gallery-slide {
   flex: 0 0 100%;
   width: 100%;
   min-width: 100%;
+  height: 100%;
   margin: 0;
   scroll-snap-align: start;
   scroll-snap-stop: always;
@@ -3006,7 +3201,9 @@ figure.gallery .gallery-slide {
 figure.gallery .gallery-slide img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 figure.gallery .gallery-slide-caption {

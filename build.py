@@ -23,8 +23,14 @@ from pathlib import Path
 from urllib.parse import quote
 from xml.sax.saxutils import escape
 
+import html as html_lib
+
 import markdown
 import yaml
+from pygments import highlight as pygments_highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import get_lexer_by_name
+from pygments.util import ClassNotFound
 
 ROOT = Path(__file__).parent
 SRC = ROOT / "src"
@@ -35,7 +41,8 @@ VENDOR_CACHE = ROOT / ".vendor-cache"
 # resolve npm dist-tags "latest", cache tarballs under .vendor-cache/, install
 # into _site/static/vendor/. Set VENDOR_OFFLINE=1 to reuse .vendor-cache/versions.lock
 # without hitting the registry. Optional pins: VENDOR_KATEX / VENDOR_MERMAID
-# (exact versions). Syntax colouring is Pygments at build time (CodeHilite).
+# (exact versions). Syntax colouring is Pygments at build time: CodeHilite
+# for fences, and `:::lang …` inside backticks for inline chips.
 VENDOR_SPECS: dict[str, dict] = {
     "katex": {
         "npm": "katex",
@@ -202,20 +209,40 @@ COVERS_AB = """<script>
 
 RELTIME = """<script>
 (() => {
-  const fmt = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+  const fmt = new Intl.RelativeTimeFormat("en", { numeric: "always" });
+  const units = [
+    ["year", 365.25 * 86400],
+    ["month", 30.44 * 86400],
+    ["week", 7 * 86400],
+    ["day", 86400],
+    ["hour", 3600],
+  ];
+  const unitPhrase = (n, unit) =>
+    fmt.format(-n, unit).replace(/^in /, "").replace(/ ago$/, "");
   const rel = ms => {
-    const days = Math.round((Date.now() - ms) / 86400000);
-    if (Math.abs(days) < 45) return fmt.format(-days, "day");
-    const months = Math.round(days / 30.44);
-    if (Math.abs(months) < 18) return fmt.format(-months, "month");
-    return fmt.format(-Math.round(days / 365.25), "year");
+    const delta = Date.now() - ms;
+    const past = delta >= 0;
+    let sec = Math.floor(Math.abs(delta) / 1000);
+    const parts = [];
+    for (const [unit, size] of units) {
+      const n = Math.floor(sec / size);
+      if (!n) continue; // hide zero years/months/weeks/days/hours
+      parts.push(unitPhrase(n, unit));
+      sec -= n * size;
+      if (parts.length === 2) break;
+    }
+    if (!parts.length) return null; // under an hour: keep exact date
+    const body = parts.join(", ");
+    return past ? body + " ago" : "in " + body;
   };
   document.querySelectorAll("[data-rel-from]").forEach(e => {
     const t = Date.parse(e.dataset.relFrom);
     if (Number.isNaN(t)) return;
+    const text = rel(t);
+    if (!text) return;
     const exact = e.textContent.trim();
     if (exact) e.dataset.tip = exact;
-    e.textContent = rel(t);
+    e.textContent = text;
   });
 })();
 </script>"""
@@ -298,6 +325,10 @@ def format_authors(raw: str) -> str:
             last, first = parts[-1], " ".join(parts[:-1])
         initials = " ".join(f"{p[0]}." for p in first.split() if p[:1].isalpha())
         people.append(f"{last}, {initials}".strip().rstrip(","))
+    # Margin notes and the end list share one voice: keep short author
+    # strings so a 20-author paper does not bury its title link.
+    if len(people) > 3:
+        return people[0] + " et al."
     if len(people) > 2:
         return ", ".join(people[:-1]) + " & " + people[-1]
     return " & ".join(people)
@@ -463,13 +494,121 @@ def strip_footnotes(html: str) -> str:
     return re.sub(r'<div class="footnote">.*?</div>', "", html, flags=re.DOTALL)
 
 
+TABLE_RE = re.compile(r"<table(\s[^>]*)?>(.*?)</table>", re.DOTALL)
+# Classes that leave the table and ride the scroll wrapper instead.
+_TABLE_WRAPPER_CLASSES = frozenset({"fullwidth", "plate"})
+# At or above this column count, a bare table opens the listing bay
+# (same hang as figure.plate / code). Narrower ones stay on the measure.
+WIDE_TABLE_COLS = 5
+
+
+def _table_class_attr(attrs: str) -> tuple[str, list[str]]:
+    """Return (attrs without class=, class tokens)."""
+    classes: list[str] = []
+
+    def take(m: re.Match[str]) -> str:
+        classes.extend(m.group(1).split())
+        return ""
+
+    attrs = re.sub(r'\sclass="([^"]*)"', take, attrs or "", count=1)
+    if not classes:
+        attrs = re.sub(r"\sclass='([^']*)'", take, attrs or "", count=1)
+    return attrs, classes
+
+
+def _table_col_count(body: str) -> int:
+    """Count columns from the first header row, else the first body row."""
+    m = re.search(r"<thead\b[^>]*>.*?<tr\b[^>]*>(.*?)</tr>", body, re.I | re.S)
+    if not m:
+        m = re.search(r"<tr\b[^>]*>(.*?)</tr>", body, re.I | re.S)
+    if not m:
+        return 0
+    return len(re.findall(r"<t[hd]\b", m.group(1), re.I))
+
+
+def _decorate_prose_table(attrs: str, body: str) -> tuple[str, list[str]]:
+    """Add prose-table + stub row headers; return (table html, wrapper classes)."""
+    attrs, classes = _table_class_attr(attrs)
+    wrapper: list[str] = []
+    kept: list[str] = []
+    for c in classes:
+        if c in _TABLE_WRAPPER_CLASSES:
+            wrapper.append(c)
+        elif c not in kept:
+            kept.append(c)
+    if "prose-table" not in kept:
+        kept.insert(0, "prose-table")
+
+    # First body cell is the stub (row label): promote to th[scope=row]
+    # so screen readers and sticky-column CSS share one target. Skip rows
+    # that already start with th, or whose first cell spans columns.
+    if re.search(r"<thead\b", body, re.I):
+
+        def tbody_repl(m: re.Match[str]) -> str:
+            tag_attrs, inner = m.group(1) or "", m.group(2)
+
+            def row_stub(rm: re.Match[str]) -> str:
+                pre, cell_attrs, cell_body = rm.group(1), rm.group(2) or "", rm.group(3)
+                if re.search(r"\bcolspan\s*=", cell_attrs, re.I):
+                    return rm.group(0)
+                return f'{pre}<th scope="row"{cell_attrs}>{cell_body}</th>'
+
+            inner = re.sub(
+                r"(<tr[^>]*>\s*)<td([^>]*)>(.*?)</td>",
+                row_stub,
+                inner,
+                flags=re.DOTALL | re.I,
+            )
+            return f"<tbody{tag_attrs}>{inner}</tbody>"
+
+        body = re.sub(
+            r"<tbody([^>]*)>(.*?)</tbody>",
+            tbody_repl,
+            body,
+            flags=re.DOTALL | re.I,
+        )
+
+    class_attr = f' class="{" ".join(kept)}"'
+    return f"<table{attrs}{class_attr}>{body}</table>", wrapper
+
+
 def wrap_tables(html: str) -> str:
-    return re.sub(
-        r"<table>.*?</table>",
-        lambda m: f'<div class="scroll-x">{m.group(0)}</div>',
-        html,
-        flags=re.DOTALL,
-    )
+    """Wrap prose tables in .scroll-x; leave Pygments highlighttable alone.
+
+    Adds `.prose-table`, promotes the stub column to `th[scope=row]`, and
+    lifts wrapper-tier classes (`plate`, `fullwidth`) onto the scroll bay.
+    Tables with ≥ WIDE_TABLE_COLS columns auto-open the listing bay
+    unless the author already chose fullwidth.
+    """
+    out: list[str] = []
+    last = 0
+    for m in TABLE_RE.finditer(html):
+        out.append(html[last : m.start()])
+        attrs, body = m.group(1) or "", m.group(2)
+        full = m.group(0)
+        # CodeHilite plates are tables too — never the listing bay.
+        if re.search(r"\bhighlighttable\b", attrs):
+            out.append(full)
+            last = m.end()
+            continue
+        # Already wrapped (hand-authored or a prior pass).
+        before = html[max(0, m.start() - 96) : m.start()]
+        if re.search(r'class="[^"]*\bscroll-x\b[^"]*"\s*>\s*$', before):
+            out.append(full)
+            last = m.end()
+            continue
+        table, wrapper_extra = _decorate_prose_table(attrs, body)
+        if (
+            "plate" not in wrapper_extra
+            and "fullwidth" not in wrapper_extra
+            and _table_col_count(body) >= WIDE_TABLE_COLS
+        ):
+            wrapper_extra.append("plate")
+        wrap_class = " ".join(["scroll-x", *wrapper_extra])
+        out.append(f'<div class="{wrap_class}">{table}</div>')
+        last = m.end()
+    out.append(html[last:])
+    return "".join(out)
 
 
 SUP_REF = re.compile(
@@ -495,24 +634,40 @@ def make_sidenotes(html: str) -> str:
     }
     section = m.group(0)
 
-    used: set[str] = set()
+    # Citation order (not set) so the endnote list numbers match the
+    # sidenote counter when the margin collapses to a bottom list.
+    used: list[str] = []
 
     def repl(mm: re.Match) -> str:
         key = mm.group("key")
         if key not in notes or key in used or BLOCK_IN_NOTE.search(notes[key]):
             return mm.group(0)
-        used.add(key)
+        used.append(key)
+        n = len(used)
+        # Marker links to the endnote id. Wide viewports show the same
+        # text in the margin (.sidenote); narrow jumps to .bibliography.
         return (
-            f'<label class="margin-toggle sidenote-number" for="sn-{key}"></label>'
-            f'<input type="checkbox" id="sn-{key}" class="margin-toggle">'
+            f'<a class="sidenote-number" href="#fn:{key}" aria-label="Note {n}"></a>'
             f'<span class="sidenote">{notes[key]}</span>'
         )
 
     html = SUP_REF.sub(repl, html)
-    rest = "".join(f"<li>{body}</li>" for k, body in notes.items() if k not in used)
+    used_set = set(used)
+    # All notes land in the end list (ids live here for #fn: links).
+    # Cited ones also ride the margin; CSS hides those <li>s when wide.
+    ordered = used + [k for k in notes if k not in used_set]
+    rest = "".join(
+        f'<li id="fn:{k}"{" data-margin" if k in used_set else ""}>{notes[k]}</li>'
+        for k in ordered
+    )
+    # When every note is also a margin sidenote, mark the section so wide
+    # CSS can display:none it without relying on :has() (Safari left an
+    # empty bordered box — a second hairline above Comments).
+    margin_only = bool(ordered) and all(k in used_set for k in ordered)
+    cls = "bibliography bibliography--margin-only" if margin_only else "bibliography"
     html = html.replace(
         section,
-        f'<section class="bibliography"><ol>{rest}</ol></section>' if rest else "",
+        f'<section class="{cls}"><ol>{rest}</ol></section>' if rest else "",
     )
     return html
 
@@ -544,12 +699,69 @@ MERMAID_FENCE_RE = re.compile(
     r"^```mermaid\s*\n(.*?)^```\s*$", re.MULTILINE | re.DOTALL
 )
 MATH_RE = re.compile(r"\$\$.*?\$\$|\$[^$\n]+\$|\\\(.*?\\\)|\\\[.*?\\\]", re.DOTALL)
+# After Markdown: <code>:::python print(1)</code> → Pygments spans, same
+# token classes as CodeHilite blocks. Opt-in only — bare `path` chips stay
+# plain. Language must be followed by whitespace and the snippet.
+INLINE_HILITE_RE = re.compile(
+    r"<code>:::([A-Za-z0-9_+-]+)\s+(.+?)</code>",
+    re.DOTALL,
+)
+_INLINE_FORMATTER = HtmlFormatter(nowrap=True)
+
+# Preferred site langs → Pygments names. curl has no lexer; bash covers
+# curl/zsh/sh. Other fences (c, mermaid, bibtex, …) pass through unchanged.
+LEXER_ALIASES: dict[str, str] = {
+    "curl": "bash",
+    "zsh": "bash",
+    "sh": "bash",
+    "shell": "bash",
+    "py": "python",
+}
+# ```curl / ```{.curl .plate} → ```bash / ```{.bash .plate}
+FENCE_LANG_RE = re.compile(
+    r"^```(\{\.)?([A-Za-z0-9_+-]+)\b",
+    re.MULTILINE,
+)
+
+
+def resolve_lexer_name(lang: str) -> str:
+    key = lang.lower()
+    return LEXER_ALIASES.get(key, key)
+
+
+def remap_fence_langs(text: str) -> str:
+    """Rewrite fence language tags through LEXER_ALIASES before CodeHilite."""
+
+    def repl(m: re.Match) -> str:
+        prefix, lang = m.group(1) or "", m.group(2)
+        mapped = resolve_lexer_name(lang)
+        if mapped == lang:
+            return m.group(0)
+        return f"```{prefix}{mapped}"
+
+    return FENCE_LANG_RE.sub(repl, text)
 
 
 def mermaid_to_html(m: re.Match) -> str:
     """Lift mermaid fences to raw HTML so CodeHilite never sees them."""
     body = m.group(1).rstrip("\n")
     return f'\n\n<pre><code class="language-mermaid">{escape(body)}\n</code></pre>\n\n'
+
+
+def hilite_inline_code(html: str) -> str:
+    """Colour `:::lang snippet` code spans with Pygments (nowrap)."""
+
+    def repl(m: re.Match) -> str:
+        lang, raw = m.group(1), m.group(2)
+        src = html_lib.unescape(raw)
+        try:
+            lexer = get_lexer_by_name(resolve_lexer_name(lang))
+        except ClassNotFound:
+            return f"<code>{escape(src)}</code>"
+        colored = pygments_highlight(src, lexer, _INLINE_FORMATTER).rstrip("\n")
+        return f'<code class="highlight">{colored}</code>'
+
+    return INLINE_HILITE_RE.sub(repl, html)
 
 
 def render_markdown(pages: list[Page]) -> None:
@@ -574,26 +786,29 @@ def render_markdown(pages: list[Page]) -> None:
         body, _, _ = page.text.partition("<!-- more -->")
         md.reset()
         source = page.text.replace("<!-- more -->", "")
-        protected = MERMAID_FENCE_RE.sub(mermaid_to_html, source)
+        protected = remap_fence_langs(source)
+        protected = MERMAID_FENCE_RE.sub(mermaid_to_html, protected)
         protected = MATH_RE.sub(protect_math, protected)
         html_out = md.convert(protected)
         html_out = re.sub(
             r"QQMATHSTASH(\d+)ZQXMATH", lambda m: stash[int(m.group(1))], html_out
         )
         stash.clear()
+        html_out = hilite_inline_code(html_out)
         page.html = wrap_tables(
             make_sidenotes(figure_images(drop_dead_backrefs(html_out)))
         )
         md.reset()
         excerpt_src = re.sub(r"^#\s+.+$", "", body, count=1, flags=re.MULTILINE)
-        excerpt_protected = MERMAID_FENCE_RE.sub(mermaid_to_html, excerpt_src)
+        excerpt_protected = remap_fence_langs(excerpt_src)
+        excerpt_protected = MERMAID_FENCE_RE.sub(mermaid_to_html, excerpt_protected)
         excerpt_protected = MATH_RE.sub(protect_math, excerpt_protected)
         excerpt_html = md.convert(excerpt_protected)
         excerpt_html = re.sub(
             r"QQMATHSTASH(\d+)ZQXMATH", lambda m: stash[int(m.group(1))], excerpt_html
         )
         stash.clear()
-        page.excerpt = strip_footnotes(excerpt_html)
+        page.excerpt = strip_footnotes(hilite_inline_code(excerpt_html))
 
 
 def human_date(value: date | None) -> str:
@@ -653,7 +868,6 @@ def layout(
 {'<script defer src="/static/youtube-lite.js"></script>' if "data-youtube=" in body else ""}
 {'<script defer src="/static/sidenotes.js"></script>' if 'class="sidenote"' in body else ""}
 {'<script defer src="/static/gallery.js"></script>' if ('class="gallery"' in body or "plate-reveal" in body) else ""}
-{'<script defer src="/static/edit.js"></script>' if "data-edit=" in body else ""}
 {katex_snippet() if math else ""}
 {COVERS_AB if "data-cdn-src=" in body else ""}
 {extra_head}
@@ -669,6 +883,7 @@ def layout(
 <footer class="site">
 <p>{social}<a class="handle" href="https://github.com/ofou">@ofou</a></p>
 </footer>
+<script defer src="/static/footer-aurora.js"></script>
 {RELTIME}
 </body>
 </html>
@@ -764,18 +979,27 @@ def article(page: Page, *, comments: bool = False) -> str:
             quote(s, safe="") for s in page.path.relative_to(ROOT).as_posix().split("/")
         )
     )
-    head = f'<p class="meta">{SEP.join(meta_bits)}</p>' if meta_bits else ""
+    edit_a = (
+        f'<a class="edit" href="{escape(edit, {'"': "&quot;"})}" '
+        f'target="_blank" rel="noopener">edit</a>'
+    )
+    # Post info row: date · subtitle · tags, with edit on the same
+    # baseline (right). No per-paragraph or footer duplicate.
+    if meta_bits:
+        head = (
+            f'<p class="meta"><span class="meta-bits">{SEP.join(meta_bits)}</span>'
+            f"{edit_a}</p>"
+        )
+    elif page.kind != "home":
+        head = f'<p class="meta">{edit_a}</p>'
+    else:
+        head = ""
 
     title = (
         "" if re.search(r"<h1[\s>]", page.html) else f"<h1>{escape(page.title)}</h1>\n"
     )
     body = place_nav(title + page.html)
-    return (
-        f'<article data-edit="{escape(edit, {'"': "&quot;"})}">\n{head}\n{body}\n'
-        f'<p class="meta edit"><a href="{escape(edit, {'"': "&quot;"})}">'
-        f"suggest an edit</a></p>\n</article>\n"
-        + (GISCUS if comments else "")
-    )
+    return f"<article>\n{head}\n{body}\n</article>\n" + (GISCUS if comments else "")
 
 
 def listing(title: str, intro: str, pages: list[Page], *, dated: bool) -> str:
