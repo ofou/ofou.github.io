@@ -3,6 +3,7 @@ title: Lab
 subtitle: Interactive explainables, on brand
 author: ofou
 date: 2026-08-21
+featured: wave
 stack: Canvas 2D · WebGL · vanilla JS
 categories:
   - Interactive
@@ -73,6 +74,10 @@ A growing library of bare-canvas explainer components — every one built on the
 <div data-fig="sorting-bars"></div>
 
 <div data-fig="iso-cube"></div>
+
+<div data-fig="divergence-volume"></div>
+
+Volume of a closed triangle mesh via the [divergence theorem](https://alyssarosenzweig.ca/blog/hilariously-fast-volume-computation-with-the-divergence-theorem.html) — one pass, ~11 FLOPs per face, no voxelization.
 
 ## Image processing
 
