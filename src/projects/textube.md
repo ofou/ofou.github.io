@@ -3,6 +3,7 @@ title: TexTube
 subtitle: YouTube subtitles in ChatGPT fast
 date: 2024-09
 author: ofou
+featured: /static/images/chatgpt-plugin.png
 stack: FastAPI · Firestore · tiktoken · Docker
 ---
 

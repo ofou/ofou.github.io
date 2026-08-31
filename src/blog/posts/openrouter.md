@@ -6,7 +6,7 @@ categories:
   - LLMs
   - Evals
   - PDF
-draft: true
+draft: false
 ---
 
 # So, you want to attach a PDF on OpenRouter?
@@ -227,12 +227,12 @@ But let's get back to PDFs.
 
 Before getting to the part in which we pass a PDF as a bunch of images, let's check the limits of the engines `cloudflare-ai` and `mistral-ocr` to see how much it costs to process a PDF. Regardless of the method we use, we have to aware of the limits of the engines, both in file numbers and file size.
 
-The max payload size is 50 MB for the HTTP body, but the actual limit is lower due to the transport limit, and since this is in base64, the actual limit is even lower. The other path we're not measure here 
+The max payload size is 50 MB for the HTTP body, but the actual limit is lower due to the transport limit, and since this is in base64, the actual limit is even lower. The other path we're not measure here
 
 | Path | Measured limit | Failure |
 | --- | --- | --- |
 | `cloudflare-ai` | **5 MB** | `400: The file exceeds the maximum size supported by the file parser` |
-| `mistral-ocr`  | **32 MB ✓** (137 s)[^mistral-cap] | runs into the transport limit below |
+| `mistral-ocr` | **32 MB ✓** (137 s)[^mistral-cap] | runs into the transport limit below |
 | `native` @ venice | **32 MB ✓** (317 s), 40 MB ✗ | `413` from the gateway |
 
 [^mistral-cap]: No parser-level cap found: succeeded at 32 MB / 137 s and hit the transport limit instead.

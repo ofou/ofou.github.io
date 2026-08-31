@@ -13,8 +13,8 @@
    rules stop at hang-l/2; notes sit past that hang (mirroring the TOC),
    so they share no x-band with a pre or an h2. No class is added and no
    layout changes until this script runs; without it the float baseline
-   stands. Below 1152px the fold-up checkbox behaviour owns the notes
-   and this stays out of the way. */
+   stands. Below 1152px the endnote list owns the notes and this stays
+   out of the way. */
 (() => {
   const MQ = matchMedia("(min-width: 1152px)");
   const GAP = 9.6; // px — the 0.4rem rhythm the floated notes kept
@@ -53,14 +53,19 @@
       return { fixed: true, top: r.top - aTop, bottom: r.bottom - aTop };
     });
     notes = [...article.querySelectorAll("span.sidenote")].map((el) => {
-      // Emission order is label, input, span: the label carries the
+      // Emission order is marker link, then span: the link carries the
       // marker number the note's ::before repeats.
-      const input = el.previousElementSibling;
-      const marker = (input && input.previousElementSibling) || input || el;
+      const marker = el.previousElementSibling || el;
       const m = marker.getBoundingClientRect();
+      const parent = el.offsetParent || article;
+      const pTop = parent.getBoundingClientRect().top;
       return {
         el,
+        // Pack in article space; convert by origin when writing style.top
+        // so a positioned ancestor (e.g. a prose <p>) cannot steal the
+        // containing block and send the note thousands of px down.
         desired: m.top - aTop,
+        origin: pTop - aTop,
         top: -1,
         bottom: 0,
         height: el.offsetHeight,
@@ -103,7 +108,8 @@
       }
       if (!changed) break;
     }
-    for (const n of notes) n.el.style.top = Math.round(n.top) + "px";
+    for (const n of notes)
+      n.el.style.top = Math.round(n.top - n.origin) + "px";
   };
   const layout = () => {
     if (!MQ.matches) return;
@@ -125,6 +131,10 @@
     const on = () => {
       document.documentElement.classList.toggle("snotes-abs", MQ.matches);
       if (MQ.matches) schedule();
+      else
+        article
+          .querySelectorAll("span.sidenote")
+          .forEach((el) => el.style.removeProperty("top"));
     };
     on();
     MQ.addEventListener("change", on);
