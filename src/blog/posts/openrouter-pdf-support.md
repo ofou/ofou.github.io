@@ -10,6 +10,8 @@ description: >
 draft: true
 ---
 
+<!-- Live published version: src/blog/posts/openrouter.md -->
+
 # The PDF input problem in OpenRouter
 
 Most people meet a PDF on an LLM API as a convenience: attach the file, ask a question, receive an answer. Before any of that machinery starts, there is a quieter question: what does it mean for a document to _arrive_ at a model at all?
@@ -28,7 +30,7 @@ That is the shape of the case. This piece walks the pipeline end to end the way 
 
 <!-- more -->
 
-Here is a complete call: one model, one PDF, one explicit engine.[^api] The exhibit is a one-page _[scanned](/static/images/udhr-1948.webp)_ poster with no text layer, and a four-page _[born-digital](/static/images/cv.webp)_ résumé is the contrast document for the tables further down.
+Here is a complete call: one model, one PDF, one explicit engine.[^api] The exhibit is a one-page _[scanned](/static/images/udhr-1948.webp)_ poster with no text layer, and a four-page born-digital résumé is the contrast document for the tables further down.
 
 [^api]: OpenRouter Responses API via the [OpenAI Python SDK](https://developers.openai.com/api/docs/guides/file-inputs) with `base_url="https://openrouter.ai/api/v1"`. OpenRouter-only fields (`plugins`, `provider`) go in `extra_body`, the metadata header in `extra_headers`. Chat Completions is the same router under different field names.
 

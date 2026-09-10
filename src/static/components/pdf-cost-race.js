@@ -4,16 +4,7 @@
    slowest lane is also 6x the cost. Data: 13-page contract, 2026-08-24. */
 (function () {
   Fig.register("pdf-cost-race", function (el) {
-    // legend strip (HTML so it stays readable at narrow widths)
-    const legend = document.createElement("p");
-    legend.className = "meta";
-    legend.style.cssText =
-      "margin:0 0 .4rem;font:10px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace";
-    legend.textContent =
-      "track = latency \u00B7 bar = $ vs OCR max \u00B7 \u2713/\u2717 = field fidelity";
-    el.appendChild(legend);
-
-    const cv = Fig.canvas(el, 300);
+    const cv = Fig.canvas(el, 318);
     Fig.frame(cv);
     const ctx = cv.ctx;
 
@@ -40,8 +31,8 @@
     const T_MAX = 45.1,
       COST_MAX = 0.0342;
     const T_SCALE = 6.5; // real seconds compressed: race lasts ~7s
-    const HOLD = 10; // race-seconds between cycles
-    const HOLD_LAST = 90; // long hold so the 6× bar stays on screen
+    const HOLD = 8; // race-seconds between cycles (~1.2s real)
+    const HOLD_LAST = 22; // ~3s real — long enough to read the 6× bar
     const MAX_CYCLES = 2;
     let cycles = 0,
       done = false;
@@ -75,30 +66,40 @@
       cv.redraw && cv.redraw();
     }
 
+    const head = document.createElement("div");
+    head.style.cssText =
+      "display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;margin:0 0 .4rem";
+    const legend = document.createElement("p");
+    legend.className = "meta";
+    legend.style.cssText =
+      "margin:0;font:10px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace";
+    legend.textContent =
+      "track = latency \u00B7 bar = $ vs OCR max \u00B7 \u2713/\u2717 = field fidelity";
     const chip = Fig.chip("replay", resetRace);
-    el.appendChild(chip);
+    chip.style.whiteSpace = "nowrap";
+    head.append(legend, chip);
+    el.insertBefore(head, cv.el);
 
-    // start at ≥50% visible; pause the clock while off-screen
+    // start as soon as any of the figure is on screen; pause while off-screen
+    armRace();
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(
         (es) => {
           const e = es[0];
           if (!e) return;
-          if (e.intersectionRatio >= 0.5) {
+          if (e.isIntersecting) {
             if (!started) armRace();
             else if (paused) {
               pauseAccum += performance.now() - pauseAt;
               paused = false;
             }
-          } else if (started && !paused && !e.isIntersecting) {
+          } else if (started && !paused) {
             paused = true;
             pauseAt = performance.now();
           }
         },
-        { threshold: [0, 0.05, 0.5, 1] },
+        { threshold: [0, 0.05, 0.2, 1] },
       ).observe(el);
-    } else {
-      armRace();
     }
 
     const draw = () => {
@@ -133,18 +134,22 @@
       ctx.textBaseline = "middle";
       ctx.textAlign = "left";
       ctx.fillStyle = P.mute;
+      const holdLeft = Math.max(0, T_MAX + holdDur - raceT);
+      const holding = started && raceT >= T_MAX && !done;
+      const holdReal = holdLeft * (T_SCALE / T_MAX);
       const status = !started
-        ? "scroll into view to start"
+        ? ""
         : done
-          ? " \u00B7 replay \u21BB"
+          ? " \u00B7 finished"
           : paused
             ? " \u00B7 paused"
-            : "";
-      ctx.fillText(
-        "t = " + tNow.toFixed(1) + " s (real latency, compressed)" + status,
-        x0,
-        13,
-      );
+            : holding
+              ? " \u00B7 hold " + Math.ceil(holdReal) + "s"
+              : "";
+      let title = "t = " + tNow.toFixed(1) + " s" + status;
+      while (ctx.measureText(title).width > trackW && title.length > 8)
+        title = title.slice(0, -1);
+      ctx.fillText(title, x0, 13);
 
       // time cursor: one subtle vertical line synced across all lanes
       const cx = x0 + trackW * (tNow / T_MAX);
@@ -155,6 +160,12 @@
       ctx.lineTo(cx, h - 8);
       ctx.stroke();
 
+      const now = performance.now();
+      const pulse =
+        (holding || done) && !Fig.reduced()
+          ? 0.72 + 0.28 * Math.sin(now / 280)
+          : 1;
+
       LANES.forEach((L, i) => {
         const [label, lat, cost, fid, good] = L;
         const yTop = topY + i * laneH;
@@ -163,16 +174,20 @@
         const yRes = yCost + 15;
         const prog = started ? Math.min(raceT / lat, 1) : 0;
         const px = x0 + trackW * prog;
+        const costW = trackW * (cost / COST_MAX);
 
-        // label above the lane (fits 360px: nothing to its right)
         ctx.fillStyle = P.ink;
-        ctx.fillText(label, x0, yTop + 8);
+        let lab = label;
+        const latLab = lat.toFixed(1) + " s";
+        const latW = ctx.measureText(latLab).width + 8;
+        while (ctx.measureText(lab).width > trackW - latW && lab.length > 4)
+          lab = lab.slice(0, -1);
+        ctx.fillText(lab, x0, yTop + 8);
         ctx.fillStyle = P.mute;
         ctx.textAlign = "right";
-        ctx.fillText(lat.toFixed(1) + " s", x1, yTop + 8);
+        ctx.fillText(latLab, x1, yTop + 8);
         ctx.textAlign = "left";
 
-        // track + progress + runner
         ctx.strokeStyle = P.rule;
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -190,37 +205,41 @@
         ctx.arc(px, yTrack, 4, 0, Math.PI * 2);
         ctx.fill();
 
+        // cost scale is always visible so idle/hold never look like empty tracks
+        ctx.fillStyle = P.wash;
+        ctx.fillRect(x0, yCost - 3, costW, 6);
         if (prog >= 1) {
-          // cost bar grows under the track once the lane finishes
-          const grow = Math.min((raceT - lat) / 3, 1); // ~0.4s real growth
-          const cw = trackW * (cost / COST_MAX) * grow;
-          ctx.fillStyle = P.wash;
-          ctx.fillRect(x0, yCost - 3, trackW * (cost / COST_MAX), 6);
+          const grow = Math.min((raceT - lat) / 3, 1);
+          const cw = costW * grow;
+          ctx.save();
+          ctx.globalAlpha = !good && grow >= 1 ? pulse : 1;
           ctx.fillStyle = good ? P.accent : P.mute;
           ctx.fillRect(x0, yCost - 3, cw, 6);
+          ctx.restore();
           if (grow >= 1) {
+            const money = "$" + cost.toFixed(4);
             ctx.fillStyle = P.mute;
-            ctx.fillText(
-              "$" + cost.toFixed(4),
-              x0 + trackW * (cost / COST_MAX) + 6,
-              yCost,
-            );
+            const mx = x0 + costW + 6;
+            if (ctx.measureText(money).width + mx < x1)
+              ctx.fillText(money, mx, yCost);
+            else {
+              ctx.textAlign = "right";
+              ctx.fillStyle = P.paper;
+              ctx.fillText(money, x0 + cw - 4, yCost);
+              ctx.textAlign = "left";
+            }
           }
-          // verdict wraps UNDER the lane (never overflows right)
           ctx.fillStyle = good ? P.ink : P.mute;
-          ctx.fillText((good ? "\u2713 " : "\u2717 ") + fid, x0, yRes);
-        } else {
-          ctx.strokeStyle = P.rule;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(x0, yCost);
-          ctx.lineTo(x0 + 4, yCost);
-          ctx.stroke();
+          let verd = (good ? "\u2713 " : "\u2717 ") + fid;
+          while (ctx.measureText(verd).width > trackW && verd.length > 4)
+            verd = verd.slice(0, -1);
+          ctx.fillText(verd, x0, yRes);
         }
       });
     };
 
     Fig.animate(cv, draw);
     Fig.onScheme(draw);
+    el.style.minHeight = "0";
   });
 })();

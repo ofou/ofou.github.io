@@ -6,7 +6,7 @@
    billing on 7/8 providers (predicted + 2). */
 (function () {
   Fig.register("pdf-token-grid", function (el) {
-    const cv = Fig.canvas(el, 340);
+    const cv = Fig.canvas(el, 360);
     Fig.frame(cv);
     const ctx = cv.ctx;
 
@@ -25,7 +25,7 @@
     const DMIN = 50,
       DMAX = 600,
       EASE_MS = 380;
-    const DEFAULT_DPI = 300; // dashed ali box on; cliff not yet
+    const DEFAULT_DPI = 200; // past 165 so the alibaba overlay is on and readable
 
     let target = DEFAULT_DPI;
     let anim = { from: DEFAULT_DPI, to: DEFAULT_DPI, t0: 0 };
@@ -70,10 +70,10 @@
 
       // layout: readout beside page, or stacked underneath when narrow
       const narrow = w < 520;
-      const px = 16,
-        py = 28,
-        axisH = 34;
-      const pageH = narrow ? 148 : h - py - axisH - 12;
+      const px = 14,
+        py = 26,
+        axisH = 36;
+      const pageH = narrow ? 132 : h - py - axisH - 12;
       const pageW = pageH * (PAGE_IN[0] / PAGE_IN[1]);
 
       // page mock
@@ -129,25 +129,42 @@
         ctx.stroke();
       }
 
-      // alibaba cap overlay: gently pulsing dashed region of surviving detail
+      // alibaba cap overlay: dim what that host throws away
       if (aliClipped) {
         const fr = Math.sqrt(tokA / tok);
         const pulse = Fig.reduced() ? 0.5 : 0.5 + 0.5 * Math.sin(now / 480);
         const bx = px + (pageW * (1 - fr)) / 2,
           by = py + (pageH * (1 - fr)) / 2;
+        const bw = pageW * fr,
+          bh = pageH * fr;
         ctx.save();
-        ctx.globalAlpha = 0.45 + 0.5 * pulse;
+        ctx.beginPath();
+        ctx.rect(px, py, pageW, pageH);
+        ctx.rect(bx, by, bw, bh);
+        ctx.clip("evenodd");
+        ctx.globalAlpha = 0.58;
+        ctx.fillStyle = P.paper;
+        ctx.fillRect(px, py, pageW, pageH);
+        ctx.restore();
+        ctx.save();
+        ctx.globalAlpha = 0.55 + 0.45 * pulse;
         ctx.strokeStyle = P.accent;
-        ctx.lineWidth = 1.2;
+        ctx.lineWidth = 1.4;
         ctx.setLineDash([4, 3]);
         ctx.lineDashOffset = Fig.reduced() ? 0 : -now / 90;
-        ctx.strokeRect(bx, by, pageW * fr, pageH * fr);
+        ctx.strokeRect(bx, by, bw, bh);
         ctx.setLineDash([]);
         ctx.font = "9px ui-monospace, SFMono-Regular, Menlo, monospace";
         ctx.textAlign = "center";
-        ctx.textBaseline = "top";
         ctx.fillStyle = P.accent;
-        ctx.fillText("what alibaba keeps", bx + (pageW * fr) / 2, by + 3);
+        const aliLab = "alibaba keeps";
+        if (by > py + 12) {
+          ctx.textBaseline = "bottom";
+          ctx.fillText(aliLab, bx + bw / 2, by - 3);
+        } else {
+          ctx.textBaseline = "top";
+          ctx.fillText(aliLab, bx + bw / 2, by + 4);
+        }
         ctx.restore();
       }
 
@@ -162,7 +179,11 @@
       ctx.textBaseline = "top";
       const line = (txt, c) => {
         ctx.fillStyle = c || P.ink;
-        ctx.fillText(txt, rx, y);
+        let s = txt;
+        const maxW = w - rx - 10;
+        while (ctx.measureText(s).width > maxW && s.length > 4)
+          s = s.slice(0, -1);
+        ctx.fillText(s, rx, y);
         y += lhR;
       };
       line("render   " + wPx + "\u00D7" + hPx + " px", P.mute);
@@ -199,13 +220,15 @@
       if (!aliClipped) line("alibaba cap: not hit yet", P.mute);
 
       ctx.fillStyle = P.ink;
-      ctx.fillText(
-        "Letter @ " + dpiR + " dpi \u2192 smart_resize \u2192 tokens",
-        px,
-        8,
-      );
+      ctx.font = "11px ui-monospace, SFMono-Regular, Menlo, monospace";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      let head = "Letter @ " + dpiR + " dpi \u2192 tokens";
+      while (ctx.measureText(head).width > w - 24 && head.length > 8)
+        head = head.slice(0, -1);
+      ctx.fillText(head, px, 8);
 
-      // dpi axis with notable tick marks
+      // dpi axis with notable tick marks — short labels when they would collide
       const ax0 = px,
         ax1 = w - 16,
         ay = h - 20;
@@ -218,8 +241,16 @@
       ctx.stroke();
       ctx.font = "9px ui-monospace, SFMono-Regular, Menlo, monospace";
       ctx.textBaseline = "top";
-      for (let i = 0; i < TICKS.length; i++) {
-        const t = TICKS[i];
+      const tickLabs = narrow
+        ? [
+            { d: 100, lab: "100" },
+            { d: 165, lab: "165" },
+            { d: 300, lab: "300" },
+            { d: 423, lab: "423" },
+          ]
+        : TICKS;
+      for (let i = 0; i < tickLabs.length; i++) {
+        const t = tickLabs[i];
         const x = dx(t.d);
         ctx.strokeStyle = P.mute;
         ctx.beginPath();
@@ -228,10 +259,10 @@
         ctx.stroke();
         ctx.fillStyle = P.mute;
         ctx.textAlign =
-          i === 0 ? "left" : i === TICKS.length - 1 ? "right" : "center";
+          i === 0 ? "left" : i === tickLabs.length - 1 ? "right" : "center";
         ctx.fillText(t.lab, x, ay + 7);
       }
-      ctx.fillStyle = P.accent; // current (eased) dpi marker
+      ctx.fillStyle = P.accent;
       ctx.beginPath();
       ctx.arc(dx(Math.max(DMIN, Math.min(DMAX, dpi))), ay, 3, 0, Math.PI * 2);
       ctx.fill();
@@ -268,5 +299,6 @@
 
     Fig.animate(cv, draw); // managed loop: pauses offscreen, honors reduced motion
     Fig.onScheme(() => cv.redraw && cv.redraw());
+    el.style.minHeight = "0";
   });
 })();

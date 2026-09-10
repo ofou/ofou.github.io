@@ -89,9 +89,10 @@
 
       const s = SIZES[size];
       const maxV = Math.max(s.pred, ...s.billed) * 1.12;
-      const rowH = (h - 40) / PROVIDERS.length;
-      const x0 = narrow ? 56 : 92,
-        x1 = w - (narrow ? 66 : 96);
+      const rowH = (h - 36) / PROVIDERS.length;
+      const numW = narrow ? 58 : 86;
+      const x0 = narrow ? 64 : 96,
+        x1 = w - numW;
       const nMatch = s.billed.filter((b) => b === s.pred).length;
       const diverging = nMatch < PROVIDERS.length;
       const status = diverging
@@ -102,18 +103,18 @@
       ctx.textBaseline = "middle";
       ctx.textAlign = "left";
       ctx.fillStyle = P.ink;
-      ctx.fillText(
+      let head =
         "image " +
-          s.label +
-          (narrow
-            ? "  \u00B7  " + status
-            : "  \u00B7  predicted " +
-              s.pred.toLocaleString() +
-              " tok (smart_resize + 2)  \u00B7  " +
-              status),
-        10,
-        13,
-      );
+        s.label +
+        (narrow
+          ? "  \u00B7  " + status
+          : "  \u00B7  predicted " +
+            s.pred.toLocaleString() +
+            " tok (smart_resize + 2)  \u00B7  " +
+            status);
+      while (ctx.measureText(head).width > w - 20 && head.length > 8)
+        head = head.slice(0, -1);
+      ctx.fillText(head, 10, 13);
 
       const predX =
         x0 + (x1 - x0) * (from.pred + (s.pred / maxV - from.pred) * e);
@@ -130,10 +131,15 @@
         if (logo) {
           ctx.save();
           ctx.globalAlpha = 0.92;
-          ctx.drawImage(logo, 10, y - 6, 12, 12);
+          ctx.drawImage(logo, 8, y - 6, 12, 12);
           ctx.restore();
         }
-        ctx.fillText(narrow ? prov.slice(0, 4) : prov, 10 + (logo ? 16 : 0), y);
+        const nameX = 8 + (logo ? 16 : 0);
+        let name = prov;
+        while (ctx.measureText(name).width > x0 - nameX - 6 && name.length > 3)
+          name = name.slice(0, -1);
+        if (name !== prov) name = name.slice(0, -1) + "\u2026";
+        ctx.fillText(name, nameX, y);
 
         // billed bar: morph from previous length (never restarts at zero)
         const frac = from.frac[i] + (billed / maxV - from.frac[i]) * e;
@@ -166,23 +172,18 @@
         const shown = Math.round(from.val[i] + (billed - from.val[i]) * e);
         last.val[i] = shown;
         ctx.fillStyle = match ? P.ink : P.mute;
-        ctx.fillText(
-          shown.toLocaleString() + (match ? " \u2713" : " \u2717 capped"),
-          x1 + 8,
-          y,
-        );
+        ctx.textAlign = "right";
+        const num = shown.toLocaleString() + (match ? " \u2713" : " \u2717");
+        ctx.fillText(num, w - 8, y);
+        ctx.textAlign = "left";
 
-        // alibaba call-out on the two large sizes
         if (!match) {
           ctx.font = "9px ui-monospace, SFMono-Regular, Menlo, monospace";
           ctx.fillStyle = P.mute;
-          ctx.fillText(
-            narrow
-              ? "\u2190 downscaled ~165 dpi"
-              : "\u2190 silently downscaled to ~165 dpi",
-            x0 + bw + 8,
-            y,
-          );
+          const call = narrow ? "\u2190 ~165 dpi" : "\u2190 silently downscaled to ~165 dpi";
+          const cx = x0 + bw + 8;
+          if (ctx.measureText(call).width + cx < x1 - 4)
+            ctx.fillText(call, cx, y);
           ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
         }
       });
@@ -204,6 +205,7 @@
         syncChips();
         cv.redraw && cv.redraw();
       });
+      c.style.whiteSpace = "nowrap";
       bar.appendChild(c);
       return c;
     });
@@ -226,5 +228,6 @@
 
     Fig.animate(cv, draw);
     Fig.onScheme(draw);
+    el.style.minHeight = "0";
   });
 })();

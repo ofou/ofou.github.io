@@ -3,7 +3,7 @@
    Chips pin a path; unset forks yes→native and no→mistral in those colours. */
 (function () {
   Fig.register("pdf-engine", function (el) {
-    const cv = Fig.canvas(el, 360);
+    const cv = Fig.canvas(el, 380);
     Fig.frame(cv);
     const ctx = cv.ctx;
 
@@ -52,14 +52,15 @@
     function geom() {
       const w = cv.w,
         h = cv.h;
-      const pad = 12;
-      const bw = Math.min(158, Math.max(118, (w - pad * 2 - 28) / 3.05));
-      const bh = 58;
-      const gap = Math.max(14, (w - pad * 2 - bw * 3) / 2);
+      const pad = 10;
+      const tight = w < 520;
+      const bw = Math.min(158, Math.max(tight ? 90 : 112, (w - pad * 2 - 24) / 3.15));
+      const bh = tight ? 62 : 58;
+      const gap = Math.max(10, (w - pad * 2 - bw * 3) / 2);
       const left = pad + Math.max(0, (w - pad * 2 - bw * 3 - gap * 2) / 2);
-      const leafY = h - bh - 16;
-      const midY = 124;
-      const uw = 108;
+      const leafY = h - bh - 14;
+      const midY = tight ? 118 : 128;
+      const uw = tight ? 96 : 108;
       const cCx = left + bw + gap + bw / 2;
       const mCx = left + 2 * (bw + gap) + bw / 2;
 
@@ -68,14 +69,14 @@
         h,
         bw,
         bh,
-        root: { x: w / 2 - 70, y: 16, w: 140, h: 30 },
+        tight,
+        root: { x: w / 2 - (tight ? 58 : 70), y: 12, w: tight ? 116 : 140, h: 28 },
         N: { x: left, y: leafY, w: bw, h: bh },
         C: { x: left + bw + gap, y: leafY, w: bw, h: bh },
         M: { x: left + 2 * (bw + gap), y: leafY, w: bw, h: bh },
-        /* between cloudflare and mistral — keeps the cf stem clear */
-        U: { x: (cCx + mCx) / 2 - uw / 2, y: midY, w: uw, h: 46 },
-        railY: 58,
-        forkY: midY + 46 + 18,
+        U: { x: (cCx + mCx) / 2 - uw / 2, y: midY, w: uw, h: 44 },
+        railY: 52,
+        forkY: midY + 44 + 16,
       };
     }
 
@@ -119,7 +120,7 @@
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       const n = lines.length;
-      const step = diamond ? 13 : 14;
+      const step = diamond ? 12 : 13;
       const y0 = b.y + b.h / 2 - ((n - 1) * step) / 2;
       lines.forEach((ln, i) => {
         ctx.font = ln.cost ? MONO9 : heavy ? MONO11 : diamond ? MONO9 : MONO;
@@ -228,23 +229,23 @@
         {
           id: "native",
           tip: nTop,
-          label: "native",
+          label: g.tight ? "native" : "native",
           col: H.native,
-          ly: railY + 26,
+          ly: railY + 24,
         },
         {
           id: "cf",
           tip: cTop,
-          label: "cloudflare-ai",
+          label: g.tight ? "cf-ai" : "cloudflare-ai",
           col: H.cf,
-          ly: railY + 26,
+          ly: railY + 24,
         },
         {
           id: "ocr",
           tip: mTop,
-          label: "mistral-ocr",
+          label: g.tight ? "ocr" : "mistral-ocr",
           col: H.ocr,
-          ly: railY + 26,
+          ly: railY + 24,
         },
         {
           id: "unset",
@@ -309,11 +310,17 @@
 
       box(
         g.N,
-        [
-          { t: "Model reads PDF" },
-          { t: "raw bytes \u2192 provider" },
-          { t: "cost: input tokens", cost: true },
-        ],
+        g.tight
+          ? [
+              { t: "Model reads PDF" },
+              { t: "raw bytes" },
+              { t: "cost: tokens", cost: true },
+            ]
+          : [
+              { t: "Model reads PDF" },
+              { t: "raw bytes \u2192 provider" },
+              { t: "cost: input tokens", cost: true },
+            ],
         {
           stroke: H.native,
           fill: nHot ? H.nativeWash : P.wash,
@@ -324,11 +331,17 @@
 
       box(
         g.C,
-        [
-          { t: "Text layer \u2192 markdown" },
-          { t: "blank on scans" },
-          { t: "cost: free", cost: true },
-        ],
+        g.tight
+          ? [
+              { t: "Text \u2192 markdown" },
+              { t: "blank on scans" },
+              { t: "cost: free", cost: true },
+            ]
+          : [
+              { t: "Text layer \u2192 markdown" },
+              { t: "blank on scans" },
+              { t: "cost: free", cost: true },
+            ],
         {
           stroke: H.cf,
           fill: cHot ? H.cfWash : P.wash,
@@ -339,11 +352,17 @@
 
       box(
         g.M,
-        [
-          { t: "OCR (scans / images)" },
-          { t: "before routing" },
-          { t: "cost: US$2 / 1k pages", cost: true },
-        ],
+        g.tight
+          ? [
+              { t: "OCR (scans)" },
+              { t: "before routing" },
+              { t: "cost: $2 / 1k pg", cost: true },
+            ]
+          : [
+              { t: "OCR (scans / images)" },
+              { t: "before routing" },
+              { t: "cost: US$2 / 1k pages", cost: true },
+            ],
         {
           stroke: H.ocr,
           fill: mHot ? H.ocrWash : P.wash,
@@ -384,6 +403,7 @@
         syncChips();
         draw();
       });
+      b.style.whiteSpace = "nowrap";
       chips.push(b);
       bar.appendChild(b);
     });
@@ -392,6 +412,7 @@
       syncChips();
       draw();
     });
+    allBtn.style.whiteSpace = "nowrap";
     chips.push(allBtn);
     bar.appendChild(allBtn);
     el.appendChild(bar);
@@ -410,5 +431,6 @@
       syncChips();
       draw();
     });
+    el.style.minHeight = "0";
   });
 })();

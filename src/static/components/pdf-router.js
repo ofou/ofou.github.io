@@ -3,7 +3,7 @@
    Parsers and images fan out to all 8 providers; native hits one host. */
 (function () {
   Fig.register("pdf-router", function (el) {
-    const cv = Fig.canvas(el, 330);
+    const cv = Fig.canvas(el, 360);
     Fig.frame(cv);
     const ctx = cv.ctx;
 
@@ -60,25 +60,32 @@
     function geom() {
       const w = cv.w,
         h = cv.h;
-      const colW = Math.min(112, Math.max(80, w * 0.22));
+      const tight = w < 520;
+      const colW = Math.min(100, Math.max(tight ? 70 : 80, w * 0.2));
       const provX = w - colW,
-        dotX = provX - 8,
-        x0 = 12;
-      const span = dotX - x0 - 44 - 12;
-      const bw = Math.max(58, Math.min(94, span * 0.34));
-      const gap = Math.max(16, span * 0.12);
-      const ex = x0 + 44 + gap;
+        dotX = provX - 10,
+        x0 = 10;
+      const span = dotX - x0 - 40 - 10;
+      const bw = Math.max(52, Math.min(90, span * 0.34));
+      const gap = Math.max(12, span * 0.1);
+      const ex = x0 + 40 + gap;
       return {
         w,
         h,
+        tight,
         provX,
         dotX,
         colW,
-        pdf: { x: x0, y: h * 0.44, w: 44, h: 32 },
-        engine: { x: ex, y: h * 0.18, w: bw, h: 32 },
-        parser: { x: ex + bw + gap, y: h * 0.18, w: bw, h: 32 },
-        render: { x: ex + 6, y: h * 0.74, w: Math.min(112, bw + 30), h: 32 },
-        provY: (i) => 22 + i * ((h - 44) / (PROVIDERS.length - 1)),
+        pdf: { x: x0, y: h * 0.44, w: 40, h: 30 },
+        engine: { x: ex, y: h * 0.2, w: bw, h: 30 },
+        parser: { x: ex + bw + gap, y: h * 0.2, w: bw, h: 32 },
+        render: {
+          x: ex + 4,
+          y: h * 0.72,
+          w: Math.min(tight ? 88 : 112, bw + 28),
+          h: 30,
+        },
+        provY: (i) => 22 + i * ((h - 48) / (PROVIDERS.length - 1)),
       };
     }
     const rightOf = (b) => [b.x + b.w, b.y + b.h / 2];
@@ -317,10 +324,10 @@
       box(g.engine, "engine?", onEng && phase >= 0);
       box(
         g.parser,
-        p.paid ? "OCR  $" : "parse\u2192md",
+        p.paid ? (g.tight ? "OCR $" : "OCR  $") : "parse\u2192md",
         !!p.parse && phase >= 1,
       );
-      box(g.render, "pdftoppm \u2192 png", images);
+      box(g.render, g.tight ? "pdftoppm" : "pdftoppm \u2192 png", images);
 
       // provider column
       ctx.font = MONO9;
@@ -347,7 +354,12 @@
           ctx.fillText("\u25C6", g.provX - 12, y);
         }
         ctx.fillStyle = c;
-        ctx.fillText(fitText(PROVIDERS[i] + mark, g.colW - 6), g.provX + 2, y);
+        const markLab = g.tight && mark.includes("400") ? " \u2717" : mark;
+        ctx.fillText(
+          fitText(PROVIDERS[i] + markLab, g.colW - 8),
+          g.provX + 2,
+          y,
+        );
         ctx.fillStyle =
           done && mark.includes("\u2717")
             ? c
@@ -427,6 +439,7 @@
         syncChips();
         cv.redraw && cv.redraw();
       });
+      b.style.whiteSpace = "nowrap";
       chips.push(b);
       bar.appendChild(b);
     });
@@ -435,6 +448,7 @@
       syncChips();
       cv.redraw && cv.redraw();
     });
+    autoBtn.style.whiteSpace = "nowrap";
     chips.push(autoBtn);
     bar.appendChild(autoBtn);
     el.appendChild(bar);
@@ -447,5 +461,6 @@
 
     Fig.animate(cv, draw);
     Fig.onScheme(draw);
+    el.style.minHeight = "0";
   });
 })();

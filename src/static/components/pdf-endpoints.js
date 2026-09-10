@@ -112,15 +112,16 @@
       ctx.clearRect(0, 0, w, h);
 
       const m = MODES[mode];
-      const narrow = w < 520;
+      const narrow = w < 560;
       const showUp = mode !== 3; // uptime metric already owns the bar
       const rowH = (h - 34) / ROWS.length;
-      const xLabel = 10;
-      const xQuant = narrow ? 72 : 92;
-      const xCtx = 132; // hidden when narrow
-      const xBar = narrow ? 112 : 178;
-      const rightPad = showUp ? (narrow ? 52 : 58) : narrow ? 36 : 40;
-      const barW = w - xBar - rightPad;
+      const xLabel = 8;
+      const nameW = narrow ? Math.min(78, w * 0.22) : 88;
+      const xQuant = xLabel + nameW + 6;
+      const xCtx = xQuant + (narrow ? 0 : 36);
+      const xBar = narrow ? xQuant + 34 : xCtx + 40;
+      const rightPad = showUp ? (narrow ? 48 : 56) : narrow ? 28 : 36;
+      const barW = Math.max(48, w - xBar - rightPad);
 
       ctx.font = "9px ui-monospace, SFMono-Regular, Menlo, monospace";
       ctx.textBaseline = "middle";
@@ -131,9 +132,7 @@
       if (!narrow) ctx.fillText("ctx", xCtx, 12);
       ctx.fillText(m.label + " \u2193", xBar, 12);
       ctx.textAlign = "right";
-      if (showUp) ctx.fillText("up 30m", w - 28, 12);
-      ctx.fillStyle = P.ink;
-      ctx.fillText("\u25C6", w - 10, 12);
+      if (showUp) ctx.fillText("up 30m", w - 14, 12);
 
       // draw back-to-front by animated slot so gliding rows overlap sanely
       const order = ROWS.map((_, i) => i).sort(
@@ -162,16 +161,14 @@
           ctx.restore();
         }
         const nameX = xLabel + (logo ? 16 : 0);
-        const name =
-          narrow && r[0].length > 7 ? r[0].slice(0, 6) + "\u2026" : r[0];
+        let name = r[0];
+        while (
+          ctx.measureText(name).width > xQuant - nameX - 6 &&
+          name.length > 3
+        )
+          name = name.slice(0, -1);
+        if (name !== r[0]) name = name.slice(0, -1) + "\u2026";
         ctx.fillText(name, nameX, y);
-        if (narrow) {
-          // ctx column is hidden: tuck a tiny context under the name
-          ctx.font = "8px ui-monospace, SFMono-Regular, Menlo, monospace";
-          ctx.fillStyle = r[2] === 1e6 ? P.accent : P.mute;
-          ctx.fillText(fmtCtx(r[2]), nameX, y + 9);
-          ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
-        }
         ctx.fillStyle = r[1] === "bf16" ? P.accent : P.mute;
         ctx.fillText(r[1], xQuant, y);
         if (!narrow) {
@@ -215,11 +212,11 @@
         ctx.textAlign = "right";
         if (showUp) {
           ctx.fillStyle = r[8] >= 99.5 ? P.ink : P.mute;
-          ctx.fillText(r[8].toFixed(1) + "%", w - 28, y);
+          ctx.fillText(r[8].toFixed(1) + "%", w - (r[9] ? 22 : 8), y);
         }
         if (r[9]) {
           ctx.fillStyle = P.ink;
-          ctx.fillText("\u25C6", w - 10, y);
+          ctx.fillText("\u25C6", w - 8, y);
         }
       });
     };
@@ -241,6 +238,7 @@
       "display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem";
     MODES.forEach((mm, i) => {
       const b = Fig.chip(mm.label, () => setMode(i));
+      b.style.whiteSpace = "nowrap";
       chips.push(b);
       bar.appendChild(b);
     });
@@ -254,5 +252,6 @@
 
     Fig.animate(cv, draw);
     Fig.onScheme(draw);
+    el.style.minHeight = "0";
   });
 })();

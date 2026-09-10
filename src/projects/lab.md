@@ -39,6 +39,14 @@ A growing library of bare-canvas explainer components — every one built on the
 
 <div data-fig="entropy"></div>
 
+## PDF ingestion
+
+<div data-fig="pdf-endpoints"></div>
+
+<div data-fig="pdf-cost-race"></div>
+
+<div data-fig="pdf-model-lab"></div>
+
 ## Reinforcement learning
 
 <div data-fig="rl-loop"></div>

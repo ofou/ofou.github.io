@@ -331,14 +331,37 @@
       H3: { r: 12, cls: "err", name: "400 count/ctx" },
       H4: { r: 13, cls: "err", name: "raise aspect" },
     };
-    const COLORS = {
-      good: "#16a34a",
-      pricey: "#ca8a04",
-      silent: "#ea580c",
-      undef: "#9333ea",
-      err: "#dc2626",
-    };
-    const UNPUB = "#d97706"; // dashed amber = gate on an unpublished fact
+    function cssFill(expr) {
+      const c = document.createElement("canvas").getContext("2d");
+      c.fillStyle = expr;
+      return c.fillStyle;
+    }
+    function leafPalette() {
+      const g = (n) =>
+        getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+      return {
+        good: cssFill(g("--ok") || "#16a34a"),
+        pricey: cssFill(g("--warn") || "#ca8a04"),
+        silent: cssFill("color-mix(in srgb, var(--warn) 40%, var(--fail) 60%)"),
+        undef: cssFill(g("--accent") || "#2d4fa1"),
+        err: cssFill(g("--fail") || "#dc2626"),
+        unpub: cssFill(g("--warn") || "#ca8a04"),
+      };
+    }
+    function withA(css, a) {
+      const c = document.createElement("canvas").getContext("2d");
+      c.fillStyle = css;
+      const s = c.fillStyle;
+      if (s[0] === "#") {
+        const n = s.length === 4;
+        const r = n ? parseInt(s[1] + s[1], 16) : parseInt(s.slice(1, 3), 16);
+        const g = n ? parseInt(s[2] + s[2], 16) : parseInt(s.slice(3, 5), 16);
+        const b = n ? parseInt(s[3] + s[3], 16) : parseInt(s.slice(5, 7), 16);
+        return `rgba(${r},${g},${b},${a})`;
+      }
+      const m = (s.match(/[\d.]+/g) || [0, 0, 0]).map(Number);
+      return `rgba(${m[0]},${m[1]},${m[2]},${a})`;
+    }
 
     /* ---------- state ---------- */
     const S = {
@@ -811,6 +834,7 @@
           refresh();
         });
         b.dataset.val = o.value;
+        b.style.whiteSpace = "nowrap";
         wrap.appendChild(b);
         return b;
       });
@@ -960,6 +984,7 @@
         refresh();
       });
       b.dataset.preset = p.id;
+      b.style.whiteSpace = "nowrap";
       presetBar.appendChild(b);
       return b;
     });
@@ -1070,20 +1095,23 @@
     const mbR = slider(bar2, "mb", "size MB", 0.2, 40, 0.2);
     const flR = slider(bar2, "files", "attachments", 1, 48, 1);
 
-    /* ---------- canvases ---------- */
-    const GY = 26,
-      GH = 300,
-      LEAFW = 118,
-      SW_Y = 366,
-      RH = 19,
-      X0 = 8;
-    const cvM = Fig.canvas(el, 800);
-    const cvP = Fig.canvas(el, 560);
-    Fig.frame(cvM);
-    Fig.frame(cvP);
-    cvP.el.style.display = "none";
-    const ctx = cvM.ctx,
-      ctxP = cvP.ctx;
+    /* ---------- canvas (one surface: graph + strip) ---------- */
+    const cv = Fig.canvas(el, 590);
+    Fig.frame(cv);
+    const ctx = cv.ctx;
+
+    function layout() {
+      const W = cv.w || 600;
+      const tight = W < 520;
+      const mid = W < 700;
+      const nRows = S.strip === "models" ? MODELS.length : PROVS.length;
+      const leafW = tight ? Math.min(104, Math.max(84, W * 0.3)) : 114;
+      const gy = tight ? 38 : 22;
+      const gH = tight ? 186 : 208;
+      const swY = gy + gH + 24;
+      const rh = tight ? 15 : 16.5;
+      return { W, tight, mid, leafW, gy, gH, swY, rh, nRows, x0: 6 };
+    }
 
     // decision-node geometry: x fractions of the decision span, y of GH
     const N = {
@@ -1155,16 +1183,18 @@
     const MONO = "9px ui-monospace, SFMono-Regular, Menlo, monospace";
     const MONO10 = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
 
-    function nodeRect(ctx_, id, W) {
-      const dw = W - LEAFW - 30;
+    function nodeRect(ctx_, id, L) {
+      const { W, leafW, gy, gH, x0 } = L;
+      const dw = W - leafW - 24;
       if (LEAF[id]) {
-        const y = GY + ((LEAF[id].r - 0.5) / 13) * GH;
-        return { x: W - LEAFW - 6, y: y - 11, w: LEAFW, h: 22 };
+        const y = gy + ((LEAF[id].r - 0.5) / 13) * gH;
+        return { x: W - leafW - 4, y: y - 10, w: leafW, h: 20 };
       }
       const [fx, fy] = N[id];
       ctx_.font = MONO;
-      const w = ctx_.measureText(NLABEL[id]).width + 14;
-      return { x: X0 + fx * dw - w / 2, y: GY + fy * GH - 11, w, h: 22 };
+      const lab = nodeLab(id, L.tight);
+      const w = ctx_.measureText(lab).width + 12;
+      return { x: x0 + fx * dw - w / 2, y: gy + fy * gH - 10, w, h: 20 };
     }
     function borderPt(r, tx, ty) {
       const cx = r.x + r.w / 2,
@@ -1187,8 +1217,24 @@
       ctx_.closePath();
     }
 
-    function drawGraph(ctx_, W) {
+    function nodeLab(id, tight) {
+      if (!tight) return NLABEL[id];
+      return (
+        {
+          ROUTE: "route?",
+          SUPP: "files?",
+          NFC: "\u2264 5?",
+          NSZ: "\u2264 32MB?",
+          FCT: "\u2264 25?",
+          DEF: "default",
+        }[id] || NLABEL[id]
+      );
+    }
+
+    function drawGraph(ctx_, L) {
       const pal = Fig.palette();
+      const COLORS = leafPalette();
+      const W = L.W;
       const m = S.strip === "models" ? byId[S.model] : provById[S.prov];
       const res = resolve2(m, S);
       const onPath = new Set(res.path);
@@ -1196,48 +1242,62 @@
       for (let i = 0; i < res.path.length - 1; i++)
         activeEdge.add(res.path[i] + ">" + res.path[i + 1]);
 
-      const dw = W - LEAFW - 30;
-      ctx_.clearRect(0, 0, W, 366);
+      const dw = W - L.leafW - 24;
+      ctx_.clearRect(0, 0, W, L.swY - 8);
       ctx_.textBaseline = "middle";
       ctx_.font = "10px ui-monospace, monospace";
       ctx_.fillStyle = pal.mute;
       ctx_.textAlign = "left";
-      ctx_.fillText(`DECISION GRAPH — path for ${m.name.toUpperCase()}`, 6, 13);
+      let title = L.tight
+        ? m.name.toUpperCase()
+        : "DECISION GRAPH \u2014 " + m.name.toUpperCase();
+      while (ctx_.measureText(title).width > (L.tight ? W - 12 : dw * 0.42) && title.length > 4)
+        title = title.slice(0, -1);
+      ctx_.fillText(title, 6, 12);
 
-      // legend, right-aligned on the title line
       ctx_.font = "8.5px ui-monospace, monospace";
-      const leg = [
-        ["good", "correct"],
-        ["pricey", "overpriced"],
-        ["silent", "silent"],
-        ["undef", "undefined"],
-        ["err", "loud error"],
-      ];
-      let lx = dw - 6;
+      const leg = L.tight
+        ? [
+            ["good", "ok"],
+            ["pricey", "$"],
+            ["silent", "silent"],
+            ["undef", "?"],
+            ["err", "err"],
+          ]
+        : [
+            ["good", "correct"],
+            ["pricey", "overpriced"],
+            ["silent", "silent"],
+            ["undef", "undefined"],
+            ["err", "loud error"],
+          ];
+      const legY = L.tight ? 26 : 12;
+      let lx = W - L.leafW - 8;
       for (let i = leg.length - 1; i >= 0; i--) {
         const [k, lab] = leg[i];
         ctx_.fillStyle = pal.mute;
         ctx_.textAlign = "right";
-        ctx_.fillText(lab, lx, 13);
-        lx -= ctx_.measureText(lab).width + 6;
-        ctx_.fillStyle = COLORS[k] + "30";
-        ctx_.fillRect(lx - 10, 8, 10, 10);
+        ctx_.fillText(lab, lx, legY);
+        lx -= ctx_.measureText(lab).width + 5;
+        ctx_.fillStyle = withA(COLORS[k], 0.22);
+        ctx_.fillRect(lx - 9, legY - 5, 9, 9);
         ctx_.strokeStyle = COLORS[k];
-        ctx_.strokeRect(lx - 9.5, 8.5, 9, 9);
-        lx -= 18;
+        ctx_.strokeRect(lx - 8.5, legY - 4.5, 8, 8);
+        lx -= 16;
       }
       ctx_.setLineDash([3, 2]);
-      ctx_.strokeStyle = UNPUB;
-      ctx_.strokeRect(lx - 9.5, 8.5, 9, 9);
+      ctx_.strokeStyle = COLORS.unpub;
+      ctx_.strokeRect(lx - 8.5, legY - 4.5, 8, 8);
       ctx_.setLineDash([]);
       ctx_.textAlign = "right";
-      ctx_.fillStyle = UNPUB;
-      ctx_.fillText("unpublished", lx - 14, 13);
+      ctx_.fillStyle = COLORS.unpub;
+      const unLab = L.tight ? "unpub" : "unpublished";
+      ctx_.fillText(unLab, lx - 12, legY);
       ctx_.textAlign = "left";
 
       for (const [a, b, lab] of EDGES) {
-        const ra = nodeRect(ctx_, a, W),
-          rb = nodeRect(ctx_, b, W);
+        const ra = nodeRect(ctx_, a, L),
+          rb = nodeRect(ctx_, b, L);
         const [ax, ay] = borderPt(ra, rb.x + rb.w / 2, rb.y + rb.h / 2);
         const [bx, by] = borderPt(rb, ra.x + ra.w / 2, ra.y + ra.h / 2);
         const act = activeEdge.has(a + ">" + b);
@@ -1251,13 +1311,13 @@
         const ang = Math.atan2(by - ay, bx - ax);
         ctx_.beginPath();
         ctx_.moveTo(bx, by);
-        ctx_.lineTo(bx - 7 * Math.cos(ang - 0.4), by - 7 * Math.sin(ang - 0.4));
-        ctx_.lineTo(bx - 7 * Math.cos(ang + 0.4), by - 7 * Math.sin(ang + 0.4));
+        ctx_.lineTo(bx - 6 * Math.cos(ang - 0.4), by - 6 * Math.sin(ang - 0.4));
+        ctx_.lineTo(bx - 6 * Math.cos(ang + 0.4), by - 6 * Math.sin(ang + 0.4));
         ctx_.closePath();
         ctx_.fillStyle = act ? pal.accent : pal.mute;
         ctx_.fill();
         if (act && lab) {
-          ctx_.font = "8.5px ui-monospace, monospace";
+          ctx_.font = "8px ui-monospace, monospace";
           const tw = ctx_.measureText(lab).width;
           const mx = (ax + bx) / 2,
             my = (ay + by) / 2;
@@ -1272,7 +1332,7 @@
         ctx_.globalAlpha = 1;
       }
       for (const id of Object.keys(N)) {
-        const r = nodeRect(ctx_, id, W);
+        const r = nodeRect(ctx_, id, L);
         const act = onPath.has(id);
         const unp = UNP.has(id);
         ctx_.globalAlpha = act ? 1 : 0.5;
@@ -1280,36 +1340,39 @@
         ctx_.fillStyle = pal.paper;
         ctx_.fill();
         ctx_.setLineDash(unp ? [4, 3] : []);
-        ctx_.strokeStyle = act ? pal.accent : unp ? UNPUB : pal.mute;
+        ctx_.strokeStyle = act ? pal.accent : unp ? COLORS.unpub : pal.mute;
         ctx_.lineWidth = act ? 2 : 1;
         ctx_.stroke();
         ctx_.setLineDash([]);
         ctx_.font = MONO;
         ctx_.fillStyle = act ? pal.ink : pal.mute;
         ctx_.textAlign = "center";
-        ctx_.fillText(NLABEL[id], r.x + r.w / 2, r.y + r.h / 2 + 0.5);
+        ctx_.fillText(nodeLab(id, L.tight), r.x + r.w / 2, r.y + r.h / 2 + 0.5);
         if (unp) {
-          ctx_.fillStyle = UNPUB;
+          ctx_.fillStyle = COLORS.unpub;
           ctx_.fillText("?", r.x + r.w - 5, r.y + 5);
         }
         ctx_.textAlign = "left";
         ctx_.globalAlpha = 1;
       }
       for (const id of Object.keys(LEAF)) {
-        const L = LEAF[id];
-        const r = nodeRect(ctx_, id, W);
+        const Lf = LEAF[id];
+        const r = nodeRect(ctx_, id, L);
         const act = onPath.has(id);
-        const c = COLORS[L.cls];
+        const c = COLORS[Lf.cls];
         ctx_.globalAlpha = act ? 1 : 0.45;
         roundRect(ctx_, r.x, r.y, r.w, r.h, 4);
-        ctx_.fillStyle = c + (act ? "30" : "12");
+        ctx_.fillStyle = withA(c, act ? 0.22 : 0.1);
         ctx_.fill();
         ctx_.strokeStyle = c;
         ctx_.lineWidth = act ? 2 : 1;
         ctx_.stroke();
         ctx_.font = MONO;
         ctx_.fillStyle = act ? pal.ink : pal.mute;
-        ctx_.fillText(`[${L.r}] ${L.name}`, r.x + 7, r.y + r.h / 2 + 0.5);
+        let nm = `[${Lf.r}] ${Lf.name}`;
+        while (ctx_.measureText(nm).width > r.w - 10 && nm.length > 4)
+          nm = nm.slice(0, -1);
+        ctx_.fillText(nm, r.x + 6, r.y + r.h / 2 + 0.5);
         ctx_.globalAlpha = 1;
       }
     }
@@ -1324,10 +1387,11 @@
     const byCost = (a, b) => (a.rr.cost ?? Infinity) - (b.rr.cost ?? Infinity);
 
     function drawStrip() {
-      const cv = S.strip === "models" ? cvM : cvP;
+      const L = layout();
       const ctx_ = cv.ctx;
-      const W = cv.w,
+      const W = L.W,
         pal = Fig.palette();
+      const COLORS = leafPalette();
       const units = S.strip === "models" ? MODELS : PROVS;
       let rows = units.map((u) => ({ u, rr: resolve2(u, S) }));
       if (S.sort === "best") {
@@ -1340,153 +1404,154 @@
       else provOrder = order;
 
       const selId = S.strip === "models" ? S.model : S.prov;
-      const cols =
-        S.strip === "models"
-          ? {
-              mark: 6,
-              name: 24,
-              vendor: 150,
-              score: 258,
-              chip: 276,
-              chipW: 168,
-              cost: 500,
-              gate: 540,
-            }
-          : {
-              mark: 6,
-              name: 26,
-              vendor: 118,
-              score: 208,
-              chip: 276,
-              chipW: 168,
-              cost: 500,
-              gate: 540,
-            };
+      const showVendor = !L.tight;
+      const showScore = !L.tight;
+      const showCost = !L.tight;
+      const showGate = !L.mid;
+      const nameX = 22;
+      const vendorX = 118;
+      const scoreX = S.strip === "models" ? 200 : 168;
+      const chipX = L.tight ? Math.min(148, W * 0.38) : showScore ? scoreX + 16 : 168;
+      const chipW = L.tight
+        ? Math.max(90, W - chipX - 8)
+        : showGate
+          ? 150
+          : Math.min(160, W - chipX - (showCost ? 70 : 8));
+      const costX = chipX + chipW + (showCost ? 52 : 0);
+      const gateX = showGate ? costX + 16 : W + 10;
 
-      ctx_.clearRect(0, SW_Y - 26, W, cv.h - SW_Y + 26);
+      ctx_.clearRect(0, L.swY - 22, W, cv.h - L.swY + 26);
       ctx_.textBaseline = "middle";
       ctx_.font = "10px ui-monospace, monospace";
       ctx_.fillStyle = pal.mute;
-      ctx_.fillText(
+      let head =
         S.strip === "models"
-          ? `SAME REQUEST — EVERY MODEL${S.sort === "best" ? " · BEST FIRST" : ""}`
-          : `SAME REQUEST — THE EIGHT ENDPOINTS OF qwen3.8-27b${S.sort === "best" ? " · BEST FIRST" : ""}`,
-        6,
-        SW_Y - 14,
-      );
+          ? `SAME REQUEST${S.sort === "best" ? " \u00B7 BEST FIRST" : ""}`
+          : `EIGHT ENDPOINTS${S.sort === "best" ? " \u00B7 BEST FIRST" : ""}`;
+      while (ctx_.measureText(head).width > W - 12 && head.length > 6)
+        head = head.slice(0, -1);
+      ctx_.fillText(head, 6, L.swY - 12);
       ctx_.font = "8.5px ui-monospace, monospace";
-      ctx_.textAlign = "right";
-      ctx_.fillText(
-        S.strip === "models" ? "idx" : "ctx",
-        cols.score,
-        SW_Y - 14,
-      );
-      ctx_.fillText("$ in", cols.cost, SW_Y - 14);
+      if (showScore) {
+        ctx_.textAlign = "right";
+        ctx_.fillText(S.strip === "models" ? "idx" : "ctx", scoreX, L.swY - 12);
+      }
+      if (showCost) {
+        ctx_.textAlign = "right";
+        ctx_.fillText("$ in", costX, L.swY - 12);
+      }
       ctx_.textAlign = "left";
-      ctx_.fillText("leaf", cols.chip + 8, SW_Y - 14);
-      ctx_.fillText("decided by", cols.gate, SW_Y - 14);
+      ctx_.fillText("leaf", chipX + 6, L.swY - 12);
+      if (showGate) ctx_.fillText("decided by", gateX, L.swY - 12);
 
       rows.forEach((row, i) => {
         const { u: mm, rr } = row;
-        const y = SW_Y + i * RH;
+        const y = L.swY + i * L.rh;
         const LC = COLORS[LEAF[rr.leaf].cls];
         const sel = mm.id === selId;
         if (sel) {
           ctx_.fillStyle = pal.wash;
-          ctx_.fillRect(2, y - 1.5, W - 6, RH - 3);
+          ctx_.fillRect(2, y - 1, W - 6, L.rh - 2);
         }
         ctx_.strokeStyle = sel ? pal.accent : "transparent";
         ctx_.lineWidth = 1.5;
-        ctx_.strokeRect(2, y - 1.5, W - 6, RH - 3);
+        ctx_.strokeRect(2, y - 1, W - 6, L.rh - 2);
         ctx_.font = MONO10;
         ctx_.fillStyle = sel ? pal.ink : pal.mute;
         if (S.strip === "models")
-          ctx_.fillText(mm.measured ? "◆" : "≈", cols.mark, y + 7);
+          ctx_.fillText(mm.measured ? "\u25C6" : "\u2248", 6, y + L.rh / 2);
         else if (LOGOS[mm.id] && LOGOS[mm.id].complete)
-          ctx_.drawImage(LOGOS[mm.id], cols.mark, y + 0.5, 13, 13);
-        ctx_.fillText(mm.name, cols.name, y + 7);
-        ctx_.font = MONO;
-        ctx_.fillStyle = pal.mute;
-        ctx_.fillText(
-          S.strip === "models" ? mm.vendor : mm.quant,
-          cols.vendor,
-          y + 7,
-        );
-        ctx_.font = MONO10;
-        ctx_.fillStyle = sel ? pal.ink : pal.mute;
-        ctx_.textAlign = "right";
-        ctx_.fillText(
-          S.strip === "models" ? mm.score.toFixed(1) : fmtCtx(mm.ctx),
-          cols.score,
-          y + 7,
-        );
-        ctx_.textAlign = "left";
-        ctx_.fillStyle = LC + (sel ? "30" : "1a");
-        ctx_.fillRect(cols.chip, y + 1.5, cols.chipW, 13);
+          ctx_.drawImage(LOGOS[mm.id], 6, y + (L.rh - 13) / 2, 13, 13);
+        let nm = mm.name;
+        const nameMax = (showVendor ? vendorX : chipX) - nameX - 4;
+        while (ctx_.measureText(nm).width > nameMax && nm.length > 3)
+          nm = nm.slice(0, -1);
+        ctx_.fillText(nm, nameX, y + L.rh / 2);
+        if (showVendor) {
+          ctx_.font = MONO;
+          ctx_.fillStyle = pal.mute;
+          ctx_.fillText(
+            S.strip === "models" ? mm.vendor : mm.quant,
+            vendorX,
+            y + L.rh / 2,
+          );
+        }
+        if (showScore) {
+          ctx_.font = MONO10;
+          ctx_.fillStyle = sel ? pal.ink : pal.mute;
+          ctx_.textAlign = "right";
+          ctx_.fillText(
+            S.strip === "models" ? mm.score.toFixed(1) : fmtCtx(mm.ctx),
+            scoreX,
+            y + L.rh / 2,
+          );
+          ctx_.textAlign = "left";
+        }
+        ctx_.fillStyle = withA(LC, sel ? 0.22 : 0.12);
+        ctx_.fillRect(chipX, y + 1.5, chipW, L.rh - 5);
         ctx_.strokeStyle = LC;
-        ctx_.strokeRect(cols.chip + 0.5, y + 2, cols.chipW - 1, 12);
+        ctx_.strokeRect(chipX + 0.5, y + 2, chipW - 1, L.rh - 6);
         ctx_.fillStyle = LC;
-        ctx_.fillText(
-          `[${LEAF[rr.leaf].r}] ${LEAF[rr.leaf].name}`,
-          cols.chip + 7,
-          y + 8,
-        );
-        ctx_.fillStyle = sel ? pal.ink : pal.mute;
-        ctx_.textAlign = "right";
-        ctx_.fillText(
-          rr.cost == null ? "—" : rr.cost.toFixed(4),
-          cols.cost,
-          y + 7,
-        );
-        ctx_.textAlign = "left";
         ctx_.font = MONO;
-        ctx_.fillStyle = pal.mute;
-        let g = rr.gate;
-        while (ctx_.measureText(g).width > W - cols.gate - 10 && g.length > 3)
-          g = g.slice(0, -1);
-        ctx_.fillText(g, cols.gate, y + 7);
+        let leaf = `[${LEAF[rr.leaf].r}] ${LEAF[rr.leaf].name}`;
+        while (ctx_.measureText(leaf).width > chipW - 10 && leaf.length > 4)
+          leaf = leaf.slice(0, -1);
+        ctx_.fillText(leaf, chipX + 6, y + L.rh / 2);
+        if (showCost) {
+          ctx_.fillStyle = sel ? pal.ink : pal.mute;
+          ctx_.textAlign = "right";
+          ctx_.font = MONO10;
+          ctx_.fillText(
+            rr.cost == null ? "\u2014" : rr.cost.toFixed(4),
+            costX,
+            y + L.rh / 2,
+          );
+          ctx_.textAlign = "left";
+        }
+        if (showGate) {
+          ctx_.font = MONO;
+          ctx_.fillStyle = pal.mute;
+          let g = rr.gate;
+          while (ctx_.measureText(g).width > W - gateX - 8 && g.length > 3)
+            g = g.slice(0, -1);
+          ctx_.fillText(g, gateX, y + L.rh / 2);
+        }
       });
       ctx_.fillStyle = pal.mute;
       ctx_.font = "8.5px ui-monospace, monospace";
-      ctx_.fillText(
+      let foot =
         S.strip === "models"
-          ? "\u25C6 measured 2026-08-24 \u00B7 \u2248 assumed from model-card neighborhood \u00B7 click a row to switch brains"
-          : "endpoint facts measured 2026-08-24 \u00B7 click a row to inspect it \u00B7 every host serves the same model slug",
-        6,
-        SW_Y + rows.length * RH + 10,
-      );
+          ? "\u25C6 measured \u00B7 \u2248 assumed \u00B7 click a row"
+          : "measured 2026-08-24 \u00B7 click a row";
+      while (ctx_.measureText(foot).width > W - 12 && foot.length > 8)
+        foot = foot.slice(0, -1);
+      ctx_.fillText(foot, 6, L.swY + rows.length * L.rh + 10);
     }
 
     function draw() {
-      const cv = S.strip === "models" ? cvM : cvP;
-      drawGraph(cv.ctx, cv.w);
+      const L = layout();
+      drawGraph(cv.ctx, L);
       drawStrip();
     }
 
-    // sweep rows select the model / endpoint under inspection
-    function rowAt(cv, my) {
-      const i = Math.floor((my - SW_Y + 1.5) / RH);
-      const order = cv === cvM ? sweepOrder : provOrder;
+    function rowAt(my) {
+      const L = layout();
+      const i = Math.floor((my - L.swY + 1.5) / L.rh);
+      const order = S.strip === "models" ? sweepOrder : provOrder;
       return i >= 0 && i < order.length ? order[i].id : null;
     }
-    [
-      [cvM, "model"],
-      [cvP, "prov"],
-    ].forEach(([cv, key]) => {
-      cv.el.addEventListener("click", (e) => {
-        const r = cv.el.getBoundingClientRect();
-        const id = rowAt(cv, e.clientY - r.top);
-        if (id) {
-          S[key] = id;
-          refresh();
-        }
-      });
-      cv.el.addEventListener("mousemove", (e) => {
-        const r = cv.el.getBoundingClientRect();
-        cv.el.style.cursor = rowAt(cv, e.clientY - r.top)
-          ? "pointer"
-          : "default";
-      });
+    cv.el.addEventListener("click", (e) => {
+      const r = cv.el.getBoundingClientRect();
+      const id = rowAt(e.clientY - r.top);
+      if (id) {
+        if (S.strip === "models") S.model = id;
+        else S.prov = id;
+        refresh();
+      }
+    });
+    cv.el.addEventListener("mousemove", (e) => {
+      const r = cv.el.getBoundingClientRect();
+      cv.el.style.cursor = rowAt(e.clientY - r.top) ? "pointer" : "default";
     });
 
     /* ---------- readout ---------- */
@@ -1498,11 +1563,11 @@
       const u = S.strip === "models" ? byId[S.model] : provById[S.prov];
       const res = resolve2(u, S);
       const L = LEAF[res.leaf];
-      const c = COLORS[L.cls];
+      const c = leafPalette()[L.cls];
       ro.innerHTML = "";
       const badge = document.createElement("span");
-      badge.textContent = `${u.name.toUpperCase()} → [${L.r}] ${L.name.toUpperCase()}`;
-      badge.style.cssText = `display:inline-block;padding:.18rem .55rem;border:1.5px solid ${c};border-radius:3px;font:700 11px ui-monospace,monospace;color:${c};background:${c}1a;margin-bottom:.3rem`;
+      badge.textContent = `${u.name.toUpperCase()} \u2192 [${L.r}] ${L.name.toUpperCase()}`;
+      badge.style.cssText = `display:inline-block;padding:.18rem .55rem;border:1.5px solid ${c};border-radius:3px;font:700 11px ui-monospace,monospace;color:${c};background:${withA(c, 0.12)};margin-bottom:.3rem`;
       ro.appendChild(badge);
       const bits = [];
       if (res.leaf === "G1" || res.leaf === "S3") {
