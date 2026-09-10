@@ -1,0 +1,15 @@
+{
+  "hosting": {
+    "public": "hosting",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "olivares",
+          "region": "southamerica-west1"
+        }
+      }
+    ]
+  }
+}

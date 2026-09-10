@@ -6,3 +6,4 @@ src/static/vendor/
 .*
 !.python-version
 !.dockerignore
+!.firebaserc
