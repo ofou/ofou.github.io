@@ -2613,6 +2613,15 @@ footer.site a.handle:hover {
   letter-spacing: 0.06em;
   border: 1px solid var(--rule-fine);
   padding: 0.28em 0.6em;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: inherit;
+}
+
+.chip[aria-pressed="true"] {
+  color: var(--accent);
+  background: color-mix(in srgb, currentColor 10%, transparent);
 }
 
 @media (max-width: 34rem) {

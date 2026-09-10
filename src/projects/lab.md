@@ -27,6 +27,14 @@ A growing library of bare-canvas explainer components — every one built on the
 
 <div data-fig="normal-curve"></div>
 
+## Memory
+
+<div data-fig="cls-memory" data-height="400"></div>
+
+## Model benchmarks
+
+<div data-fig="benchmark-comparison" data-height="300"></div>
+
 ## Language models
 
 <div data-fig="softmax"></div>
