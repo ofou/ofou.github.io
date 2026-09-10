@@ -5,3 +5,4 @@ __pycache__/
 src/static/vendor/
 .*
 !.python-version
+!.dockerignore

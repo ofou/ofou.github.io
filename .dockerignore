@@ -1,0 +1,11 @@
+.git
+.gitignore
+_site
+dist
+__pycache__
+.vendor-cache
+src/static/vendor
+prototypes
+README.md
+**/*.pyc
+.DS_Store
