@@ -60,6 +60,27 @@
         ctx.font = "12px ui-monospace, Menlo, monospace";
         ctx.fillText("diverged — reduce the learning rate", 12, 34);
       } else {
+        // ghost of the next step, so the learning rate is visible while paused
+        const nx = x - lr * df(x);
+        ctx.strokeStyle = P.accent;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        if (Number.isFinite(nx) && Math.abs(nx) <= 3) {
+          ctx.beginPath();
+          ctx.moveTo(X(x), Y(f(x)));
+          ctx.lineTo(X(nx), Y(f(nx)));
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.arc(X(nx), Y(f(nx)), 4, 0, 7);
+          ctx.stroke();
+        } else {
+          ctx.setLineDash([]);
+          ctx.fillStyle = P.accent;
+          ctx.font = "11px ui-monospace, Menlo, monospace";
+          ctx.fillText("next step overshoots — it will diverge", 12, 34);
+        }
+        ctx.setLineDash([]);
         ctx.fillStyle = P.accent;
         ctx.beginPath();
         ctx.arc(X(x), Y(f(x)), 5, 0, 7);

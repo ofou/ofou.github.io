@@ -93,8 +93,25 @@
     const stop = () => {
       epoch.alive = false;
       cancelAnimationFrame(raf);
+      raf = 0;
     };
     cvState.redraw = start;
+    /* While the loop is idle (reduced motion), components only redraw
+       inside drawFn — so a slider moved under reduced motion changed its
+       number but not the picture. Any interaction inside the figure now
+       paints one frame. User-initiated, so reduced motion still holds. */
+    let poke = 0;
+    const nudge = () => {
+      if (raf || poke) return; // a running loop already picks it up
+      poke = requestAnimationFrame(() => {
+        poke = 0;
+        drawFn();
+      });
+    };
+    const root = cvState.el.closest("[data-fig]") || cvState.el.parentElement;
+    if (root)
+      for (const t of ["input", "change", "click"])
+        root.addEventListener(t, nudge);
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(
         (es) =>

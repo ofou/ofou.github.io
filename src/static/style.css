@@ -2851,6 +2851,28 @@ input[type="range"]::-moz-range-thumb {
   cursor: ew-resize;
 }
 
+/* A styled range only drags from its thumb on iOS (no tap-to-jump), and
+   a 14px square is too small to land a finger on — sliders read as
+   frozen. On touch the thumb grows a transparent 7px border: same 14px
+   square on screen, 28px to grab. */
+@media (pointer: coarse) {
+  input[type="range"]::-webkit-slider-thumb {
+    width: 28px;
+    height: 28px;
+    margin-top: -2px;
+    border: 7px solid transparent;
+    background-clip: padding-box;
+    box-shadow: inset 0 0 0 1px var(--paper);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    border: 7px solid transparent;
+    background-clip: padding-box;
+    box-shadow: inset 0 0 0 1px var(--paper);
+  }
+}
+
 /* ---------- contact form ---------- */
 
 .contact-form {
