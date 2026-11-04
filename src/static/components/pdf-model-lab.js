@@ -823,7 +823,8 @@
 
     function chipRow(parent, label, options, get, set) {
       const wrap = document.createElement("span");
-      wrap.style.cssText = "display:inline-flex;align-items:center;gap:.3rem";
+      wrap.style.cssText =
+        "display:inline-flex;flex-wrap:wrap;align-items:center;gap:.3rem;max-width:100%";
       const lab = document.createElement("span");
       lab.textContent = label;
       lab.style.cssText = "font:10px ui-monospace,monospace;opacity:.6";
@@ -1096,39 +1097,48 @@
     const flR = slider(bar2, "files", "attachments", 1, 48, 1);
 
     /* ---------- canvas (one surface: graph + strip) ---------- */
-    const cv = Fig.canvas(el, 590);
+    // height tracks the strip (20 model rows vs 8 provider rows) and width
+    const cvHeight = (w) => {
+      const L = layout(w);
+      return Math.ceil(L.swY + L.nRows * L.rh + 22);
+    };
+    const cv = Fig.canvas(el, cvHeight);
     Fig.frame(cv);
     const ctx = cv.ctx;
 
-    function layout() {
-      const W = cv.w || 600;
+    function layout(w) {
+      const W = w || cv.w || 600;
       const tight = W < 520;
       const mid = W < 700;
       const nRows = S.strip === "models" ? MODELS.length : PROVS.length;
-      const leafW = tight ? Math.min(104, Math.max(84, W * 0.3)) : 114;
-      const gy = tight ? 38 : 22;
+      const leafW = tight ? (W < 420 ? 84 : Math.min(104, W * 0.3)) : 114;
+      // title + full legend need ~600px beside the leaf column
+      const stackLeg = tight || W < 740;
+      const gy = stackLeg ? 38 : 22;
       const gH = tight ? 186 : 208;
       const swY = gy + gH + 24;
       const rh = tight ? 15 : 16.5;
-      return { W, tight, mid, leafW, gy, gH, swY, rh, nRows, x0: 6 };
+      return { W, tight, mid, stackLeg, leafW, gy, gH, swY, rh, nRows, x0: 6 };
     }
 
-    // decision-node geometry: x fractions of the decision span, y of GH
+    // decision-node geometry: column index, y as a fraction of gH.
+    // Columns are packed by measured label width (see graphGeom), so
+    // nodes never overlap whatever the figure's width.
     const N = {
-      START: [0.03, 0.42],
-      ROUTE: [0.15, 0.42],
-      AR: [0.27, 0.06],
-      BUD: [0.27, 0.24],
-      PIX: [0.27, 0.44],
-      ENG: [0.27, 0.68],
-      SUPP: [0.395, 0.54],
-      NSZ: [0.5, 0.46],
-      NFC: [0.605, 0.46],
-      PIN: [0.395, 0.78],
-      PSZ: [0.5, 0.78],
-      DOC: [0.605, 0.66],
-      FCT: [0.675, 0.86],
-      DEF: [0.3, 0.96],
+      START: [0, 0.42],
+      ROUTE: [1, 0.42],
+      AR: [2, 0.06],
+      BUD: [2, 0.24],
+      PIX: [2, 0.44],
+      ENG: [2, 0.68],
+      DEF: [2, 0.96],
+      SUPP: [3, 0.54],
+      PIN: [3, 0.78],
+      NSZ: [4, 0.46],
+      PSZ: [4, 0.78],
+      NFC: [5, 0.46],
+      DOC: [5, 0.66],
+      FCT: [5, 0.86],
     };
     const NLABEL = {
       START: "PDF",
@@ -1183,18 +1193,63 @@
     const MONO = "9px ui-monospace, SFMono-Regular, Menlo, monospace";
     const MONO10 = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
 
-    function nodeRect(ctx_, id, L) {
-      const { W, leafW, gy, gH, x0 } = L;
-      const dw = W - leafW - 24;
-      if (LEAF[id]) {
-        const y = gy + ((LEAF[id].r - 0.5) / 13) * gH;
-        return { x: W - leafW - 4, y: y - 10, w: leafW, h: 20 };
-      }
-      const [fx, fy] = N[id];
+    /* Pick the longest label set whose packed columns fit the decision
+       span, then spread the columns over ~72% of it (the rest is the fan
+       of edges into the leaves). If even the tiny set can't fit, START
+       folds above ROUTE to free a column. */
+    function graphGeom(ctx_, L) {
+      const dw = L.W - L.leafW - 24;
+      const MIN_GAP = 8;
       ctx_.font = MONO;
-      const lab = nodeLab(id, L.tight);
-      const w = ctx_.measureText(lab).width + 12;
-      return { x: x0 + fx * dw - w / 2, y: gy + fy * gH - 10, w, h: 20 };
+      let pick = null;
+      for (const fold of [false, true]) {
+        for (const set of ["full", "short", "tiny"]) {
+          const cols = [];
+          for (const id of Object.keys(N)) {
+            if (fold && id === "START") continue;
+            const c = N[id][0];
+            const w = ctx_.measureText(nodeLab(id, set)).width + 12;
+            cols[c] = Math.max(cols[c] || 0, w);
+          }
+          const used = cols.filter((w) => w != null);
+          const sum = used.reduce((a, b) => a + b, 0);
+          pick = { set, fold, cols, sum, n: used.length };
+          if (sum + (used.length - 1) * MIN_GAP <= dw) break;
+        }
+        if (pick.sum + (pick.n - 1) * MIN_GAP <= dw) break;
+      }
+      const span = Math.min(dw, Math.max(dw * 0.72, pick.sum + (pick.n - 1) * MIN_GAP));
+      const gap = Math.max(2, (span - pick.sum) / Math.max(1, pick.n - 1));
+      const cx = [];
+      let x = L.x0;
+      pick.cols.forEach((w, c) => {
+        if (w == null) return;
+        cx[c] = x + w / 2;
+        x += w + gap;
+      });
+      const pos = {};
+      for (const id of Object.keys(N)) {
+        let [c, fy] = N[id];
+        if (pick.fold && id === "START") {
+          c = 1;
+          fy = 0.16;
+        }
+        const lab = nodeLab(id, pick.set);
+        const w = ctx_.measureText(lab).width + 12;
+        pos[id] = { x: cx[c] - w / 2, y: L.gy + fy * L.gH - 10, w, h: 20, lab };
+      }
+      return pos;
+    }
+
+    function nodeRect(ctx_, id, L) {
+      const { W, leafW, gy, gH } = L;
+      if (LEAF[id]) {
+        // 13 leaves share gH: keep a 2px gutter so they never overlap
+        const h = Math.min(20, gH / 13 - 2);
+        const y = gy + ((LEAF[id].r - 0.5) / 13) * gH;
+        return { x: W - leafW - 4, y: y - h / 2, w: leafW, h };
+      }
+      return L.geom[id];
     }
     function borderPt(r, tx, ty) {
       const cx = r.x + r.w / 2,
@@ -1217,18 +1272,26 @@
       ctx_.closePath();
     }
 
-    function nodeLab(id, tight) {
-      if (!tight) return NLABEL[id];
-      return (
-        {
-          ROUTE: "route?",
-          SUPP: "files?",
-          NFC: "\u2264 5?",
-          NSZ: "\u2264 32MB?",
-          FCT: "\u2264 25?",
-          DEF: "default",
-        }[id] || NLABEL[id]
-      );
+    const SHORT = {
+      ROUTE: "route?",
+      SUPP: "files?",
+      NFC: "\u2264 5?",
+      NSZ: "\u2264 32MB?",
+      FCT: "\u2264 25?",
+      DEF: "default",
+    };
+    const TINY = {
+      ...SHORT,
+      AR: ">200:1?",
+      BUD: "ctx?",
+      PIX: "pixels?",
+      PIN: "pin?",
+      PSZ: "size?",
+    };
+    function nodeLab(id, set) {
+      if (set === "tiny") return TINY[id] || NLABEL[id];
+      if (set === "short") return SHORT[id] || NLABEL[id];
+      return NLABEL[id];
     }
 
     function drawGraph(ctx_, L) {
@@ -1243,6 +1306,7 @@
         activeEdge.add(res.path[i] + ">" + res.path[i + 1]);
 
       const dw = W - L.leafW - 24;
+      L.geom = graphGeom(ctx_, L);
       ctx_.clearRect(0, 0, W, L.swY - 8);
       ctx_.textBaseline = "middle";
       ctx_.font = "10px ui-monospace, monospace";
@@ -1251,7 +1315,7 @@
       let title = L.tight
         ? m.name.toUpperCase()
         : "DECISION GRAPH \u2014 " + m.name.toUpperCase();
-      while (ctx_.measureText(title).width > (L.tight ? W - 12 : dw * 0.42) && title.length > 4)
+      while (ctx_.measureText(title).width > (L.stackLeg ? W - 12 : dw * 0.42) && title.length > 4)
         title = title.slice(0, -1);
       ctx_.fillText(title, 6, 12);
 
@@ -1271,7 +1335,7 @@
             ["undef", "undefined"],
             ["err", "loud error"],
           ];
-      const legY = L.tight ? 26 : 12;
+      const legY = L.stackLeg ? 26 : 12;
       let lx = W - L.leafW - 8;
       for (let i = leg.length - 1; i >= 0; i--) {
         const [k, lab] = leg[i];
@@ -1295,6 +1359,7 @@
       ctx_.fillText(unLab, lx - 12, legY);
       ctx_.textAlign = "left";
 
+      const edgeLabels = [];
       for (const [a, b, lab] of EDGES) {
         const ra = nodeRect(ctx_, a, L),
           rb = nodeRect(ctx_, b, L);
@@ -1316,19 +1381,8 @@
         ctx_.closePath();
         ctx_.fillStyle = act ? pal.accent : pal.mute;
         ctx_.fill();
-        if (act && lab) {
-          ctx_.font = "8px ui-monospace, monospace";
-          const tw = ctx_.measureText(lab).width;
-          const mx = (ax + bx) / 2,
-            my = (ay + by) / 2;
-          ctx_.globalAlpha = 1;
-          ctx_.fillStyle = pal.paper;
-          ctx_.fillRect(mx - tw / 2 - 3, my - 6, tw + 6, 12);
-          ctx_.fillStyle = pal.accent;
-          ctx_.textAlign = "center";
-          ctx_.fillText(lab, mx, my);
-          ctx_.textAlign = "left";
-        }
+        // labels go on last so nodes never paint over them
+        if (act && lab) edgeLabels.push([lab, (ax + bx) / 2, (ay + by) / 2]);
         ctx_.globalAlpha = 1;
       }
       for (const id of Object.keys(N)) {
@@ -1347,7 +1401,7 @@
         ctx_.font = MONO;
         ctx_.fillStyle = act ? pal.ink : pal.mute;
         ctx_.textAlign = "center";
-        ctx_.fillText(nodeLab(id, L.tight), r.x + r.w / 2, r.y + r.h / 2 + 0.5);
+        ctx_.fillText(r.lab, r.x + r.w / 2, r.y + r.h / 2 + 0.5);
         if (unp) {
           ctx_.fillStyle = COLORS.unpub;
           ctx_.fillText("?", r.x + r.w - 5, r.y + 5);
@@ -1375,6 +1429,16 @@
         ctx_.fillText(nm, r.x + 6, r.y + r.h / 2 + 0.5);
         ctx_.globalAlpha = 1;
       }
+      ctx_.font = "8px ui-monospace, monospace";
+      ctx_.textAlign = "center";
+      for (const [lab, mx, my] of edgeLabels) {
+        const tw = ctx_.measureText(lab).width;
+        ctx_.fillStyle = pal.paper;
+        ctx_.fillRect(mx - tw / 2 - 3, my - 6, tw + 6, 12);
+        ctx_.fillStyle = pal.accent;
+        ctx_.fillText(lab, mx, my);
+      }
+      ctx_.textAlign = "left";
     }
 
     /* dispatch: resolve whichever unit the strip is showing */
@@ -1428,7 +1492,8 @@
         S.strip === "models"
           ? `SAME REQUEST${S.sort === "best" ? " \u00B7 BEST FIRST" : ""}`
           : `EIGHT ENDPOINTS${S.sort === "best" ? " \u00B7 BEST FIRST" : ""}`;
-      while (ctx_.measureText(head).width > W - 12 && head.length > 6)
+      const headMax = (showScore ? scoreX - 24 : chipX) - 12;
+      while (ctx_.measureText(head).width > headMax && head.length > 6)
         head = head.slice(0, -1);
       ctx_.fillText(head, 6, L.swY - 12);
       ctx_.font = "8.5px ui-monospace, monospace";
@@ -1627,13 +1692,11 @@
         r.input.disabled = !on;
         r.row.style.opacity = on ? "1" : ".35";
       });
-      cvM.el.style.display = S.strip === "models" ? "block" : "none";
-      cvP.el.style.display = S.strip === "provs" ? "block" : "none";
+      if (cv.h !== cvHeight(cv.w)) cv.fit();
       draw();
       renderReadout();
     }
-    cvM.redraw = refresh;
-    cvP.redraw = refresh;
+    cv.redraw = refresh;
     el.__lab = { S, byId, provById };
     refresh();
   });

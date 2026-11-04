@@ -88,6 +88,11 @@
         ctx.arc(X(p), Y(p), 4, 0, 7);
         ctx.fill();
         ctx.font = "10px ui-monospace, Menlo, monospace";
+        // paper halo so neighbor hairlines don't strike through the label
+        ctx.strokeStyle = P.paper;
+        ctx.lineWidth = 3;
+        ctx.lineJoin = "round";
+        ctx.strokeText(p.name, X(p) + 7, Y(p) + 3);
         ctx.fillStyle = hover === p ? P.ink : P.mute;
         ctx.fillText(p.name, X(p) + 7, Y(p) + 3);
       }

@@ -140,19 +140,20 @@
       const avg = recent.length
         ? Math.round(recent.reduce((s, x) => s + x, 0) / recent.length)
         : null;
-      ctx.fillText(
-        v.name +
-          "  ·  EPISODES " +
-          v.done +
-          "  ·  AVG " +
-          (avg == null ? "—" : avg) +
-          "  ·  STEPS " +
-          v.agent.steps +
-          "  ·  POS " +
-          v.agent.pos,
-        LX,
-        y0 + 11,
-      );
+      // drop trailing fields that don't fit (phones) instead of clipping
+      const parts = [
+        v.name,
+        "EPISODES " + v.done,
+        "AVG " + (avg == null ? "—" : avg),
+        "STEPS " + v.agent.steps,
+        "POS " + v.agent.pos,
+      ];
+      let head = parts.join("  ·  ");
+      while (parts.length > 2 && ctx.measureText(head).width > cv.w - LX - 6) {
+        parts.pop();
+        head = parts.join("  ·  ");
+      }
+      ctx.fillText(head, LX, y0 + 11);
 
       // history plot
       const pitch = 3,

@@ -28,7 +28,9 @@
   mqDark.addEventListener?.("change", fireScheme);
 
   /* HiDPI canvas. state.redraw is set by the component (or by animate)
-     and is invoked after every refit so the buffer is never left blank. */
+     and is invoked after every refit so the buffer is never left blank.
+     `height` may be a number or a function of the CSS width; components
+     whose height depends on their own state call state.fit() then redraw. */
   function canvas(el, height) {
     const c = document.createElement("canvas");
     c.style.width = "100%";
@@ -45,12 +47,14 @@
     const fit = () => {
       state.dpr = Math.min(devicePixelRatio || 1, 2);
       state.w = el.clientWidth || 600;
-      state.h = height || 240;
+      state.h =
+        (typeof height === "function" ? height(state.w) : height) || 240;
       c.width = Math.max(1, Math.round(state.w * state.dpr));
       c.height = Math.round(state.h * state.dpr);
       c.style.height = state.h + "px";
       state.ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
     };
+    state.fit = fit;
     fit();
     let queued = false;
     const ro = new ResizeObserver(() => {

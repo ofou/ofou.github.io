@@ -2976,7 +2976,13 @@ input[type="range"]::-moz-range-thumb {
   min-height: 350px;
 }
 [data-fig="pdf-model-lab"] {
-  min-height: 1280px;
+  min-height: 1120px;
+}
+@media (min-width: 1152px) {
+  /* wide bay: controls fit on fewer rows, graph stays one height */
+  [data-fig="pdf-model-lab"] {
+    min-height: 945px;
+  }
 }
 
 /* Chip bars wrap on a phone; reserve the grown chrome so the page
@@ -2998,7 +3004,7 @@ input[type="range"]::-moz-range-thumb {
     min-height: 365px;
   }
   [data-fig="pdf-model-lab"] {
-    min-height: 1540px;
+    min-height: 1320px;
   }
 }
 [data-fig="cls-memory"] {

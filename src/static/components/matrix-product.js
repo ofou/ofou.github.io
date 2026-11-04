@@ -22,7 +22,7 @@
       paused = !paused;
     });
     const tint = (a) => {
-      const n = parseInt(P().accent.slice(1), 16);
+      const n = parseInt(Fig.palette().accent.slice(1), 16);
       return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
     };
     const draw = () => {
@@ -40,14 +40,17 @@
       const cell = 34,
         gx = 24,
         gy = 30;
+      // A: row hi, B: column hj; the pair being multiplied (k = hk) darker
       function grid(x, y, rows, cols, mark) {
         for (let i = 0; i < rows; i++)
           for (let j = 0; j < cols; j++) {
             ctx.fillStyle = P.wash;
-            if (mark === "row" && i === hi) ctx.fillStyle = tint(0.25);
-            if (mark === "col" && j === hk) ctx.fillStyle = tint(0.25);
+            if (mark === "row" && i === hi)
+              ctx.fillStyle = tint(j === hk ? 0.5 : 0.2);
+            if (mark === "col" && j === hj)
+              ctx.fillStyle = tint(i === hk ? 0.5 : 0.2);
             if (mark === "out" && i === hi && j === hj)
-              ctx.fillStyle = P.accent;
+              ctx.fillStyle = tint(0.35);
             ctx.fillRect(x + j * cell, y + i * cell, cell - 2, cell - 2);
             ctx.strokeStyle = P.rule;
             ctx.strokeRect(x + j * cell, y + i * cell, cell - 2, cell - 2);
@@ -78,10 +81,11 @@
       numbers(gx + 3 * cell + 26 + 2 * cell + 30, gy + 4, C, P.accent);
       ctx.font = "10px ui-monospace, Menlo, monospace";
       ctx.fillStyle = P.mute;
+      // below B, the tallest matrix (3 rows)
       ctx.fillText(
         `C[${hi}][${hj}] += A[${hi}][${hk}]·B[${hk}][${hj}]`,
         gx,
-        gy + 2 * cell + 22,
+        gy + 3 * cell + 22,
       );
     };
     let lastT = performance.now();

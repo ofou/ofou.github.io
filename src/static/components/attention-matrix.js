@@ -23,7 +23,7 @@
         draw();
       },
     );
-    Fig.caption(el, "hover a cell · softmax(q·k / T)");
+    Fig.caption(el, "softmax(q·k / T) · rows attend to columns");
     function weights() {
       const seedVec = (w) => {
         let h = 2166136261;

@@ -36,7 +36,8 @@
     }
     const [inGrid, kGrid, outGrid] = grids;
     const kControls = document.createElement("div");
-    kControls.style.cssText = "display:grid;gap:0.3rem;margin-bottom:0.5rem";
+    kControls.style.cssText =
+      "display:grid;grid-template-columns:repeat(3,56px);gap:0.3rem 0.4rem;margin-top:0.6rem";
     cols[1].appendChild(kControls);
 
     kernel.forEach((row, ri) =>
@@ -61,8 +62,10 @@
       const n = parseInt(hex.slice(1), 16);
       return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
     }
+    // ink = positive, accent = negative, so a kernel's sign stays visible
     function drawGrid(holder, rows, cell, opts = {}) {
       holder.innerHTML = "";
+      const pal = P();
       rows.forEach((row, ri) => {
         row.forEach((v, ci) => {
           const d = document.createElement("div");
@@ -71,18 +74,22 @@
             opts.highlight.r === ri &&
             opts.highlight.c === ci;
           const a = Math.min(0.85, Math.abs(v));
+          const base = v < 0 ? pal.accent : pal.ink;
           d.style.cssText =
-            `width:${cell}px;height:${cell}px;display:inline-block;border:1px solid var(--rule-fine);` +
+            `width:${cell}px;height:${cell}px;display:inline-block;vertical-align:top;box-sizing:border-box;border:1px solid var(--rule-fine);` +
             (isHi
               ? "background:var(--accent)"
-              : `background:${rgba(P().ink, a || 0.05)}`);
+              : `background:${rgba(base, a || 0.05)}`);
           if (opts.numbers) {
-            d.style.cssText += `color:var(--ink);font:10px ui-monospace,Menlo,monospace;text-align:center;line-height:${cell}px`;
-            d.textContent = Number.isFinite(v) ? v.toFixed(1) : "";
+            const n = Math.abs(v) < 0.05 ? 0 : v;
+            d.style.cssText += `color:${a > 0.45 ? "var(--paper)" : "var(--ink)"};font:9px ui-monospace,Menlo,monospace;text-align:center;line-height:${cell - 2}px`;
+            d.textContent = Number.isFinite(n) ? n.toFixed(1) : "";
           }
           holder.appendChild(d);
         });
-        holder.appendChild(document.createElement("br"));
+        const br = document.createElement("div");
+        br.style.height = "0";
+        holder.appendChild(br);
       });
     }
     function render() {
@@ -106,7 +113,7 @@
       drawGrid(
         outGrid,
         out.map((r) => r.map((v) => v)),
-        22,
+        32,
         { numbers: true },
       );
     }
