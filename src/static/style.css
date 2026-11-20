@@ -181,7 +181,7 @@
     -webkit-font-smoothing: antialiased;
     background-image: radial-gradient(
       circle at 1px 1px,
-      color-mix(in srgb, var(--ink) 12%, transparent) 1px,
+      color-mix(in srgb, var(--ink) 7%, transparent) 1px,
       transparent 1.4px
     );
   }
@@ -226,7 +226,7 @@ body {
   background-color: var(--paper);
   background-image: radial-gradient(
     circle at 1px 1px,
-    color-mix(in srgb, var(--ink) 9%, transparent) 1px,
+    color-mix(in srgb, var(--ink) 5%, transparent) 1px,
     transparent 1.4px
   );
   background-size: 6px 6px;
