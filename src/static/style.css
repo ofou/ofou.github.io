@@ -179,6 +179,11 @@
 
   body {
     -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      color-mix(in srgb, var(--ink) 12%, transparent) 1px,
+      transparent 1.4px
+    );
   }
 
   /* Dim the plates at night. */
@@ -218,7 +223,13 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--paper);
+  background-color: var(--paper);
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--ink) 9%, transparent) 1px,
+    transparent 1.4px
+  );
+  background-size: 6px 6px;
   color: var(--ink);
   font-family: var(--serif);
   font-size: var(--text);
