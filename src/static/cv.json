@@ -6,12 +6,12 @@
     "email": "omar@olivares.cl",
     "phone": "+56983810103",
     "url": "https://olivares.cl",
-    "summary": "AI engineer building production LLM systems: agents, retrieval, evaluation, and MCP tooling. Co-author of a peer-reviewed LLM evaluation study (DataEd'26, 19 models on 300 SQL cases), early engineer on Kilo Code, an open-source coding agent with about 10,000 GitHub stars, and builder of a retrieval system over more than 200,000 scientific papers. I work mainly in Python and FastAPI. Open to relocating to Paris or elsewhere in the EU.",
+    "summary": "AI engineer building production LLM systems: agents, retrieval, evaluation, and MCP tooling. Co-author of a peer-reviewed LLM evaluation study (DataEd'26, 19 models on 300 SQL cases), early engineer on Kilo Code, an open-source coding agent with about 10,000 GitHub stars, and builder of a retrieval system over more than 200,000 scientific papers. I work mainly in Python and FastAPI.",
     "location": {
       "postalCode": "7510043",
       "city": "Providencia",
       "countryCode": "CL",
-      "region": "Santiago, Chile (open to Paris or the EU)"
+      "region": "Santiago, Chile"
     },
     "profiles": [
       {
